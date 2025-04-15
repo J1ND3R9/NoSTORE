@@ -1,0 +1,366 @@
+﻿@use 'variables';
+
+section:not(:last-child) {
+    margin-bottom: 30px;
+}
+
+.main_functions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .functions__mobile {
+        background: url(../photos/Phone.png);
+        height: 359px;
+        width: 474px;
+        padding: 8px;
+        border-radius: 10px;
+
+        h2 {
+            @include variables.font($size: 38px);
+            color: variables.$text-color;
+        }
+
+        p {
+            @include variables.font($size: 26px);
+            color: darken(variables.$text-color, 20%);
+
+            a {
+                color: variables.$additional-color;
+                transition: 0.2s ease;
+                text-decoration: underline;
+
+                &:hover {
+                    color: variables.$accent-color;
+                }
+            }
+        }
+    }
+
+    .functions__funcs {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        border: 5px solid variables.$block-color;
+        height: 359px;
+        border-radius: 8px;
+        padding: 20px;
+
+        a {
+            transition: 0.2s ease;
+
+            &:hover {
+                -webkit-box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+                -moz-box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+                box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+            }
+        }
+
+        div {
+            padding: 10px;
+            width: 230px;
+            height: 315px;
+            border-radius: 10px;
+
+            h3 {
+                @include variables.font($size: 24px);
+                color: variables.$text-color;
+                height: 60px
+            }
+
+            p {
+                @include variables.font($size: 19px);
+                color: darken(variables.$text-color, 20%);
+            }
+        }
+
+        .functions__catalog {
+            background: url(../photos/basket.png)
+        }
+
+        .functions__recs {
+            background: url('../photos/blue heart.png')
+        }
+
+        .functions__buildpc {
+            background: url('../photos/PC.png')
+        }
+
+        .functions__discounts {
+            background: url('../photos/gamepad.png')
+        }
+    }
+}
+
+.section__title {
+    background-color: variables.$block-color;
+    color: variables.$text-color;
+    padding: 1%;
+    margin-bottom: 2%;
+    width: 474px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+
+    h3 {
+        @include variables.font($size: 28px);
+        margin: 0;
+    }
+}
+
+.recs__slider, .discount__slider, .news__slider, .pcs__slider {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+
+.product, .discount, .news, .pc {
+    background-color: variables.$block-color;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    width: 360px;
+    padding: 10px;
+    border-radius: 10px;
+    transition: 0.2s ease;
+
+    &:hover {
+        -webkit-box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+        -moz-box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+        box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+    }
+
+    .product__image {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        &::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: variables.$bg-color;
+            border-radius: 5px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        img {
+            height: 240px;
+            max-width: 100%;
+        }
+    }
+
+    .product__rating {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2px;
+
+        img {
+            height: 35px;
+        }
+
+        p {
+            font-size: 32px;
+            color: variables.$accent-color;
+        }
+    }
+
+    h3 {
+        @include variables.font($size: 30px);
+        color: variables.$text-color;
+        height: 100px;
+    }
+
+    p {
+        @include variables.font($size: 24px);
+        color: darken(variables.$text-color, 30%);
+    }
+
+    .product__tags {
+        margin-bottom: 25px;
+    }
+
+    .product__rating {
+        background-color: variables.$bg-color;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .product__activity {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: space-between;
+
+        p {
+            font-size: 50px;
+            color: variables.$accent-color;
+        }
+
+        .product__buttons {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+
+            button {
+                background-color: variables.$additional-color;
+                border-radius: 4px;
+                border: none;
+
+                &:hover > img {
+                    padding: 4px;
+                }
+
+                img {
+                    transition: 0.1s ease;
+                    height: 50px;
+                    padding: 7px;
+                }
+            }
+        }
+
+        .product__price {
+            p:first-child {
+                font-size: 30px;
+                color: variables.$additional-color;
+                text-decoration: line-through;
+                height: 30px;
+            }
+        }
+
+        .product__about {
+            @include variables.font($size: 28px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: variables.$additional-color;
+            padding: 5px;
+            border-radius: 6px;
+            height: 55px;
+            margin-top: 23px;
+            transition: 0.2s ease;
+
+            &:hover {
+                background-color: lighten(variables.$additional-color, 5%);
+            }
+
+            span {
+                color: variables.$bg-color;
+            }
+        }
+    }
+}
+
+.news {
+    display: flex;
+    flex-direction: column;
+    width: 510px;
+    height: 500px;
+    padding: 15px;
+    border-radius: 10px;
+    transition: 0.2s ease;
+
+    &:hover {
+        -webkit-box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+        -moz-box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+        box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+    }
+
+    .news__main_image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        img {
+            object-fit: cover;
+            height: 230px;
+            width: 400px;
+            border: solid 4px variables.$bg-color;
+            border-radius: 10px;
+        }
+
+        &::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 4px;
+            background-color: variables.$bg-color;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    }
+
+    h3 {
+        text-align: center;
+        @include variables.font($size:40px);
+        color: variables.$accent-color;
+    }
+
+    p {
+        @include variables.font($size:25px);
+        color: variables.$text-color;
+    }
+
+    .news__button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+
+
+        div {
+            @include variables.font($size:30px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: variables.$additional-color;
+            width: 230px;
+            height: 40px;
+            border-radius: 6px;
+            color: variables.$bg-color;
+            transition: 0.2s ease;
+
+            &:hover {
+                background-color: lighten(variables.$additional-color, 5%);
+            }
+        }
+    }
+}
+
+.pc {
+    padding: 10px;
+
+    .pc__title {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+
+        img {
+            height: 300px;
+        }
+        h3 {
+            margin: 0;
+        }
+        &::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 4px;
+            background-color: variables.$bg-color;
+            border-radius: 5px;
+            margin-top: 0px;
+        }
+    }
+}

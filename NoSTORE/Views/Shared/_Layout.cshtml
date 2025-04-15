@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NoSTORE | @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/@ViewData["CSS"]" asp-append-version="true" />
+    <link rel="icon" href="~/svg/logo.svg" type="image/svg+xml" />
+</head>
+<body>
+    <header>
+        <nav>
+            <img src="svg/nostore.svg" alt="NoSTORE" class="site__logo" />
+            <a href="/catalog">
+                <div class="catalog__button">
+                    <p>Каталог</p>
+                    <img src="~/svg/catalog.svg" />
+                </div>
+            </a>
+            <div class="search">
+                <input class="search__input" type="search" placeholder="Искать по сайту" autocomplete="off" />
+            </div>
+            <div class="buttons">
+                <a class="favorite__button">
+                    <div>
+                        <img src="~/svg/Favorite.svg" />
+                        <p>Избранное</p>
+                    </div>
+                </a>
+                <a class="basket__button">
+                    <div>
+                        <img src="~/svg/Basket.svg" />
+                        <p>Корзина</p>
+                    </div>
+                </a>
+                <a class="compare__button">
+                    <div>
+                        <img src="~/svg/Compare.svg" />
+                        <p>Сравнение</p>
+                    </div>
+                </a>
+                <a class="profile__button">
+                    <div>
+                        <img src="~/svg/Favorite.svg" />
+                        <p>Ваш профиль</p>
+                    </div>
+                </a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        @RenderBody()
+    </main>
+    <footer>
+        <div class="footer__inside">
+            <img src="svg/nostore.svg" alt="NoSTORE" class="footer_site__logo" />
+            <div class="sections">
+                <section class="footer__section">
+                    <h1>Компания</h1>
+                    <ul>
+                        <li>
+                            <a href="/company">О компании</a>
+                        </li>
+                        <li>
+                            <a href="/news">Новости</a>
+                        </li>
+                        <li>
+                            <a href="/job">Вакансии</a>
+                        </li>
+                        <li>
+                            <a href="/sale_rules">Правила продаж</a>
+                        </li>
+                        <li>
+                            <a href="/rules">Правила пользования сайтом</a>
+                        </li>
+                    </ul>
+                </section>
+                <section class="footer__section">
+                    <h1>Покупателям</h1>
+                    <ul>
+                        <li>
+                            <a href="/payments">Способы оплаты</a>
+                        </li>
+                        <li>
+                            <a href="/delivery">Доставка</a>
+                        </li>
+                        <li>
+                            <a href="/order_status">Статус заказа</a>
+                        </li>
+                        <li>
+                            <a href="/guarantee">Обмен, возврат, гарантия</a>
+                        </li>
+                        <li>
+                            <a href="/feedback">Обратная связь</a>
+                        </li>
+                    </ul>
+                </section>
+                <section class="footer__section">
+                    <h1>Оставайтесь на связи</h1>
+                    <div class="footer__section__feedbackphone">
+                        <a href="tel:+78003303999">
+                            <h3>8-800-33-03-999</h3>
+                        </a>
+                    </div>
+                    <a href="mailto:feedback@nostore.ru">feedback@nostore.ru</a>
+                    <div class="footer__section__socials">
+                        <a href="https://vk.com">
+                            <div>
+                                <img src="~/svg/socials/VK.svg" />
+                            </div>
+                        </a>
+                        <a href="https://t.me">
+                            <div>
+                                <img src="~/svg/socials/TG.svg" />
+                            </div>
+                        </a>
+                    </div>
+                </section>
+            </div>
+            <div class="app">
+                <div>
+                    <img src="~/svg/rustore.svg" alt="RuStore" />
+                    <p>RuStore</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2025 Компания NoSTORE (Not-only STORE). Администрация Сайта не несет ответственности за размещаемые Пользователями материалы (в т.ч. информацию и изображения), их содержание и качество.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

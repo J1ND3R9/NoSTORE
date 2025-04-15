@@ -1,0 +1,32 @@
+@font-face {
+  font-family: "Strong";
+  src: url(../Fonts/Strong-Regular.ttf) format("truetype");
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+  background-color: #26262B;
+}
+
+main {
+  margin-top: 7%;
+  width: 84%;
+  height: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+/*# sourceMappingURL=site.css.map */

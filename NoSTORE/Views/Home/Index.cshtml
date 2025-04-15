@@ -1,0 +1,383 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+    ViewData["CSS"] = "general.css";
+}
+<script src="https://unpkg.com/@@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        tippy('.product__favorite button', {
+            content: 'Добавить в избранное',
+            placement: 'bottom',
+            animation: 'fade',
+            arrow: false,
+        });
+        tippy('.product__basket button', {
+            content: 'Добавить в корзину',
+            placement: 'bottom',
+            animation: 'fade',
+            arrow: false,
+        });
+    });
+</script>
+
+<section class="main_functions">
+    <div class="functions__mobile">
+        <h2>NoSTORE в вашем смартфоне!</h2>
+        <p>Удобный доступ к вашей корзине, истории заказов и акциям прямо на вашем смартфоне.<br><br></p>
+        <p>Скачать приложение<br> можно <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">здесь.</a></p>
+    </div>
+    <div class="functions__funcs">
+        <a>
+            <div class="functions__catalog">
+                <h3>Расширенный каталог</h3>
+                <p>Более 50 000 товаров для вашего дома и офиса.</p>
+            </div>
+        </a>
+        <a>
+            <div class="functions__recs">
+                <h3>Персональные рекомендации</h3>
+                <p>Товары, которые вам точно понравятся!</p>
+            </div>
+        </a>
+        <a>
+            <div class="functions__buildpc">
+                <h3>Соберите свой ПК</h3>
+                <p>Выберите комплектующие и соберите идеальный компьютер.</p>
+            </div>
+        </a>
+        <a>
+            <div class="functions__discounts">
+                <h3>Специальные предложения</h3>
+                <p>Скидки до -50%, распродажи и выгодные комплекты.</p>
+            </div>
+        </a>
+    </div>
+</section>
+<section class="main_recs">
+    <div class="section__title">
+        <h3>Подобрали под ваши предпочтения:</h3>
+    </div>
+    <div class="recs__slider">
+        <div class="product">
+            <a href="/типа_продукт">
+                <div>
+                    <div class="product__image">
+                        <img src="~/photos/products/Игровой руль Logitech G29/G29_main.png" />
+                    </div>
+                    <h3>Игровой руль Logitech G29</h3>
+                    <p class="product__tags">[PC, PS4, PS5, 900°, кожа, обратная связь, проводной, виброотдача]</p>
+                    <div class="product__rating">
+                        <img src="~/svg/activites/noact/star.svg" />
+                        <p>4.9</p>
+                    </div>
+                </div>
+            </a>
+            <div class="product__activity">
+                <p>34 499 ₽</p>
+                <div class="product__buttons">
+                    <div class="product__favorite">
+                        <button type="button" aria-label="Добавить в избранное">
+                            <img src="~/svg/activites/noact/fav.svg" />
+                        </button>
+                    </div>
+                    <div class="product__basket">
+                        <button type="button" aria-label="Добавить в корзину">
+                            <img src="~/svg/activites/noact/bsk.svg" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="product">
+            <a href="/типа_продукт">
+                <div>
+                    <div class="product__image">
+                        <img src="~/photos/products/Видеокарта MSI GeForce RTX 4060 VENTUS 3X OC/RTX4060VENTUS3XOC_main.png" />
+                    </div>
+                    <h3>Видеокарта MSI GeForce RTX 4060 VENTUS 3X OC</h3>
+                    <p class="product__tags">[PCIe 4.0, 8 ГБ, GDDR6, HDMI, 3 x DisplayPort, GPU 1830 МГц, 128 бит]</p>
+                    <div class="product__rating">
+                        <img src="~/svg/activites/noact/star.svg" />
+                        <p>4.9</p>
+                    </div>
+                </div>
+            </a>
+            <div class="product__activity">
+                <p>34 499 ₽</p>
+                <div class="product__buttons">
+                    <div class="product__favorite">
+                        <button type="button" aria-label="Добавить в избранное">
+                            <img src="~/svg/activites/noact/fav.svg" />
+                        </button>
+                    </div>
+                    <div class="product__basket">
+                        <button type="button" aria-label="Добавить в корзину">
+                            <img src="~/svg/activites/noact/bsk.svg" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="product">
+            <a href="/типа_продукт">
+                <div>
+                    <div class="product__image">
+                        <img src="~/photos/products/Игровой руль Logitech G29/G29_main.png" />
+                    </div>
+                    <h3>Игровой руль Logitech G29</h3>
+                    <p class="product__tags">[PC, PS4, PS5, 900°, кожа, обратная связь, проводной, виброотдача]</p>
+                    <div class="product__rating">
+                        <img src="~/svg/activites/noact/star.svg" />
+                        <p>4.9</p>
+                    </div>
+                </div>
+            </a>
+            <div class="product__activity">
+                <p>34 499 ₽</p>
+                <div class="product__buttons">
+                    <div class="product__favorite">
+                        <button type="button" aria-label="Добавить в избранное">
+                            <img src="~/svg/activites/noact/fav.svg" />
+                        </button>
+                    </div>
+                    <div class="product__basket">
+                        <button type="button" aria-label="Добавить в корзину">
+                            <img src="~/svg/activites/noact/bsk.svg" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="product">
+            <a href="/типа_продукт">
+                <div>
+                    <div class="product__image">
+                        <img src="~/photos/products/Видеокарта MSI GeForce RTX 4060 VENTUS 3X OC/RTX4060VENTUS3XOC_main.png" />
+                    </div>
+                    <h3>Видеокарта MSI GeForce RTX 4060 VENTUS 3X OC</h3>
+                    <p class="product__tags">[PCIe 4.0, 8 ГБ, GDDR6, HDMI, 3 x DisplayPort, GPU 1830 МГц, 128 бит]</p>
+                    <div class="product__rating">
+                        <img src="~/svg/activites/noact/star.svg" />
+                        <p>4.9</p>
+                    </div>
+                </div>
+            </a>
+            <div class="product__activity">
+                <p>34 499 ₽</p>
+                <div class="product__buttons">
+                    <div class="product__favorite">
+                        <button type="button" aria-label="Добавить в избранное">
+                            <img src="~/svg/activites/noact/fav.svg" />
+                        </button>
+                    </div>
+                    <div class="product__basket">
+                        <button type="button" aria-label="Добавить в корзину">
+                            <img src="~/svg/activites/noact/bsk.svg" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="main_discount">
+    <div class="section__title">
+        <h3>Не пропустите скидки:</h3>
+    </div>
+    <div class="discount__slider">
+        <a href="/типа_продукт">
+            <div class="product">
+                <div>
+                    <div class="product__image">
+                        <img src="~/photos/products/Процессор AMD Ryzen 7 7800X3D OEM/Ryzen77800X3D_main.png" />
+                    </div>
+                    <h3>Процессор AMD Ryzen 7 7800X3D OEM</h3>
+                    <p class="product__tags">[AM5, 8 x 4.2 ГГц, 2 x DDR5-5200 МГц, L2 - 8 МБ, L3 - 96 МБ, TDP 120 Вт]</p>
+                    <div class="product__rating">
+                        <img src="~/svg/activites/noact/star.svg" />
+                        <p>4.9</p>
+                    </div>
+                </div>
+                <div class="product__activity">
+                    <div class="product__price">
+                        <p>40 499 ₽</p>
+                        <p>32 399 ₽</p>
+                    </div>
+                    <div class="product__about">
+                        <span>Подробнее</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="/типа_продукт">
+            <div class="product">
+                <div>
+                    <div class="product__image">
+                        <img src="~/photos/products/Процессор AMD Ryzen 7 7800X3D OEM/Ryzen77800X3D_main.png" />
+                    </div>
+                    <h3>Процессор AMD Ryzen 7 7800X3D OEM</h3>
+                    <p class="product__tags">[AM5, 8 x 4.2 ГГц, 2 x DDR5-5200 МГц, L2 - 8 МБ, L3 - 96 МБ, TDP 120 Вт]</p>
+                    <div class="product__rating">
+                        <img src="~/svg/activites/noact/star.svg" />
+                        <p>4.9</p>
+                    </div>
+                </div>
+                <div class="product__activity">
+                    <div class="product__price">
+                        <p>40 499 ₽</p>
+                        <p>32 399 ₽</p>
+                    </div>
+                    <div class="product__about">
+                        <span>Подробнее</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="/типа_продукт">
+            <div class="product">
+                <div>
+                    <div class="product__image">
+                        <img src="~/photos/products/Процессор AMD Ryzen 7 7800X3D OEM/Ryzen77800X3D_main.png" />
+                    </div>
+                    <h3>Процессор AMD Ryzen 7 7800X3D OEM</h3>
+                    <p class="product__tags">[AM5, 8 x 4.2 ГГц, 2 x DDR5-5200 МГц, L2 - 8 МБ, L3 - 96 МБ, TDP 120 Вт]</p>
+                    <div class="product__rating">
+                        <img src="~/svg/activites/noact/star.svg" />
+                        <p>4.9</p>
+                    </div>
+                </div>
+                <div class="product__activity">
+                    <div class="product__price">
+                        <p>40 499 ₽</p>
+                        <p>32 399 ₽</p>
+                    </div>
+                    <div class="product__about">
+                        <span>Подробнее</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="/типа_продукт">
+            <div class="product">
+                <div>
+                    <div class="product__image">
+                        <img src="~/photos/products/Процессор AMD Ryzen 7 7800X3D OEM/Ryzen77800X3D_main.png" />
+                    </div>
+                    <h3>Процессор AMD Ryzen 7 7800X3D OEM</h3>
+                    <p class="product__tags">[AM5, 8 x 4.2 ГГц, 2 x DDR5-5200 МГц, L2 - 8 МБ, L3 - 96 МБ, TDP 120 Вт]</p>
+                    <div class="product__rating">
+                        <img src="~/svg/activites/noact/star.svg" />
+                        <p>4.9</p>
+                    </div>
+                </div>
+                <div class="product__activity">
+                    <div class="product__price">
+                        <p>40 499 ₽</p>
+                        <p>32 399 ₽</p>
+                    </div>
+                    <div class="product__about">
+                        <span>Подробнее</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</section>
+
+<section class="main_news">
+    <div class="section__title">
+        <h3>Недавние новости:</h3>
+    </div>
+    <div class="news__slider">
+        <a href="/типа_новость">
+            <div class="news">
+                <div class="news__main_image">
+                    <img src="~/photos/news/play_store_512.png" />
+                </div>
+                <h3>Обзоры на видеокарты</h3>
+                <p>Написали обзоры на несколько сотен новых видеокарт. Возможно, наше мнение поможет вам с выбором!</p>
+                <div class="news__button">
+                    <div class="news__read">
+                        <span>Читать</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="/типа_новость">
+            <div class="news">
+                <div class="news__main_image">
+                    <img src="~/photos/news/play_store_512.png" />
+                </div>
+                <h3>Обзоры на видеокарты</h3>
+                <p>Написали обзоры на несколько сотен новых видеокарт. Возможно, наше мнение поможет вам с выбором!</p>
+                <div class="news__button">
+                    <div class="news__read">
+                        <span>Читать</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="/типа_новость">
+            <div class="news">
+                <div class="news__main_image">
+                    <img src="~/photos/news/play_store_512.png" />
+                </div>
+                <h3>Обзоры на видеокарты</h3>
+                <p>Написали обзоры на несколько сотен новых видеокарт. Возможно, наше мнение поможет вам с выбором!</p>
+                <div class="news__button">
+                    <div class="news__read">
+                        <span>Читать</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</section>
+
+<section class="main_pcs">
+    <div class="section__title">
+        <h3>Сборки ПК:</h3>
+    </div>
+    <div class="pcs__slider">
+        <a>
+            <div class="pc">
+                <div class="pc__title">
+                    <img src="~/photos/pcs/ПК NoSTORE GAMING N223.png"/>
+                    <h3>ПК NoSTORE GAMING N223</h3>
+                </div>
+                <ul>
+                    <li>
+                        <p>CPU: </p>
+                        <p>AMD Ryzen 7 5700x</p>
+                    </li>
+                    <li>
+                        <p>GPU: </p>
+                        <p>MSI GeForce RTX 4060 VENTUS 3X OC</p>
+                    </li>
+                    <li>
+                        <p>RAM: </p>
+                        <p>32 ГБ x 3200 МГц</p>
+                    </li>
+                    <li>
+                        <p>MTB: </p>
+                        <p>ASRock B550M Pro4</p>
+                    </li>
+                    <li>
+                        <p>DISK: </p>
+                        <p>1 x M.2, 1 x HDD, 1 x SSD</p>
+                    </li>
+                </ul>
+                <div class="pc__activity">
+                    <p>91 599</p>
+                    <p> ₽</p>
+                    <div class="product__about">
+                        <p>Подробнее</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</section>

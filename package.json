@@ -1,0 +1,16 @@
+{
+  "name": "nostore",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "watch:sass": "sass --watch NoSTORE/wwwroot/scss:NoSTORE/wwwroot/css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "sass": "^1.86.3",
+    "tippy.js": "^6.3.7"
+  }
+}

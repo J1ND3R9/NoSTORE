@@ -1,0 +1,19 @@
+﻿$bg-color: #26262B;
+$block-color: #3F3F46;
+$text-color: #E0E0E0;
+$accent-color: #3ABBD1;
+$additional-color: #66A7C8;
+$bad-color: #E36B3F;
+
+@font-face {
+    font-family: "Strong";
+    src: url(../Fonts/Strong-Regular.ttf) format('truetype')
+}
+
+$font-primary: 'Strong', sans-serif;
+
+@mixin font($size: 16px) {
+    font-family: $font-primary;
+    font-size: $size;
+    font-weight: 0;
+}
