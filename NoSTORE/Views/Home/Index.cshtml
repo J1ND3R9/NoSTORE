@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<Product>
+
+@{
     ViewData["Title"] = "Главная";
     ViewData["CSS"] = "general.css";
 }
@@ -7,18 +9,51 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        tippy('.product__favorite button', {
-            content: 'Добавить в избранное',
-            placement: 'bottom',
-            animation: 'fade',
-            arrow: false,
-        });
-        tippy('.product__basket button', {
-            content: 'Добавить в корзину',
-            placement: 'bottom',
-            animation: 'fade',
-            arrow: false,
-        });
+    tippy('.product__favorite button', {
+    content: 'Добавить в избранное',
+    placement: 'bottom',
+    animation: 'fade',
+    arrow: false,
+    });
+    tippy('.product__basket button', {
+    content: 'Добавить в корзину',
+    placement: 'bottom',
+    animation: 'fade',
+    arrow: false,
+    });
+    });
+</script>
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const swiper = new Swiper('.recs__slider', {
+    slidesPerView: 4,
+    spaceBetween: 73,
+    loop: false,
+
+
+    breakpoints: {
+    320: {
+    slidesPerView: 1,
+    },
+    768: {
+    slidesPerView: 2,
+    },
+    1024: {
+    slidesPerView: 4,
+    },
+    },
+
+    navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+    },
+
+    });
     });
 </script>
 
@@ -55,131 +90,60 @@
         </a>
     </div>
 </section>
+
 <section class="main_recs">
     <div class="section__title">
         <h3>Подобрали под ваши предпочтения:</h3>
     </div>
-    <div class="recs__slider">
-        <div class="product">
-            <a href="/типа_продукт">
-                <div>
-                    <div class="product__image">
-                        <img src="~/photos/products/Игровой руль Logitech G29/G29_main.png" />
-                    </div>
-                    <h3>Игровой руль Logitech G29</h3>
-                    <p class="product__tags">[PC, PS4, PS5, 900°, кожа, обратная связь, проводной, виброотдача]</p>
-                    <div class="product__rating">
-                        <img src="~/svg/activites/noact/star.svg" />
-                        <p>4.9</p>
+    <div class="swiper recs__slider">
+        <div class="swiper-wrapper">
+            @foreach (var product in Model)
+            {
+                <div class="swiper-slide">
+                    <div class="product">
+                        <a href="/@product.Id">
+                            <div>
+                                <div class="product__image">
+                                    @if (product.ImageExist())
+                                    {
+                                        <img src="~/photos/products/@product.Name/@product.Images[0]" />
+                                    }
+                                    else
+                                    {
+                                        <img src="https://placehold.co/240" />
+                                    }
+                                </div>
+                                <h3>@product.Name</h3>
+                                <p class="product__tags">@product.TagsInString()</p>
+                                <div class="product__rating">
+                                    <img src="~/svg/activites/noact/star.svg" />
+                                    <p>4.9</p>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="product__activity">
+                            <p>@product.CorrectPrice() ₽</p>
+                            <div class="product__buttons">
+                                <div class="product__favorite">
+                                    <button type="button" aria-label="Добавить в избранное">
+                                        <img src="~/svg/activites/noact/fav.svg" />
+                                    </button>
+                                </div>
+                                <div class="product__basket">
+                                    <button type="button" aria-label="Добавить в корзину">
+                                        <img src="~/svg/activites/noact/bsk.svg" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </a>
-            <div class="product__activity">
-                <p>34 499 ₽</p>
-                <div class="product__buttons">
-                    <div class="product__favorite">
-                        <button type="button" aria-label="Добавить в избранное">
-                            <img src="~/svg/activites/noact/fav.svg" />
-                        </button>
-                    </div>
-                    <div class="product__basket">
-                        <button type="button" aria-label="Добавить в корзину">
-                            <img src="~/svg/activites/noact/bsk.svg" />
-                        </button>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
-        <div class="product">
-            <a href="/типа_продукт">
-                <div>
-                    <div class="product__image">
-                        <img src="~/photos/products/Видеокарта MSI GeForce RTX 4060 VENTUS 3X OC/RTX4060VENTUS3XOC_main.png" />
-                    </div>
-                    <h3>Видеокарта MSI GeForce RTX 4060 VENTUS 3X OC</h3>
-                    <p class="product__tags">[PCIe 4.0, 8 ГБ, GDDR6, HDMI, 3 x DisplayPort, GPU 1830 МГц, 128 бит]</p>
-                    <div class="product__rating">
-                        <img src="~/svg/activites/noact/star.svg" />
-                        <p>4.9</p>
-                    </div>
-                </div>
-            </a>
-            <div class="product__activity">
-                <p>34 499 ₽</p>
-                <div class="product__buttons">
-                    <div class="product__favorite">
-                        <button type="button" aria-label="Добавить в избранное">
-                            <img src="~/svg/activites/noact/fav.svg" />
-                        </button>
-                    </div>
-                    <div class="product__basket">
-                        <button type="button" aria-label="Добавить в корзину">
-                            <img src="~/svg/activites/noact/bsk.svg" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="product">
-            <a href="/типа_продукт">
-                <div>
-                    <div class="product__image">
-                        <img src="~/photos/products/Игровой руль Logitech G29/G29_main.png" />
-                    </div>
-                    <h3>Игровой руль Logitech G29</h3>
-                    <p class="product__tags">[PC, PS4, PS5, 900°, кожа, обратная связь, проводной, виброотдача]</p>
-                    <div class="product__rating">
-                        <img src="~/svg/activites/noact/star.svg" />
-                        <p>4.9</p>
-                    </div>
-                </div>
-            </a>
-            <div class="product__activity">
-                <p>34 499 ₽</p>
-                <div class="product__buttons">
-                    <div class="product__favorite">
-                        <button type="button" aria-label="Добавить в избранное">
-                            <img src="~/svg/activites/noact/fav.svg" />
-                        </button>
-                    </div>
-                    <div class="product__basket">
-                        <button type="button" aria-label="Добавить в корзину">
-                            <img src="~/svg/activites/noact/bsk.svg" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="product">
-            <a href="/типа_продукт">
-                <div>
-                    <div class="product__image">
-                        <img src="~/photos/products/Видеокарта MSI GeForce RTX 4060 VENTUS 3X OC/RTX4060VENTUS3XOC_main.png" />
-                    </div>
-                    <h3>Видеокарта MSI GeForce RTX 4060 VENTUS 3X OC</h3>
-                    <p class="product__tags">[PCIe 4.0, 8 ГБ, GDDR6, HDMI, 3 x DisplayPort, GPU 1830 МГц, 128 бит]</p>
-                    <div class="product__rating">
-                        <img src="~/svg/activites/noact/star.svg" />
-                        <p>4.9</p>
-                    </div>
-                </div>
-            </a>
-            <div class="product__activity">
-                <p>34 499 ₽</p>
-                <div class="product__buttons">
-                    <div class="product__favorite">
-                        <button type="button" aria-label="Добавить в избранное">
-                            <img src="~/svg/activites/noact/fav.svg" />
-                        </button>
-                    </div>
-                    <div class="product__basket">
-                        <button type="button" aria-label="Добавить в корзину">
-                            <img src="~/svg/activites/noact/bsk.svg" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+        <!-- Навигация -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
     </div>
 </section>
 
@@ -334,6 +298,20 @@
                 </div>
             </div>
         </a>
+        <a href="/типа_новость">
+            <div class="news">
+                <div class="news__main_image">
+                    <img src="~/photos/news/play_store_512.png" />
+                </div>
+                <h3>Обзоры на видеокарты</h3>
+                <p>Написали обзоры на несколько сотен новых видеокарт. Возможно, наше мнение поможет вам с выбором!</p>
+                <div class="news__button">
+                    <div class="news__read">
+                        <span>Читать</span>
+                    </div>
+                </div>
+            </div>
+        </a>
     </div>
 </section>
 
@@ -345,7 +323,9 @@
         <a>
             <div class="pc">
                 <div class="pc__title">
-                    <img src="~/photos/pcs/ПК NoSTORE GAMING N223.png"/>
+                    <div>
+                        <img src="~/photos/pcs/ПК NoSTORE GAMING N223.png" />
+                    </div>
                     <h3>ПК NoSTORE GAMING N223</h3>
                 </div>
                 <ul>
@@ -371,9 +351,122 @@
                     </li>
                 </ul>
                 <div class="pc__activity">
-                    <p>91 599</p>
-                    <p> ₽</p>
-                    <div class="product__about">
+                    <p>91 599 ₽</p>
+                    <div class="pc__about">
+                        <p>Подробнее</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a>
+            <div class="pc">
+                <div class="pc__title">
+                    <div>
+                        <img src="~/photos/pcs/ПК NoSTORE GAMING N223.png" />
+                    </div>
+                    <h3>ПК NoSTORE GAMING N223</h3>
+                </div>
+                <ul>
+                    <li>
+                        <p>CPU: </p>
+                        <p>AMD Ryzen 7 5700x</p>
+                    </li>
+                    <li>
+                        <p>GPU: </p>
+                        <p>MSI GeForce RTX 4060 VENTUS 3X OC</p>
+                    </li>
+                    <li>
+                        <p>RAM: </p>
+                        <p>32 ГБ x 3200 МГц</p>
+                    </li>
+                    <li>
+                        <p>MTB: </p>
+                        <p>ASRock B550M Pro4</p>
+                    </li>
+                    <li>
+                        <p>DISK: </p>
+                        <p>1 x M.2, 1 x HDD, 1 x SSD</p>
+                    </li>
+                </ul>
+                <div class="pc__activity">
+                    <p>91 599 ₽</p>
+                    <div class="pc__about">
+                        <p>Подробнее</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a>
+            <div class="pc">
+                <div class="pc__title">
+                    <div>
+                        <img src="~/photos/pcs/ПК NoSTORE GAMING N223.png" />
+                    </div>
+                    <h3>ПК NoSTORE GAMING N223</h3>
+                </div>
+                <ul>
+                    <li>
+                        <p>CPU: </p>
+                        <p>AMD Ryzen 7 5700x</p>
+                    </li>
+                    <li>
+                        <p>GPU: </p>
+                        <p>MSI GeForce RTX 4060 VENTUS 3X OC</p>
+                    </li>
+                    <li>
+                        <p>RAM: </p>
+                        <p>32 ГБ x 3200 МГц</p>
+                    </li>
+                    <li>
+                        <p>MTB: </p>
+                        <p>ASRock B550M Pro4</p>
+                    </li>
+                    <li>
+                        <p>DISK: </p>
+                        <p>1 x M.2, 1 x HDD, 1 x SSD</p>
+                    </li>
+                </ul>
+                <div class="pc__activity">
+                    <p>91 599 ₽</p>
+                    <div class="pc__about">
+                        <p>Подробнее</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a>
+            <div class="pc">
+                <div class="pc__title">
+                    <div>
+                        <img src="~/photos/pcs/ПК NoSTORE GAMING N223.png" />
+                    </div>
+                    <h3>ПК NoSTORE GAMING N223</h3>
+                </div>
+                <ul>
+                    <li>
+                        <p>CPU: </p>
+                        <p>AMD Ryzen 7 5700x</p>
+                    </li>
+                    <li>
+                        <p>GPU: </p>
+                        <p>MSI GeForce RTX 4060 VENTUS 3X OC</p>
+                    </li>
+                    <li>
+                        <p>RAM: </p>
+                        <p>32 ГБ x 3200 МГц</p>
+                    </li>
+                    <li>
+                        <p>MTB: </p>
+                        <p>ASRock B550M Pro4</p>
+                    </li>
+                    <li>
+                        <p>DISK: </p>
+                        <p>1 x M.2, 1 x HDD, 1 x SSD</p>
+                    </li>
+                </ul>
+                <div class="pc__activity">
+                    <p>91 599 ₽</p>
+                    <div class="pc__about">
                         <p>Подробнее</p>
                     </div>
                 </div>

@@ -4,18 +4,19 @@
   src: url(../Fonts/Strong-Regular.ttf) format("truetype");
 }
 header {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    padding: 10px;
-    top: 0;
-    background-color: #26262B;
-    width: 100%;
-    -webkit-box-shadow: 0px 15px 13px 0px rgba(38, 38, 43, 0.75);
-    -moz-box-shadow: 0px 15px 13px 0px rgba(38, 38, 43, 0.75);
-    box-shadow: 0px 15px 13px 0px rgba(38, 38, 43, 0.75);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  padding: 10px;
+  top: 0;
+  background-color: #26262B;
+  width: 100%;
+  z-index: 1000;
+  -webkit-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+  -moz-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+  box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
 }
 header nav {
   display: flex;

@@ -21,6 +21,10 @@ header {
     top: 0;
     background-color: variables.$bg-color;
     width: 100%;
+    z-index: 1000;
+    -webkit-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+    -moz-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+    box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
 
     nav {
         @include flex_row();
