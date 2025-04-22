@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 using NoSTORE.Models;
 using NoSTORE.Services;
@@ -25,17 +26,32 @@ namespace NoSTORE.Controllers
             _filterService = filterService;
         }
 
-        public async Task<Filter> UpdateFilters(Product product, string category)
+        public async Task UpdateFilters(Product product, string category)
         {
             Filter? filters = await _filterService.GetFiltersByCategory(category);
             var propertiesFilters = filters.Properties;
             var propertiesProduct = filters.PropertiesInDictionary(product.Properties);
 
-            if (propertiesFilters == propertiesProduct)
-                return new();
+            if (propertiesFilters.OrderBy(kvp => kvp.Key).SequenceEqual(propertiesProduct.OrderBy(kvp => kvp.Key)))
+                return;
 
+            var filterUpdate1 = Builders<Filter>.Filter.Eq("category", category);
+            var filterUpdate2 = Builders<Filter>.Update.Push("", "");
 
-
+            foreach (var kvp in propertiesProduct)
+            {
+                if (propertiesFilters.ContainsKey(kvp.Key))
+                {
+                    propertiesFilters[kvp.Key] = propertiesFilters[kvp.Key].Union(kvp.Value).ToList();
+                }
+                else
+                {
+                    propertiesFilters[kvp.Key] = kvp.Value;
+                }
+                filterUpdate2 = Builders<Filter>.Update.AddToSetEach($"properties.{kvp.Key}", kvp.Value);
+                await _filterService.UpdateDocument(filterUpdate1, filterUpdate2);
+            }
+            
         }
         public async Task InsertFiltersAsync(List<Product> products, string category)
         {
@@ -44,12 +60,12 @@ namespace NoSTORE.Controllers
             foreach (var product in products)
             {
                 if (await FiltersExist(category))
-                    filter = await UpdateFilters(product, category);
-                else
-                    filter.Properties = filter.PropertiesInDictionary(product.Properties);
-
-                if (!String.IsNullOrEmpty(filter.Category))
-                    await _filterService.InsertDocument(filter);
+                {
+                    await UpdateFilters(product, category);
+                    continue;
+                }
+                filter.Properties = filter.PropertiesInDictionary(product.Properties);
+                await _filterService.InsertDocument(filter);
             }
         }
 

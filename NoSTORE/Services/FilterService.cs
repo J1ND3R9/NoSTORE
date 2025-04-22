@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using NoSTORE.Data;
 using NoSTORE.Models;
 
@@ -21,5 +22,7 @@ namespace NoSTORE.Services
         }
 
         public async Task InsertDocument(Filter filter) => await _filters.InsertOneAsync(filter);
+
+        public async Task UpdateDocument(FilterDefinition<Filter> filter, UpdateDefinition<Filter> update) => await _filters.UpdateOneAsync(filter, update);
     }
 }
