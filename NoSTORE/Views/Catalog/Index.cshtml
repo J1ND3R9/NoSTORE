@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Категории";
+    ViewData["CSS"] = "categories.css";
+}
+
+@model IEnumerable<Category>
+
+<section class="categories">
+    <h1>@(Model.Any(s => s.Slug == "pcs") ? "Выберите основную категорию" : "Выберите подкатегорию")</h1>
+    <div class="categories__navigation">
+        @foreach (var category in Model)
+        {
+            <a class="category-button" href="/catalog/@category.Slug">
+                <div class="main_image">
+                    <img src="~/photos/categories/@category.Image" />
+                </div>
+                <h3>@category.Name</h3>
+            </a>
+        }
+    </div>
+</section>
