@@ -4,3 +4,34 @@
 }
 
 @model ProductCategory
+
+<section class="products">
+    <div class="products__title">
+        <h2>@Model.CategoryName</h2>
+        <h3>@Model.PluralForm()</h3>
+    </div>
+    <section class="products__main">
+        <div class="main__filters">
+            <div class="filters__searchbox">
+                <input name="s" placeholder="Поиск фильтров" type="search">
+                <button type="submit"></button>
+            </div>
+            <div class="filters__price">
+                <div class="price__title">
+                    <h3>Цена</h3>
+                    <button class="toggle-button"></button>
+                </div>
+                <div class="price__inputs">
+                    <input placeholder="от @Model.Products.Min(s => s.Price)" type="search">
+                    <input placeholder="до @Model.Products.Max(s => s.Price)" type="search">
+                </div>
+            </div>
+            @* @foreach (var f in Model.Filter.PropertiesInDictionary())
+            {
+                <div>
+
+                </div>
+            } *@
+        </div>
+    </section>
+</section>

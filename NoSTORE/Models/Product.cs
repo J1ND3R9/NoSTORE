@@ -8,6 +8,21 @@ namespace NoSTORE.Models
     {
         public string CategoryName { get; set; }
         public List<Product> Products { get; set; }
+        public Filter Filter { get; set; }
+
+        public string PluralForm()
+        {
+            int count = Products.Count;
+            int remainder10 = count % 10;
+            int remainder100 = count % 100;
+                
+            if (remainder10 == 1)
+                return $"{count} товар";
+            if (remainder10 >= 2 && remainder10 <= 4)
+                return $"{count} товара";
+
+            return $"{count} товаров";
+        }
     }
     public class Product
     {

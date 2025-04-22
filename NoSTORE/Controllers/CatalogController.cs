@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using Newtonsoft.Json.Linq;
 using NoSTORE.Models;
 using NoSTORE.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NoSTORE.Controllers
@@ -24,20 +25,37 @@ namespace NoSTORE.Controllers
             _filterService = filterService;
         }
 
+        public async Task<Filter> UpdateFilters(Product product, string category)
+        {
+            Filter? filters = await _filterService.GetFiltersByCategory(category);
+            var propertiesFilters = filters.Properties;
+            var propertiesProduct = filters.PropertiesInDictionary(product.Properties);
+
+            if (propertiesFilters == propertiesProduct)
+                return new();
+
+
+
+        }
         public async Task InsertFiltersAsync(List<Product> products, string category)
         {
             Filter filter = new();
             filter.Category = category;
             foreach (var product in products)
             {
-                filter.Properties = product.Properties;
-                await _filterService.InsertDocument(filter);
+                if (await FiltersExist(category))
+                    filter = await UpdateFilters(product, category);
+                else
+                    filter.Properties = filter.PropertiesInDictionary(product.Properties);
+
+                if (!String.IsNullOrEmpty(filter.Category))
+                    await _filterService.InsertDocument(filter);
             }
         }
 
         public async Task CreateFilters(List<Product> products, string category)
         {
-            if (products.Count == 0 || await FiltersExist(category))
+            if (products.Count == 0)
                 return;
             await InsertFiltersAsync(products, category);
         }
@@ -45,9 +63,7 @@ namespace NoSTORE.Controllers
         public async Task<bool> FiltersExist(string category)
         {
             Filter? filters = await _filterService.GetFiltersByCategory(category);
-            if (filters == null)
-                return false;
-            return true;
+            return filters != null;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -72,6 +88,7 @@ namespace NoSTORE.Controllers
             }
             var products = await GetProductsAsync(category.Name);
             await CreateFilters(products.Products, category.Name);
+            products.Filter = await _filterService.GetFiltersByCategory(category.Name);
             return View("Products", products);
         }
 
