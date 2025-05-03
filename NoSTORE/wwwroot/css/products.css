@@ -1,0 +1,250 @@
+@font-face {
+  font-family: "Strong";
+  src: url(../Fonts/Strong-Regular.ttf) format("truetype");
+}
+.products {
+  display: flex;
+  flex-direction: column;
+}
+.products .products__title {
+  background-color: #3F3F46;
+  color: #3ABBD1;
+  font-family: "Strong", sans-serif;
+  font-size: 10px;
+  font-weight: 0;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.products .products__title h2 {
+  font-size: 50px;
+}
+.products .products__title h3 {
+  font-size: 36px;
+}
+.products .products__main {
+  display: flex;
+  color: #E0E0E0;
+}
+.products .products__main .list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 30px;
+  grid-row-gap: 30px;
+  margin-left: 20px;
+}
+.products .products__main .list .product {
+  display: flex;
+  flex-direction: column;
+  background-color: #3F3F46;
+  border-radius: 10px;
+  padding: 10px;
+  transition: 0.2s ease;
+}
+.products .products__main .list .product:hover {
+  -webkit-box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+  -moz-box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+  box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+  transform: translateY(-5px);
+}
+.products .products__main .list .product a {
+  text-decoration: none;
+  color: none;
+}
+.products .products__main .list .product a .main_image {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.products .products__main .list .product a .main_image img {
+  height: 240px;
+}
+.products .products__main .list .product a .main_image::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #26262B;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.products .products__main .list .product a .product__name {
+  display: -webkit-box;
+  max-width: 400px;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: "Strong", sans-serif;
+  font-size: 30px;
+  font-weight: 0;
+  color: #E0E0E0;
+}
+.products .products__main .list .product a .product__tags {
+  font-family: "Strong", sans-serif;
+  font-size: 24px;
+  font-weight: 0;
+  color: rgb(147.5, 147.5, 147.5);
+  margin-bottom: 25px;
+}
+.products .products__main .list .product a .product__info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #26262B;
+  border-radius: 5px;
+  color: #3ABBD1;
+  padding: 3px;
+  gap: 10px;
+  font-family: "Strong", sans-serif;
+  font-size: 24px;
+  font-weight: 0;
+  margin-bottom: 10px;
+}
+.products .products__main .list .product a .product__info div {
+  display: flex;
+  gap: 5px;
+}
+.products .products__main .list .product .product__about {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.products .products__main .list .product .product__about span {
+  font-family: "Strong", sans-serif;
+  font-size: 40px;
+  font-weight: 0;
+  color: #3ABBD1;
+}
+.products .products__main .list .product .product__about .product__activity {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+}
+.products .products__main .template__buttons {
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  opacity: 1;
+  transition: 0.1s ease;
+}
+.products .products__main .template__buttons .button_drop {
+  margin-left: auto;
+  background: none;
+  outline: none;
+  border: none;
+  color: #E36B3F;
+  font-size: 22px;
+  transition: 0.2s ease;
+}
+.products .products__main .template__buttons .button_drop:hover {
+  color: rgb(233.4909090909, 141.3090909091, 107.5090909091);
+}
+.products .products__main .template__buttons .button_show_all {
+  background: none;
+  outline: none;
+  border: none;
+  color: #66A7C8;
+  font-size: 22px;
+  transition: 0.2s ease;
+}
+.products .products__main .template__buttons .button_show_all:hover {
+  color: rgb(139.5144230769, 188.5769230769, 213.4855769231);
+}
+.products .products__main .template__buttons.active {
+  transition: 0.1s ease;
+  opacity: 1;
+}
+.products .products__main .line:not(:last-child)::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #26262B;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.products .products__main .main__filters {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #3F3F46;
+  font-family: "Strong", sans-serif;
+  font-size: 24px;
+  font-weight: 0;
+}
+.products .products__main .main__filters .filters__searchbox {
+  display: flex;
+}
+.products .products__main .main__filters .filters__searchbox input {
+  border-radius: 4px;
+  border: 2px solid #66A7C8;
+  outline: none;
+  padding: 5px;
+  color: #E0E0E0;
+  background-color: #26262B;
+  font-size: 30px;
+  width: 100%;
+}
+.products .products__main .main__filters .template__title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.products .products__main .main__filters .price__inputs {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.products .products__main .main__filters .price__inputs input {
+  border-radius: 4px;
+  border: 2px solid #66A7C8;
+  outline: none;
+  padding: 5px;
+  color: #E0E0E0;
+  background-color: #26262B;
+  width: 150px;
+}
+.products .products__main .main__filters .filters__template .template__searchbox {
+  display: flex;
+  margin-bottom: 10px;
+}
+.products .products__main .main__filters .filters__template .template__searchbox input {
+  border-radius: 4px;
+  border: 2px solid #66A7C8;
+  outline: none;
+  padding: 5px;
+  color: #E0E0E0;
+  background-color: #26262B;
+  font-size: 24px;
+  width: 100%;
+}
+.products .products__main .main__filters .filters__template .template__checkboxes .hidden-checkbox {
+  display: none;
+}
+.products .products__main .main__filters .filters__template .template__checkboxes .hidden-checkbox:checked + .checkbox-label::before {
+  background-color: #3ABBD1;
+}
+.products .products__main .main__filters .filters__template .template__checkboxes .checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+}
+.products .products__main .main__filters .filters__template .template__checkboxes .checkbox-label::before {
+  content: " ";
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 4px;
+  margin-right: 10px;
+  background-color: #26262B;
+  transition: 0.1s ease;
+}
+
+/*# sourceMappingURL=products.css.map */

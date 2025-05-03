@@ -32,7 +32,10 @@ namespace NoSTORE.Controllers
             var propertiesFilters = filters.Properties;
             var propertiesProduct = filters.PropertiesInDictionary(product.Properties);
 
-            if (propertiesFilters.OrderBy(kvp => kvp.Key).SequenceEqual(propertiesProduct.OrderBy(kvp => kvp.Key)))
+            bool containsAll = propertiesProduct.All(pair =>
+            propertiesFilters.ContainsKey(pair.Key) && pair.Value.All(value => propertiesFilters[pair.Key].Contains(value)));
+
+            if (containsAll)
                 return;
 
             var filterUpdate1 = Builders<Filter>.Filter.Eq("category", category);

@@ -12,21 +12,22 @@ section:not(:last-child) {
   justify-content: space-between;
 }
 .main_functions .functions__mobile {
-  background: url(../photos/Phone.png);
+  background: url(../photos/Phone.png) no-repeat center center;
   height: 359px;
   width: 474px;
+  background-size: cover;
   padding: 8px;
   border-radius: 10px;
 }
 .main_functions .functions__mobile h2 {
   font-family: "Strong", sans-serif;
-  font-size: 38px;
+  font-size: 2rem;
   font-weight: 0;
   color: #E0E0E0;
 }
 .main_functions .functions__mobile p {
   font-family: "Strong", sans-serif;
-  font-size: 26px;
+  font-size: 1.7rem;
   font-weight: 0;
   color: #adadad;
 }
@@ -41,7 +42,7 @@ section:not(:last-child) {
 .main_functions .functions__funcs {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 3rem;
   border: 5px solid #3F3F46;
   height: 359px;
   border-radius: 8px;
@@ -56,21 +57,21 @@ section:not(:last-child) {
   box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
 }
 .main_functions .functions__funcs div {
-  padding: 10px;
-  width: 230px;
+  padding: 0.6rem;
+  width: 13rem;
   height: 315px;
   border-radius: 10px;
 }
 .main_functions .functions__funcs div h3 {
   font-family: "Strong", sans-serif;
-  font-size: 24px;
+  font-size: 1.6rem;
   font-weight: 0;
   color: #E0E0E0;
-  height: 60px;
+  height: 4rem;
 }
 .main_functions .functions__funcs div p {
   font-family: "Strong", sans-serif;
-  font-size: 19px;
+  font-size: 1.1rem;
   font-weight: 0;
   color: #adadad;
 }
@@ -90,8 +91,8 @@ section:not(:last-child) {
 .section__title {
   background-color: #3F3F46;
   color: #E0E0E0;
-  padding: 1%;
-  margin-bottom: 2%;
+  padding: 1rem;
+  margin-bottom: 2rem;
   width: 474px;
   display: flex;
   justify-content: center;
@@ -100,7 +101,7 @@ section:not(:last-child) {
 }
 .section__title h3 {
   font-family: "Strong", sans-serif;
-  font-size: 28px;
+  font-size: 1.6rem;
   font-weight: 0;
   margin: 0;
 }
@@ -115,11 +116,10 @@ section:not(:last-child) {
   display: flex;
   align-items: stretch;
   overflow: visible;
-  padding-top: 5px;
+  padding-top: 6px;
 }
 .recs__slider .swiper-slide {
   display: flex;
-  justify-content: center;
   align-items: center;
   overflow: visible;
 }
@@ -131,8 +131,8 @@ section:not(:last-child) {
 .product {
   display: flex;
   flex-direction: column;
-  width: 360px;
-  padding: 10px;
+  width: 100%;
+  padding: 0.6rem;
   border-radius: 10px;
   transition: 0.2s ease;
 }
@@ -179,41 +179,46 @@ section:not(:last-child) {
   color: #3ABBD1;
 }
 .product h3 {
+  display: -webkit-box;
+  max-width: 400px;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: "Strong", sans-serif;
-  font-size: 30px;
+  font-size: 1.8rem;
   font-weight: 0;
   color: #E0E0E0;
-  height: 100px;
+  margin-bottom: 1rem;
 }
 .product p {
   font-family: "Strong", sans-serif;
-  font-size: 24px;
+  font-size: 1.4rem;
   font-weight: 0;
   color: rgb(147.5, 147.5, 147.5);
 }
 .product .product__tags {
-  height: 100px;
-  margin-bottom: 25px;
+  height: 6rem;
+  margin-bottom: 2rem;
 }
 .product .product__rating {
   background-color: #26262B;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 1.2rem;
 }
 .product .product__activity {
   display: flex;
-  gap: 10px;
   align-items: center;
   justify-content: space-between;
 }
 .product .product__activity p {
-  font-size: 50px;
+  font-size: 2.5rem;
   color: #3ABBD1;
 }
 .product .product__activity .product__buttons {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 1.6rem;
 }
 .product .product__activity .product__buttons button {
   background-color: #66A7C8;
@@ -229,14 +234,14 @@ section:not(:last-child) {
   padding: 7px;
 }
 .product .product__activity .product__price p:first-child {
-  font-size: 30px;
+  font-size: 1.6rem;
   color: #66A7C8;
   text-decoration: line-through;
   height: 30px;
 }
 .product .product__activity .product__about {
   font-family: "Strong", sans-serif;
-  font-size: 28px;
+  font-size: 1.6rem;
   font-weight: 0;
   display: flex;
   justify-content: center;
@@ -328,7 +333,7 @@ section:not(:last-child) {
 
 .pc {
   padding: 10px;
-  width: 360px;
+  width: 23rem;
   border-radius: 10px;
   transition: 0.2s ease;
 }
@@ -346,7 +351,7 @@ section:not(:last-child) {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 1rem;
 }
 .pc .pc__title img {
   height: 300px;
@@ -356,7 +361,7 @@ section:not(:last-child) {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 1rem;
   width: 100%;
 }
 .pc .pc__title div::after {
@@ -370,7 +375,7 @@ section:not(:last-child) {
 }
 .pc .pc__title h3 {
   font-family: "Strong", sans-serif;
-  font-size: 30px;
+  font-size: 1.8rem;
   font-weight: 0;
   color: #3ABBD1;
   margin: 0;
@@ -385,7 +390,7 @@ section:not(:last-child) {
   gap: 5px;
   display: flex;
   font-family: "Strong", sans-serif;
-  font-size: 25px;
+  font-size: 1.5rem;
   font-weight: 0;
 }
 .pc ul li p:first-child {
@@ -404,7 +409,7 @@ section:not(:last-child) {
 }
 .pc .pc__activity p {
   font-family: "Strong", sans-serif;
-  font-size: 50px;
+  font-size: 2.5rem;
   font-weight: 0;
   color: #3ABBD1;
 }

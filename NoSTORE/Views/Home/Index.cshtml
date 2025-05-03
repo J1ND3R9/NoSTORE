@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Product>
+﻿@model HomeModel
 
 @{
     ViewData["Title"] = "Главная";
@@ -32,7 +32,7 @@
     document.addEventListener('DOMContentLoaded', () => {
     const swiper = new Swiper('.recs__slider', {
     slidesPerView: 4,
-    spaceBetween: 73,
+    spaceBetween: 50    ,
     loop: false,
 
 
@@ -64,13 +64,13 @@
         <p>Скачать приложение<br> можно <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">здесь.</a></p>
     </div>
     <div class="functions__funcs">
-        <a>
+        <a href="/catalog">
             <div class="functions__catalog">
                 <h3>Расширенный каталог</h3>
                 <p>Более 50 000 товаров для вашего дома и офиса.</p>
             </div>
         </a>
-        <a>
+        <a href="#recs">
             <div class="functions__recs">
                 <h3>Персональные рекомендации</h3>
                 <p>Товары, которые вам точно понравятся!</p>
@@ -82,7 +82,7 @@
                 <p>Выберите комплектующие и соберите идеальный компьютер.</p>
             </div>
         </a>
-        <a>
+        <a href="#discounts">
             <div class="functions__discounts">
                 <h3>Специальные предложения</h3>
                 <p>Скидки до -50%, распродажи и выгодные комплекты.</p>
@@ -91,17 +91,17 @@
     </div>
 </section>
 
-<section class="main_recs">
+<section class="main_recs" id="recs">
     <div class="section__title">
         <h3>Подобрали под ваши предпочтения:</h3>
     </div>
     <div class="swiper recs__slider">
         <div class="swiper-wrapper">
-            @foreach (var product in Model)
+            @foreach (var product in Model.Products)
             {
                 <div class="swiper-slide">
                     <div class="product">
-                        <a href="/@product.Id">
+                        <a href="/product/@product.Id/@product.SEOName()">
                             <div>
                                 <div class="product__image">
                                     @if (product.ImageExist())
@@ -122,7 +122,7 @@
                             </div>
                         </a>
                         <div class="product__activity">
-                            <p>@product.CorrectPrice() ₽</p>
+                            <p>@product.CorrectPrice(product.Price)</p>
                             <div class="product__buttons">
                                 <div class="product__favorite">
                                     <button type="button" aria-label="Добавить в избранное">
@@ -147,108 +147,57 @@
     </div>
 </section>
 
-<section class="main_discount">
-    <div class="section__title">
-        <h3>Не пропустите скидки:</h3>
-    </div>
-    <div class="discount__slider">
-        <a href="/типа_продукт">
-            <div class="product">
-                <div>
-                    <div class="product__image">
-                        <img src="~/photos/products/Процессор AMD Ryzen 7 7800X3D OEM/Ryzen77800X3D_main.png" />
+<section class="main_discount" id="discounts">
+    @if (Model.DiscountProducts.Count > 0)
+    {
+        <div class="section__title">
+            <h3>Не пропустите скидки:</h3>
+        </div>
+        <div class="swiper recs__slider">
+            <div class="swiper-wrapper">
+
+                @foreach (var product in Model.DiscountProducts)
+                {
+                    <div class="swiper-slide">
+                        <div class="product">
+                            <a href="/product/@product.Id/@product.SEOName()">
+                                <div>
+                                    <div class="product__image">
+                                        @if (product.ImageExist())
+                                        {
+                                            <img src="~/photos/products/@product.Name/@product.Images[0]" />
+                                        }
+                                        else
+                                        {
+                                            <img src="https://placehold.co/240" />
+                                        }
+                                    </div>
+                                    <h3>@product.Name</h3>
+                                    <p class="product__tags">@product.TagsInString()</p>
+                                    <div class="product__rating">
+                                        <img src="~/svg/activites/noact/star.svg" />
+                                        <p>@(product.Rating > 0 ? product.Rating : "Нет оценок")</p>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="product__activity">
+                                <div class="product__price">
+                                    <p>@product.CorrectPrice(product.Price)</p>
+                                    <p>@product.CorrectPrice(product.PriceDiscount())</p>
+                                </div>
+                                <div class="product__about">
+                                    <span>Подробнее</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h3>Процессор AMD Ryzen 7 7800X3D OEM</h3>
-                    <p class="product__tags">[AM5, 8 x 4.2 ГГц, 2 x DDR5-5200 МГц, L2 - 8 МБ, L3 - 96 МБ, TDP 120 Вт]</p>
-                    <div class="product__rating">
-                        <img src="~/svg/activites/noact/star.svg" />
-                        <p>4.9</p>
-                    </div>
-                </div>
-                <div class="product__activity">
-                    <div class="product__price">
-                        <p>40 499 ₽</p>
-                        <p>32 399 ₽</p>
-                    </div>
-                    <div class="product__about">
-                        <span>Подробнее</span>
-                    </div>
-                </div>
+                }
             </div>
-        </a>
-        <a href="/типа_продукт">
-            <div class="product">
-                <div>
-                    <div class="product__image">
-                        <img src="~/photos/products/Процессор AMD Ryzen 7 7800X3D OEM/Ryzen77800X3D_main.png" />
-                    </div>
-                    <h3>Процессор AMD Ryzen 7 7800X3D OEM</h3>
-                    <p class="product__tags">[AM5, 8 x 4.2 ГГц, 2 x DDR5-5200 МГц, L2 - 8 МБ, L3 - 96 МБ, TDP 120 Вт]</p>
-                    <div class="product__rating">
-                        <img src="~/svg/activites/noact/star.svg" />
-                        <p>4.9</p>
-                    </div>
-                </div>
-                <div class="product__activity">
-                    <div class="product__price">
-                        <p>40 499 ₽</p>
-                        <p>32 399 ₽</p>
-                    </div>
-                    <div class="product__about">
-                        <span>Подробнее</span>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="/типа_продукт">
-            <div class="product">
-                <div>
-                    <div class="product__image">
-                        <img src="~/photos/products/Процессор AMD Ryzen 7 7800X3D OEM/Ryzen77800X3D_main.png" />
-                    </div>
-                    <h3>Процессор AMD Ryzen 7 7800X3D OEM</h3>
-                    <p class="product__tags">[AM5, 8 x 4.2 ГГц, 2 x DDR5-5200 МГц, L2 - 8 МБ, L3 - 96 МБ, TDP 120 Вт]</p>
-                    <div class="product__rating">
-                        <img src="~/svg/activites/noact/star.svg" />
-                        <p>4.9</p>
-                    </div>
-                </div>
-                <div class="product__activity">
-                    <div class="product__price">
-                        <p>40 499 ₽</p>
-                        <p>32 399 ₽</p>
-                    </div>
-                    <div class="product__about">
-                        <span>Подробнее</span>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="/типа_продукт">
-            <div class="product">
-                <div>
-                    <div class="product__image">
-                        <img src="~/photos/products/Процессор AMD Ryzen 7 7800X3D OEM/Ryzen77800X3D_main.png" />
-                    </div>
-                    <h3>Процессор AMD Ryzen 7 7800X3D OEM</h3>
-                    <p class="product__tags">[AM5, 8 x 4.2 ГГц, 2 x DDR5-5200 МГц, L2 - 8 МБ, L3 - 96 МБ, TDP 120 Вт]</p>
-                    <div class="product__rating">
-                        <img src="~/svg/activites/noact/star.svg" />
-                        <p>4.9</p>
-                    </div>
-                </div>
-                <div class="product__activity">
-                    <div class="product__price">
-                        <p>40 499 ₽</p>
-                        <p>32 399 ₽</p>
-                    </div>
-                    <div class="product__about">
-                        <span>Подробнее</span>
-                    </div>
-                </div>
-            </div>
-        </a>
-    </div>
+            <!-- Навигация -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+    }
 </section>
 
 <section class="main_news">

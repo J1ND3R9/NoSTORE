@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = @Model.CategoryName;
     ViewData["CSS"] = "products.css";
+    int limitList = 6;
 }
 
 @model ProductCategory
@@ -12,26 +13,118 @@
     </div>
     <section class="products__main">
         <div class="main__filters">
-            <div class="filters__searchbox">
-                <input name="s" placeholder="Поиск фильтров" type="search">
-                <button type="submit"></button>
-            </div>
-            <div class="filters__price">
-                <div class="price__title">
-                    <h3>Цена</h3>
-                    <button class="toggle-button"></button>
-                </div>
-                <div class="price__inputs">
-                    <input placeholder="от @Model.Products.Min(s => s.Price)" type="search">
-                    <input placeholder="до @Model.Products.Max(s => s.Price)" type="search">
+            <div class="line">
+                <div class="filters__searchbox">
+                    <input name="s" placeholder="Поиск фильтров" type="search">
+                    <button type="submit"></button>
                 </div>
             </div>
-            @* @foreach (var f in Model.Filter.PropertiesInDictionary())
+            <div class="line">
+                <div class="filters__price">
+                    <div class="template__title">
+                        <h3>Цена</h3>
+                        <button class="toggle-button"></button>
+                    </div>
+                    <div class="price__inputs">
+                        <input placeholder="от @Model.Products.Min(s => s.Price)" type="search">
+                        <input placeholder="до @Model.Products.Max(s => s.Price)" type="search">
+                    </div>
+                    <div class="template__buttons">
+                        <button class="button_drop">Сбросить</button>
+                    </div>
+                </div>
+            </div>
+            @foreach (var f in Model.Filter.Properties)
             {
-                <div>
+                <div class="line">
+                    <div class="filters__template">
+                        <div class="template__title">
+                            <h3>@f.Key.Remove(f.Key.Length - 1, 1)</h3>
+                            <button class="toggle-button"></button>
+                        </div>
+                        <div class="template__searchbox">
+                            <input placeholder="Поиск" type="search" />
+                            <button type="submit"></button>
+                        </div>
+                        @{
+                            int currentLimit = Math.Min(limitList, f.Value.Count);
+                        }
+                        @for (int i = 0; i < currentLimit; i++)
+                        {
+                            <div class="template__checkboxes">
+                                <input type="checkbox" class="hidden-checkbox" id="checkbox@(f.Value[i])"/>
+                                <label for="checkbox@(f.Value[i])" class="checkbox-label">@(f.Value[i] == "True" ? "есть" : f.Value[i] == "False" ? "нету" : f.Value[i])</label>
+                            </div>
+                        }
+                        <div class="template__buttons">
+                            @if (f.Value.Count > 6)
+                            {
+                                <button class="button_show_all">Показать всё</button>
+                            }
+                            <button class="button_drop">Сбросить</button>
+                        </div>
 
+                    </div>
                 </div>
-            } *@
+            }
+        </div>
+        <div class="products__list">
+            <div class="sort">
+                <span>Отсортировать</span>
+                @* <div class="dropdown">
+                    <button class="dropdown-button">по популярности</button>
+                    <ul class="dropdown-list">
+                        <li data-sort="popular" data-selected="true">по популярности</li>
+                        <li data-sort="expensive">сначала дорогие</li>
+                        <li data-sort="cheap">сначала дешёвые</li>
+                        <li data-sort="new">по новизне</li>
+                        <li data-sort="rating">с высоким рейтингом</li>
+                        <li data-sort="quantity">по количеству отзывов</li>
+                    </ul>
+                </div> *@
+            </div>
+            <div class="list">
+                @foreach (var product in Model.Products)
+                {
+                    <div class="product">
+                        <a href="/product/@product.Id/@product.SEOName()">
+                            <div class="main_image">
+                                @if (product.ImageExist())
+                                {
+                                    <img src="~/photos/products/@product.Name/@product.Images[0]" />
+                                }
+                                else
+                                {
+                                    <img src="https://placehold.co/240" />
+                                }
+                            </div>
+                            <h3 class="product__name">@product.Name</h3>
+                            <div class="product__tags">
+                                <span class="product__tags">@product.TagsInString()</span>
+                            </div>
+                            
+                            <div class="product__info">
+                                <div class="delivery">
+                                    <img class="delivery_icon" src="~/svg/truck-fast.svg"/>
+                                    <span>1 д.</span>
+                                </div>
+                                <div class="rating">
+                                    <img class="star_icon" src="~/svg/activites/noact/star.svg"/>
+                                    <span>@(product.Rating > 0 ? product.Rating : "Нет оценок")</span>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="product__about">
+                            <span>@product.CorrectPrice(product.Price)</span>
+                            <div class="product__activity">
+                                <button></button>
+                                <button></button>
+                                <button></button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </section>
 </section>

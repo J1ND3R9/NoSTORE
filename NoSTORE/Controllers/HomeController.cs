@@ -20,8 +20,15 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         List<Product> products = await _productService.GetAllAsync();
-        return View(products);
+        List<Product> discounts = await _productService.GetOnlyDiscount();
+        HomeModel hm = new()
+        {
+            DiscountProducts = discounts,
+            Products = products
+        };
+        return View(hm);
     }
+
 
     public IActionResult Privacy()
     {

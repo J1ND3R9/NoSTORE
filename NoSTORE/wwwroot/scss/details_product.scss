@@ -1,0 +1,230 @@
+﻿@use 'variables';
+
+.main {
+    background-color: variables.$block-color;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    gap: 2rem;
+
+    .images {
+        height: 30rem;
+        display: flex;
+        gap: 1rem;
+
+        .images__slider {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+
+            img {
+                width: 90px;
+                height: 90px;
+            }
+        }
+
+        .main_image {
+            img {
+                height: 100%
+            }
+        }
+    }
+
+    .main__info {
+        display: flex;
+        justify-content: space-between;
+
+        .titles {
+            h1 {
+                @include variables.font($size: 2.3rem);
+                color: variables.$accent-color;
+            }
+
+            p {
+                margin-top: 10px;
+                @include variables.font($size: 1.4rem);
+                color: darken(variables.$text-color, 30%);
+            }
+        }
+    }
+
+    .manufracturer {
+        margin-left: 1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+
+        img {
+            margin-top: 10px;
+            height: 100%;
+            width: 120px;
+        }
+
+        .rating {
+            @include variables.font($size: 2rem);
+            color: variables.$accent-color;
+            margin-top: 20px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            padding: 2px;
+            background-color: variables.$bg-color;
+
+            img {
+                margin-top: 0px;
+                width: 40px;
+            }
+        }
+    }
+
+    .product__activity {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+
+        .product__price {
+            background-color: variables.$bg-color;
+            @include variables.font($size: 2.4rem);
+            color: variables.$accent-color;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 6px;
+            height: 5rem;
+            flex: 1;
+
+            button {
+                background-color: transparent;
+                outline: none;
+                border: none;
+
+                svg {
+                    path {
+                        stroke: variables.$bg-color;
+                        stroke-width: 1px;
+                    }
+                }
+            }
+        }
+
+        .product__buttons {
+            margin-left: 10px;
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+
+            button {
+                padding: 1rem;
+                display: flex;
+                gap: 1rem;
+                height: 5rem;
+                justify-content: center;
+                align-items: center;
+                background-color: transparent;
+                outline: none;
+                border: none;
+                transition: 0.1s ease;
+                border-radius: 6px;
+
+                span {
+                    @include variables.font($size: 2rem);
+                    color: variables.$additional-color;
+                    transition: 0.1s ease;
+                }
+
+                svg {
+                    overflow: visible;
+                    width: 2.4rem;
+                    height: 2.4rem;
+
+                    path {
+                        fill: transparent;
+                        stroke: variables.$additional-color;
+                        stroke-width: 4px;
+                        transition: 0.1s ease;
+                    }
+
+                    g {
+                        path {
+                            stroke-width: 2px !important;
+                        }
+                    }
+                }
+
+                &:hover {
+                    background-color: variables.$bg-color;
+
+                    span {
+                        color: variables.$accent-color;
+                    }
+
+
+                    svg {
+                        path {
+                            stroke: variables.$accent-color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .additional_info {
+        gap: 1rem;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+
+        div {
+            flex: 1;
+            height: 5rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: variables.$bg-color;
+
+            span {
+                @include variables.font($size: 1.6rem);
+                color: variables.$text-color;
+
+                svg {
+                    width: 50px;
+                    margin-right: 12px;
+                }
+
+                span {
+                    color: variables.$additional-color;
+                }
+            }
+        }
+
+        .quantity_div {
+        }
+
+        .delivery_div {
+        }
+    }
+
+    .variations {
+        border-radius: 10px;
+        padding: 1rem;
+        height: 5rem;
+        margin-top: 1rem;
+        background-color: variables.$bg-color;
+
+        span {
+            color: variables.$additional-color;
+            @include variables.font($size: 2rem);
+            opacity: 0;
+            transition: opacity 0.1s ease;
+        }
+
+        &:hover > span {
+            opacity: 1;
+        }
+    }
+}

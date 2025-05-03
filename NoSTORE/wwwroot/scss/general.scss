@@ -10,19 +10,20 @@ section:not(:last-child) {
     justify-content: space-between;
 
     .functions__mobile {
-        background: url(../photos/Phone.png);
+        background: url(../photos/Phone.png) no-repeat center center;
         height: 359px;
         width: 474px;
+        background-size: cover;
         padding: 8px;
         border-radius: 10px;
 
         h2 {
-            @include variables.font($size: 38px);
+            @include variables.font($size: 2rem);
             color: variables.$text-color;
         }
 
         p {
-            @include variables.font($size: 26px);
+            @include variables.font($size: 1.7rem);
             color: darken(variables.$text-color, 20%);
 
             a {
@@ -40,7 +41,7 @@ section:not(:last-child) {
     .functions__funcs {
         display: flex;
         align-items: center;
-        gap: 40px;
+        gap: 3rem;
         border: 5px solid variables.$block-color;
         height: 359px;
         border-radius: 8px;
@@ -57,19 +58,19 @@ section:not(:last-child) {
         }
 
         div {
-            padding: 10px;
-            width: 230px;
+            padding: 0.6rem;
+            width: 13rem;
             height: 315px;
             border-radius: 10px;
 
             h3 {
-                @include variables.font($size: 24px);
+                @include variables.font($size: 1.6rem);
                 color: variables.$text-color;
-                height: 60px
+                height: 4rem;
             }
 
             p {
-                @include variables.font($size: 19px);
+                @include variables.font($size: 1.1rem);
                 color: darken(variables.$text-color, 20%);
             }
         }
@@ -95,8 +96,8 @@ section:not(:last-child) {
 .section__title {
     background-color: variables.$block-color;
     color: variables.$text-color;
-    padding: 1%;
-    margin-bottom: 2%;
+    padding: 1rem;
+    margin-bottom: 2rem;
     width: 474px;
     display: flex;
     justify-content: center;
@@ -104,7 +105,7 @@ section:not(:last-child) {
     border-radius: 6px;
 
     h3 {
-        @include variables.font($size: 28px);
+        @include variables.font($size: 1.6rem);
         margin: 0;
     }
 }
@@ -120,12 +121,11 @@ section:not(:last-child) {
         display: flex;
         align-items: stretch;
         overflow: visible;
-        padding-top: 5px;
+        padding-top: 6px;
     }
 
     .swiper-slide {
         display: flex;
-        justify-content: center;
         align-items: center;
         overflow: visible;
     }
@@ -140,8 +140,8 @@ section:not(:last-child) {
 .product {
     display: flex;
     flex-direction: column;
-    width: 360px;
-    padding: 10px;
+    width: 100%;
+    padding: 0.6rem;
     border-radius: 10px;
     transition: 0.2s ease;
 
@@ -196,42 +196,47 @@ section:not(:last-child) {
     }
 
     h3 {
-        @include variables.font($size: 30px);
+        display: -webkit-box;
+        max-width: 400px;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        @include variables.font($size: 1.8rem);
         color: variables.$text-color;
-        height: 100px;
+        margin-bottom: 1rem;
     }
 
     p {
-        @include variables.font($size: 24px);
+        @include variables.font($size: 1.4rem);
         color: darken(variables.$text-color, 30%);
     }
 
     .product__tags {
-        height: 100px;
-        margin-bottom: 25px;
+        height: 6rem;
+        margin-bottom: 2rem;
     }
 
     .product__rating {
         background-color: variables.$bg-color;
         border-radius: 8px;
-        margin-bottom: 10px;
+        margin-bottom: 1.2rem;
     }
 
     .product__activity {
         display: flex;
-        gap: 10px;
         align-items: center;
         justify-content: space-between;
 
         p {
-            font-size: 50px;
+            font-size: 2.5rem;
             color: variables.$accent-color;
         }
 
         .product__buttons {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 1.6rem;
 
             button {
                 background-color: variables.$additional-color;
@@ -252,7 +257,7 @@ section:not(:last-child) {
 
         .product__price {
             p:first-child {
-                font-size: 30px;
+                font-size: 1.6rem;
                 color: variables.$additional-color;
                 text-decoration: line-through;
                 height: 30px;
@@ -260,7 +265,7 @@ section:not(:last-child) {
         }
 
         .product__about {
-            @include variables.font($size: 28px);
+            @include variables.font($size: 1.6rem);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -358,7 +363,7 @@ section:not(:last-child) {
 
 .pc {
     padding: 10px;
-    width: 360px;
+    width: 23rem;
     border-radius: 10px;
     transition: 0.2s ease;
 
@@ -378,7 +383,7 @@ section:not(:last-child) {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 10px;
+        gap: 1rem;
 
         img {
             height: 300px;
@@ -389,7 +394,7 @@ section:not(:last-child) {
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 1rem;
             width: 100%;
 
             &::after {
@@ -404,7 +409,7 @@ section:not(:last-child) {
         }
 
         h3 {
-            @include variables.font($size: 30px);
+            @include variables.font($size: 1.8rem);
             color: variables.$accent-color;
             margin: 0;
             margin-bottom: 20px;
@@ -419,7 +424,7 @@ section:not(:last-child) {
         li {
             gap: 5px;
             display: flex;
-            @include variables.font($size: 25px);
+            @include variables.font($size: 1.5rem);
 
             p:first-child {
                 color: variables.$additional-color;
@@ -441,7 +446,7 @@ section:not(:last-child) {
         align-items: center;
 
         p {
-            @include variables.font($size: 50px);
+            @include variables.font($size: 2.5rem);
             color: variables.$accent-color;
         }
 

@@ -7,6 +7,10 @@
   padding: 0;
 }
 
+html {
+  font-size: 1rem;
+}
+
 p {
   margin: 0;
 }
@@ -21,7 +25,7 @@ body {
 
 main {
   margin-top: 7%;
-  width: 84%;
+  width: 81%;
   height: 100%;
 }
 

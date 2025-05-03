@@ -1,9 +1,16 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json.Linq;
 using System.Globalization;
+using Unidecode.NET;
 
 namespace NoSTORE.Models
 {
+    public class HomeModel
+    {
+        public List<Product> Products { get; set; }
+        public List<Product> DiscountProducts { get; set; }
+    }
     public class ProductCategory
     {
         public string CategoryName { get; set; }
@@ -33,17 +40,35 @@ namespace NoSTORE.Models
         [BsonElement("name")]
         public string Name { get; set; }
 
+        public string SEOName()
+        {
+            return Name.Unidecode().ToLower()
+                .Replace(' ', '-')
+                .Replace(".", "")
+                .Replace(",", "")
+                .Replace("\'", "")
+                .Replace("\"", "");
+        }
+
         [BsonElement("category")]
         public string Category { get; set; }
 
         [BsonElement("price")]
         public int Price { get; set; }
 
-        public string CorrectPrice()
+        public string CorrectPrice(int price)
         {
             var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
             nfi.NumberGroupSeparator = " ";
-            return Price.ToString("#,0", nfi);
+            return price.ToString("#,0 ₽", nfi);
+        }
+
+        public int PriceDiscount()
+        {
+            if (Discount == 0)
+                return Price;
+            double discountAmount = Price * ((double)Discount / 100);
+            return Price - (int)discountAmount;
         }
 
         [BsonElement("discount")]
@@ -77,6 +102,23 @@ namespace NoSTORE.Models
 
         [BsonElement("guarantee")]
         public int Guarantee { get; set; }
+        
+        [BsonElement("quantity")]
+        public int Quantity { get; set; }
+        public string QuantityString()
+        {
+            if (Quantity < 100)
+                return Quantity.ToString() + " шт.";
+            if (Quantity > 999)
+                return ">1000 шт.";
+            int first = Convert.ToInt32(Quantity.ToString().Substring(0, 1)) * 100;
+            string x = "";
+            x = ">" + first.ToString() + " шт.";
+            return x;
+        }
+
+        [BsonElement("rating")]
+        public double Rating { get; set; }
 
         [BsonElement("description")]
         public string Description { get; set; }
@@ -84,6 +126,51 @@ namespace NoSTORE.Models
         [BsonElement("properties")]
         [BsonExtraElements]
         public BsonDocument Properties { get; set; }
+
+        public Dictionary<string, List<Dictionary<string, string>>> PropertiesDict()
+        {
+            JObject obj = JObject.Parse(Properties.ToJson());
+            Dictionary<string, List<Dictionary<string, string>>> kvp = new();
+            var properties = obj["properties"];
+            foreach (var property in properties)
+            {
+                foreach (var p in property.Children<JProperty>())
+                {
+                    List<Dictionary<string, string>> str = new();
+                    foreach (var x in p.Value)
+                    {
+                        foreach (var y in x.Children<JProperty>())
+                        {
+                            Dictionary<string, string> values = new();
+                            values[y.Name] = y.Value.ToString();
+                            str.Add(values);
+                        }
+                    }
+                    kvp[p.Name] = str;
+                }
+            }
+            return kvp;
+        }
+
+        public string Manufracturer()
+        {
+            JObject obj = JObject.Parse(Properties.ToJson());
+            var properties = obj["properties"];
+            foreach (var property in properties)
+            {
+                foreach (var param in property.Children<JProperty>())
+                {
+                    foreach (var keys in param.Value)
+                    {
+                        if (keys["Производитель!"] != null)
+                        {
+                            return keys["Производитель!"].ToString();
+                        }
+                    }
+                }
+            }
+            return "null";
+        }
 
         public string GetFolder()
         {

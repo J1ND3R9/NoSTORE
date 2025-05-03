@@ -1,0 +1,199 @@
+@font-face {
+  font-family: "Strong";
+  src: url(../Fonts/Strong-Regular.ttf) format("truetype");
+}
+.main {
+  background-color: #3F3F46;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  gap: 2rem;
+}
+.main .images {
+  height: 30rem;
+  display: flex;
+  gap: 1rem;
+}
+.main .images .images__slider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.main .images .images__slider img {
+  width: 90px;
+  height: 90px;
+}
+.main .images .main_image img {
+  height: 100%;
+}
+.main .main__info {
+  display: flex;
+  justify-content: space-between;
+}
+.main .main__info .titles h1 {
+  font-family: "Strong", sans-serif;
+  font-size: 2.3rem;
+  font-weight: 0;
+  color: #3ABBD1;
+}
+.main .main__info .titles p {
+  margin-top: 10px;
+  font-family: "Strong", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 0;
+  color: rgb(147.5, 147.5, 147.5);
+}
+.main .manufracturer {
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.main .manufracturer img {
+  margin-top: 10px;
+  height: 100%;
+  width: 120px;
+}
+.main .manufracturer .rating {
+  font-family: "Strong", sans-serif;
+  font-size: 2rem;
+  font-weight: 0;
+  color: #3ABBD1;
+  margin-top: 20px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+  background-color: #26262B;
+}
+.main .manufracturer .rating img {
+  margin-top: 0px;
+  width: 40px;
+}
+.main .product__activity {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.main .product__activity .product__price {
+  background-color: #26262B;
+  font-family: "Strong", sans-serif;
+  font-size: 2.4rem;
+  font-weight: 0;
+  color: #3ABBD1;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 6px;
+  height: 5rem;
+  flex: 1;
+}
+.main .product__activity .product__price button {
+  background-color: transparent;
+  outline: none;
+  border: none;
+}
+.main .product__activity .product__price button svg path {
+  stroke: #26262B;
+  stroke-width: 1px;
+}
+.main .product__activity .product__buttons {
+  margin-left: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.main .product__activity .product__buttons button {
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  height: 5rem;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  transition: 0.1s ease;
+  border-radius: 6px;
+}
+.main .product__activity .product__buttons button span {
+  font-family: "Strong", sans-serif;
+  font-size: 2rem;
+  font-weight: 0;
+  color: #66A7C8;
+  transition: 0.1s ease;
+}
+.main .product__activity .product__buttons button svg {
+  overflow: visible;
+  width: 2.4rem;
+  height: 2.4rem;
+}
+.main .product__activity .product__buttons button svg path {
+  fill: transparent;
+  stroke: #66A7C8;
+  stroke-width: 4px;
+  transition: 0.1s ease;
+}
+.main .product__activity .product__buttons button svg g path {
+  stroke-width: 2px !important;
+}
+.main .product__activity .product__buttons button:hover {
+  background-color: #26262B;
+}
+.main .product__activity .product__buttons button:hover span {
+  color: #3ABBD1;
+}
+.main .product__activity .product__buttons button:hover svg path {
+  stroke: #3ABBD1;
+}
+.main .additional_info {
+  gap: 1rem;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.main .additional_info div {
+  flex: 1;
+  height: 5rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: #26262B;
+}
+.main .additional_info div span {
+  font-family: "Strong", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 0;
+  color: #E0E0E0;
+}
+.main .additional_info div span svg {
+  width: 50px;
+  margin-right: 12px;
+}
+.main .additional_info div span span {
+  color: #66A7C8;
+}
+.main .variations {
+  border-radius: 10px;
+  padding: 1rem;
+  height: 5rem;
+  margin-top: 1rem;
+  background-color: #26262B;
+}
+.main .variations span {
+  color: #66A7C8;
+  font-family: "Strong", sans-serif;
+  font-size: 2rem;
+  font-weight: 0;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+.main .variations:hover > span {
+  opacity: 1;
+}
+
+/*# sourceMappingURL=details_product.css.map */
