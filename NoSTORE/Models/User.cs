@@ -29,7 +29,7 @@ namespace NoSTORE.Models
         public string RoleId { get; set; }
 
         [BsonElement("favorites")]
-        public List<string> Favorties { get; set; }
+        public List<string> Favorites { get; set; }
 
         [BsonElement("basket")]
         public List<BasketItem> Basket { get; set; }

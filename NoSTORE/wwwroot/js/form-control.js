@@ -11,13 +11,30 @@
 
     let currentStage = 'login'
 
-    document.getElementById('profile-button').addEventListener('click', () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
+    document.getElementById('button-logout').addEventListener('click', async () => {
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        const response = await fetch('/api/auth/logout', {
+            method: 'POST'
+        });
+        if (response.ok) {
+            localStorage.removeItem('user');
+            location.reload();
+        }
+    });
+
+    document.getElementById('profile-button').addEventListener('click', async () => {
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        const response = await fetch('/api/auth/me');
+        const data = await response.json()
+        if (!data.isAuthenticated) {
             modal.style.display = 'flex';
             setTimeout(() => {
                 modal.classList.add('active');
             }, 10);
+        } else if (data.isAuthenticated) {
+            // тут чё то делать
+        } else if (!response.Ok) {
+            console.error("Ошибка загрузки данных")
         }
         
     });
@@ -110,8 +127,6 @@
                 body: JSON.stringify({ email, password, nickname, code })
             });
             if (response.ok) {
-                const jwt = await response.text();
-                localStorage.setItem('token', jwt);
                 location.reload();
             } else {
                 alert("Ошибка");
@@ -125,8 +140,6 @@
                 body: JSON.stringify({ email, password, code })
             });
             if (response.ok) {
-                const jwt = await response.text();
-                localStorage.setItem('token', jwt);
                 location.reload();
             } else {
                 alert("Ошибка");

@@ -13,11 +13,11 @@
         margin-bottom: 20px;
 
         h2 {
-            font-size: 50px;
+            font-size: 2.4rem;
         }
 
         h3 {
-            font-size: 36px;
+            font-size: 1.6rem;
         }
     }
 
@@ -27,7 +27,7 @@
 
         .list {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             grid-column-gap: 30px;
             grid-row-gap: 30px;
             margin-left: 20px;
@@ -58,7 +58,7 @@
                         align-items: center;
 
                         img {
-                            height: 240px;
+                            height: 26vh;
                         }
 
                         &::after {
@@ -80,14 +80,14 @@
                         -webkit-box-orient: vertical;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                        @include variables.font($size: 30px);
+                        @include variables.font($size: 1.6rem);
                         color: variables.$text-color;
                     }
 
                     .product__tags {
-                        @include variables.font($size: 24px);
+                        @include variables.font($size: 1.2rem);
                         color: darken(variables.$text-color, 30%);
-                        margin-bottom: 25px;
+                        margin-bottom: 1.5rem;
                     }
 
                     .product__info {
@@ -100,7 +100,7 @@
                         color: variables.$accent-color;
                         padding: 3px;
                         gap: 10px;
-                        @include variables.font($size: 24px);
+                        @include variables.font($size: 1.5rem);
                         margin-bottom: 10px;
 
                         div {
@@ -114,16 +114,62 @@
                     display: flex;
                     flex-direction: row;
                     justify-content: space-between;
+                    align-items: center;
 
                     span {
-                        @include variables.font($size: 40px);
+                        @include variables.font($size: 2rem);
                         color: variables.$accent-color;
                     }
 
                     .product__activity {
                         display: flex;
                         flex-direction: row;
-                        gap: 50px;
+                        justify-content: center;
+                        align-items: center;
+                        gap: 1rem;
+
+                        button {
+                            background: none;
+                            outline: none;
+                            border: none;
+
+                            svg {
+                                overflow: visible;
+                                width: 1.8rem;
+
+                                path {
+                                    stroke: variables.$additional-color;
+                                    stroke-width: 3px;
+                                    fill: transparent;
+                                    transition: 0.1s ease;
+                                }
+
+                                g {
+                                    path {
+                                        stroke-width: 2px;
+                                        transition: 0.1s ease;
+                                    }
+                                }
+                            }
+                        }
+
+                        #favorite:hover, #basket:hover {
+                            svg {
+                                path {
+                                    fill: variables.$additional-color;
+                                }
+                            }
+                        }
+
+                        #compare:hover {
+                            svg {
+                                g {
+                                    path {
+                                        stroke-width: 3px;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -142,7 +188,7 @@
                 outline: none;
                 border: none;
                 color: variables.$bad-color;
-                font-size: 22px;
+                font-size: 1.3rem;
                 transition: 0.2s ease;
 
                 &:hover {
@@ -155,7 +201,7 @@
                 outline: none;
                 border: none;
                 color: variables.$additional-color;
-                font-size: 22px;
+                font-size: 1.3rem;
                 transition: 0.2s ease;
 
                 &:hover {
@@ -186,20 +232,36 @@
             padding: 10px;
             border-radius: 10px;
             background-color: variables.$block-color;
-            @include variables.font($size: 24px);
+            @include variables.font($size: 1.3rem);
 
             .filters__searchbox {
                 display: flex;
+                margin-bottom: 10px;
+                border-radius: 4px;
+                border: 2px solid variables.$additional-color;
+                outline: none;
+                padding: 5px;
+                color: variables.$text-color;
+                background-color: variables.$bg-color;
+                font-size: 24px;
+                width: 100%;
 
                 input {
-                    border-radius: 4px;
-                    border: 2px solid variables.$additional-color;
-                    outline: none;
-                    padding: 5px;
-                    color: variables.$text-color;
-                    background-color: variables.$bg-color;
-                    font-size: 30px;
-                    width: 100%;
+                    border: none;
+                    background: none;
+                }
+
+                button {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border: none;
+                    background: none;
+
+                    svg {
+                        width: 1.2rem;
+                        height: 1.2rem;
+                    }
                 }
             }
 
@@ -207,6 +269,18 @@
                 display: flex;
                 justify-content: space-between;
                 margin-bottom: 10px;
+
+                button {
+                    background: none;
+                    border: none;
+
+                    svg {
+
+                        &.active {
+                            transform: rotate(180deg);
+                        }
+                    }
+                }
             }
 
             .price__inputs {
@@ -214,6 +288,7 @@
                 flex-direction: row;
                 justify-content: space-between;
                 align-items: center;
+                gap: 1rem;
 
                 input {
                     border-radius: 4px;
@@ -222,7 +297,7 @@
                     padding: 5px;
                     color: variables.$text-color;
                     background-color: variables.$bg-color;
-                    width: 150px;
+                    width: 8rem;
                 }
             }
 
@@ -230,16 +305,31 @@
                 .template__searchbox {
                     display: flex;
                     margin-bottom: 10px;
+                    border-radius: 4px;
+                    border: 2px solid variables.$additional-color;
+                    outline: none;
+                    padding: 5px;
+                    color: variables.$text-color;
+                    background-color: variables.$bg-color;
+                    font-size: 24px;
+                    width: 100%;
 
                     input {
-                        border-radius: 4px;
-                        border: 2px solid variables.$additional-color;
-                        outline: none;
-                        padding: 5px;
-                        color: variables.$text-color;
-                        background-color: variables.$bg-color;
-                        font-size: 24px;
-                        width: 100%;
+                        border: none;
+                        background: none;
+                    }
+
+                    button {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border: none;
+                        background: none;
+
+                        svg {
+                            width: 1.2rem;
+                            height: 1.2rem;
+                        }
                     }
                 }
 

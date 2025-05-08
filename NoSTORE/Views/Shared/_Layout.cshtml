@@ -11,6 +11,7 @@
     <link rel="icon" href="~/svg/logo.svg" type="image/svg+xml" />
 </head>
 <body>
+    @Html.AntiForgeryToken()
     <header>
         <nav>
             <div class="left">
@@ -57,15 +58,35 @@
                     </svg>
                     <span>Сравнение</span>
                 </button>
-                <button class="profile__button" id="profile-button">
-                    <svg width="115" height="125" viewBox="0 0 115 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g id="profile">
-                            <path id="p" d="M83.4279 29.4483C82.2718 45.0408 70.4513 57.7608 57.4748 57.7608C44.4982 57.7608 32.6571 45.0438 31.5217 29.4483C30.342 13.2276 41.8439 1.1358 57.4748 1.1358C73.1056 1.1358 84.6076 13.5225 83.4279 29.4483Z" stroke="black" stroke-width="1.49989" stroke-linecap="round" stroke-linejoin="round" />
-                            <path id="p_1" d="M57.4858 76.6361C31.8276 76.6361 5.78602 90.7924 0.966996 117.512C0.386 120.733 2.20862 123.824 5.57957 123.824H109.392C112.766 123.824 114.589 120.733 114.008 117.512C109.186 90.7924 83.144 76.6361 57.4858 76.6361Z" stroke="black" stroke-width="1.49989" stroke-miterlimit="10" />
-                        </g>
-                    </svg>
-                    <span id="profile-text">Войти</span>
-                </button>
+                <div id="profile">
+                    <button class="profile__button" id="profile-button">
+                        <svg width="115" height="125" viewBox="0 0 115 125" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="profile">
+                                <path id="p" d="M83.4279 29.4483C82.2718 45.0408 70.4513 57.7608 57.4748 57.7608C44.4982 57.7608 32.6571 45.0438 31.5217 29.4483C30.342 13.2276 41.8439 1.1358 57.4748 1.1358C73.1056 1.1358 84.6076 13.5225 83.4279 29.4483Z" stroke="black" stroke-width="1.49989" stroke-linecap="round" stroke-linejoin="round" />
+                                <path id="p_1" d="M57.4858 76.6361C31.8276 76.6361 5.78602 90.7924 0.966996 117.512C0.386 120.733 2.20862 123.824 5.57957 123.824H109.392C112.766 123.824 114.589 120.733 114.008 117.512C109.186 90.7924 83.144 76.6361 57.4858 76.6361Z" stroke="black" stroke-width="1.49989" stroke-miterlimit="10" />
+                            </g>
+                        </svg>
+                        <span id="profile-text">Войти</span>
+                    </button>
+                    <div id="profile-modal">
+                        <div class="p-modal_content">
+                            <div class="p-modal_services">
+                                <a href="/profile/settings">Настройки профиля</a>
+                            </div>
+                            <div class="p-modal_services">
+                                <a href="/profile/orders">Заказы</a>
+                            </div>
+                            <div class="p-modal_services">
+                                <a href="/profile/pc">Сборки ПК</a>
+                            </div>
+                            <div class="p-modal_logout">
+                                <button id="button-logout">
+                                    Выйти
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
@@ -98,6 +119,8 @@
             </form>
         </div>
     </div>
+
+    
 
     <main>
         @RenderBody()

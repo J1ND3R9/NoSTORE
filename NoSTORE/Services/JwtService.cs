@@ -10,18 +10,20 @@ namespace NoSTORE.Services
 {
     public class JwtService(IOptions<AuthSettings> options)
     {
+        DateTime expires = DateTime.UtcNow.Add(options.Value.Expires);
+
         public string GenerateToken(User user)
         {
             var claims = new List<Claim>()
             {
-                new Claim("id", user.Id.ToString()),
-                new Claim("nickname", user.Nickname),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Nickname),
                 new Claim(ClaimTypes.Role, user.RoleId.ToString())
             };
             var jwtToken = new JwtSecurityToken(
                 issuer: options.Value.Issuer,
                 audience: options.Value.Audience,
-                expires: DateTime.UtcNow.Add(options.Value.Expires),
+                expires: expires,
                 claims: claims,
                 signingCredentials: new SigningCredentials(
                     new SymmetricSecurityKey(

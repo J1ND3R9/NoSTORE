@@ -1,5 +1,4 @@
 ﻿@model Product
-
 @{
     ViewData["Title"] = Model.Name;
     ViewData["CSS"] = "details_product.css";
@@ -7,6 +6,35 @@
 }
 <script src="https://unpkg.com/@@popperjs/core@2"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const swiper = new Swiper('.images__slider', {
+    direction: 'vertical',
+    slidesPerView: 5,
+    spaceBetween: 0,
+    loop: false,
+
+
+    breakpoints: {
+    320: {
+    slidesPerView: 2,
+    },
+    768: {
+    slidesPerView: 3,
+    },
+    1024: {
+    slidesPerView: 5,
+    },
+    },
+
+    });
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -17,10 +45,10 @@
     arrow: false,
     });
     tippy('.product__price button', {
-        content: 'Открыть историю цены',
-        placement: 'bottom',
-        animation: 'fade',
-        arrow: false,
+    content: 'Открыть историю цены',
+    placement: 'bottom',
+    animation: 'fade',
+    arrow: false,
     });
     tippy('.comp_button button', {
     content: 'Добавить в сравнение',
@@ -33,12 +61,33 @@
 <section class="product">
     <section class="main">
         <div class="images">
-            <div class="images__slider">
-                <img src="https://placehold.co/90" />
-                <img src="https://placehold.co/90" />
-                <img src="https://placehold.co/90" />
-                <img src="https://placehold.co/90" />
-                <img src="https://placehold.co/90" />
+            <div class="swiper images__slider">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="~/photos/products/@Model.Name/@Model.Images[0]" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="~/photos/products/@Model.Name/@Model.Images[0]" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="~/photos/products/@Model.Name/@Model.Images[0]" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="~/photos/products/@Model.Name/@Model.Images[0]" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="~/photos/products/@Model.Name/@Model.Images[0]" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="~/photos/products/@Model.Name/@Model.Images[0]" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="~/photos/products/@Model.Name/@Model.Images[0]" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="~/photos/products/@Model.Name/@Model.Images[0]" />
+                    </div>
+                </div>
             </div>
             <div class="line"></div>
             <div class="main_image">
@@ -52,7 +101,7 @@
                     <p>@Model.TagsInString()</p>
                 </div>
                 <div class="manufracturer">
-                    <img class="company_icon" src="~/photos/companies/@(Model.Manufracturer()).png" />
+                    <img id="manuf" class="company_icon" src="~/photos/companies/@(Model.Manufracturer()).png" />
                     @*Здесь ссылка на отзывы вниз.*@
                     <div class="rating">
                         <img class="star_icon" src="~/svg/activites/noact/star.svg" />
@@ -128,45 +177,82 @@
             </div>
         </div>
     </section>
+    <script src="~/js/product.js"></script>
     <section class="additonal__info">
         <div class="top__info">
             <div class="popular__compares">
                 <h2>Часто сравнивают с:</h2>
-                @*Тут нужно будет реализовать цикл *@
-                <div class="mini__product">
-                    <img class="mini__image" />
-                    <div class="mini__info">
-                        <h3></h3>
-                        <p></p>
-                    </div>
-                    <div class="mini__rating">
-                    </div>
-                </div>
+                @for (int i = 0; i < 5; i++)
+                {
+                    <a href="/product/@Model.Id/@Model.SEOName()">
+                        <div class="mini__product">
+                            <img class="mini__image" src="~/photos/products/@Model.Name/@Model.Images[0]" />
+                            <div class="mini__info">
+                                <h3>@Model.Name</h3>
+                                <div>
+                                    <p>@Model.CorrectPrice(Model.Discount > 0 ? Model.PriceDiscount() : Model.Price)</p>
+                                    <div class="mini__rating">
+                                        <img src="~/svg/activites/noact/star.svg" />
+                                        <span>@Model.Rating</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
             </div>
             <div class="description">
-                <p>@Model.Description</p>
-            </div>
-        </div>
-        <div class="specs">
-            <h1>Характеристики</h1>
-            @foreach (var specs in Model.PropertiesDict())
-            {
-                <div class="specs__block">
-                    <h2 class="block__title">@specs.Key</h2>
-                    <div class="block__grid">
-                        @foreach (var dict in specs.Value)
-                        {
-                            @foreach (var list in dict)
-                            {
-                                <div class="list__specs">
-                                    <h3>@list.Key</h3>
-                                    <p>@list.Value</p>
-                                </div>
-                            }
-                        }
+                <p class="dsc">@Model.Description</p>
+                <div id="specials">
+                    <h1>Характеристики</h1>
+                    @foreach (var specs in Model.PropertiesDict())
+                    {
+                        <div class="specs__block">
+                            <h2 class="block__title">@specs.Key</h2>
+                            <div class="block__grid">
+                                @foreach (var dict in specs.Value)
+                                {
+                                    @foreach (var list in dict)
+                                    {
+                                        <dl class="list__specs">
+                                            <dt>@(list.Key.Contains('!') ? list.Key.Replace("!", "") : list.Key)</dt>
+                                            @if (list.Value == "True")
+                                            {
+                                                <dd>есть</dd>
+                                            }
+                                            else if (list.Value == "False")
+                                            {
+                                                <dd>отсутствует</dd>
+                                            }
+                                            else if (specs.Key == "Габариты")
+                                            {
+                                                if (list.Key != "Вес")
+                                                {
+                                                    <dd>@(list.Value + " мм")</dd>
+                                                }
+                                                else
+                                                {
+                                                    <dd>@list.Value</dd>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <dd>@list.Value</dd>
+                                            }
+                                        </dl>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                    <div class="specs-footer">
+                        <button id="all_specs">
+                            Развернуть все характеристики
+                        </button>
                     </div>
+
                 </div>
-            }
+            </div>
         </div>
     </section>
 </section>

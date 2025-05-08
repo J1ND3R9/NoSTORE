@@ -15,15 +15,9 @@ namespace NoSTORE.Services
             _user = dbContext.GetCollection<User>("users");
         }
         public async Task<List<User>> GetAllAsync() => await _user.Find(_ => true).ToListAsync();
-        public async Task<User> GetUserByNicknameAsync(string nick) => await _user.Find(u => u.Nickname == nick).FirstOrDefaultAsync();
+        public async Task<User> GetUserById(string id) => await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
         public async Task<User> GetUserByEmailAsync(string email) => await _user.Find(u => u.Email == email).FirstOrDefaultAsync();
         public async Task<User> GetUserByPhoneAsync(string phone) => await _user.Find(u => u.Phone == phone).FirstOrDefaultAsync();
-
-        public async Task<string> GetAvatarById(string id)
-        {
-            var user = await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
-            return user.Avatar;
-        }
 
         public async Task<bool> UserExistsByEmail(string email)
         {
