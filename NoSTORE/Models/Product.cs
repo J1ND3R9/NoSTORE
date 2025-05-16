@@ -40,35 +40,26 @@ namespace NoSTORE.Models
         [BsonElement("name")]
         public string Name { get; set; }
 
-        public string SEOName()
-        {
-            return Name.Unidecode().ToLower()
+        public string SEOName =>
+            Name.Unidecode().ToLower()
                 .Replace(' ', '-')
                 .Replace(".", "")
                 .Replace(",", "")
                 .Replace("\'", "")
                 .Replace("\"", "");
-        }
 
         [BsonElement("category")]
         public string Category { get; set; }
 
         [BsonElement("price")]
         public int Price { get; set; }
+        public int FinalPrice => Price - (int)(Price * ((double)Discount / 100));
 
         public string CorrectPrice(int price)
         {
             var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
             nfi.NumberGroupSeparator = " ";
             return price.ToString("#,0 ₽", nfi);
-        }
-
-        public int PriceDiscount()
-        {
-            if (Discount == 0)
-                return Price;
-            double discountAmount = Price * ((double)Discount / 100);
-            return Price - (int)discountAmount;
         }
 
         [BsonElement("discount")]

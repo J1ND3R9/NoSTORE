@@ -1,0 +1,136 @@
+﻿@model IEnumerable<BasketItemViewModel>
+
+@{
+    ViewData["Title"] = "Корзина";
+    ViewData["CSS"] = "cart.css";
+}
+
+<section class="cart">
+    <h1>Корзина (<span id="total-quantity-incart">@Model.Count()</span>)</h1>
+    <div class="cart-container">
+        <div class="products" id="products-container">
+            @if (!Model.Any())
+            {
+                <a class="no_items" href="/catalog">
+                    <div class="main-image">
+                        <img src="~/svg/nothing.svg" />
+                    </div>
+                    <div class="info">
+                        <div class="left-info">
+                            <div class="top">
+                                <h1 class="title">У вас ничего нет в корзине!</h1>
+                            </div>
+                            <div class="bottom">
+                                <span class="assortment">Осмотрите наш ассортимент и подберите что-то под себя!</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+            else
+            {
+                <script src="~/js/cart.js"></script>
+                @foreach (var item in Model)
+                {
+                    <div class="product" data-productid="@item.Product.Id" data-price="@item.TotalPrice" data-quantity="@item.Quantity" data-quantityproduct="@item.Product.Quantity" data-oneprice="@item.Product.FinalPrice">
+                        <a href="/product/@item.Product.Id/@item.Product.SEOName">
+                            <div class="main-image">
+                                @if (item.Product.ImageExist())
+                                {
+                                    <img src="~/photos/products/@item.Product.Name/@item.Product.Images[0]" />
+                                }
+                                else
+                                {
+                                    <img src="https://placehold.co/240" />
+                                }
+                            </div>
+                        </a>
+                        <div class="info">
+                            <div class="left-info">
+                                <div class="top">
+                                    <a href="/product/@item.Product.Id/@item.Product.SEOName" class="title">@item.Product.Name</a>
+                                </div>
+                                <div class="bottom">
+                                    <div class="quantity-controller">
+                                        <button class="decrease">-</button>
+                                        <span class="quantity-p" style="@(item.Quantity >= item.Product.Quantity ? "color:#E36B3F;" : "")"><span class="quantity">@item.Quantity</span> шт.</span>
+                                        <button class="increase" @(item.Quantity >= item.Product.Quantity ? "disabled" : "") style="@(item.Quantity >= item.Product.Quantity ? "opacity:0;" : "")">+</button>
+                                    </div>
+                                    <div class="devliery">
+                                        <svg viewBox="0 0 62 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M7.75016 24.875L5.81266 21H19.3752L17.8252 17.125H5.16683L3.22933 13.25H23.3793L21.8293 9.37498H2.86766L0.645996 5.49998H10.3335C10.3335 4.12969 10.8778 2.81553 11.8468 1.84659C12.8157 0.877656 14.1299 0.333313 15.5002 0.333313H46.5002V10.6666H54.2502L62.0002 21V33.9166H56.8335C56.8335 35.9721 56.017 37.9433 54.5636 39.3967C53.1102 40.8501 51.1389 41.6666 49.0835 41.6666C47.0281 41.6666 45.0568 40.8501 43.6034 39.3967C42.15 37.9433 41.3335 35.9721 41.3335 33.9166H31.0002C31.0002 35.9721 30.1837 37.9433 28.7302 39.3967C27.2768 40.8501 25.3056 41.6666 23.2502 41.6666C21.1947 41.6666 19.2235 40.8501 17.7701 39.3967C16.3167 37.9433 15.5002 35.9721 15.5002 33.9166H10.3335V24.875H7.75016ZM49.0835 37.7916C50.1112 37.7916 51.0968 37.3834 51.8235 36.6567C52.5502 35.93 52.9585 34.9444 52.9585 33.9166C52.9585 32.8889 52.5502 31.9033 51.8235 31.1766C51.0968 30.4499 50.1112 30.0416 49.0835 30.0416C48.0558 30.0416 47.0702 30.4499 46.3435 31.1766C45.6168 31.9033 45.2085 32.8889 45.2085 33.9166C45.2085 34.9444 45.6168 35.93 46.3435 36.6567C47.0702 37.3834 48.0558 37.7916 49.0835 37.7916ZM52.9585 14.5416H46.5002V21H58.0218L52.9585 14.5416ZM23.2502 37.7916C24.2779 37.7916 25.2635 37.3834 25.9902 36.6567C26.7169 35.93 27.1252 34.9444 27.1252 33.9166C27.1252 32.8889 26.7169 31.9033 25.9902 31.1766C25.2635 30.4499 24.2779 30.0416 23.2502 30.0416C22.2225 30.0416 21.2368 30.4499 20.5101 31.1766C19.7834 31.9033 19.3752 32.8889 19.3752 33.9166C19.3752 34.9444 19.7834 35.93 20.5101 36.6567C21.2368 37.3834 22.2225 37.7916 23.2502 37.7916Z" />
+                                        </svg>
+                                        <div>
+                                            <span class="delivery-time">Завтра</span>&nbspв г.&nbsp<span class="city">Астрахань</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right-info">
+                                <div class="buttons">
+                                    <button class="remove">
+                                        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12.0002 4V5.33333H5.3335V8H6.66683V25.3333C6.66683 26.0406 6.94778 26.7189 7.44788 27.219C7.94797 27.719 8.62625 28 9.3335 28H22.6668C23.3741 28 24.0524 27.719 24.5524 27.219C25.0525 26.7189 25.3335 26.0406 25.3335 25.3333V8H26.6668V5.33333H20.0002V4H12.0002ZM9.3335 8H22.6668V25.3333H9.3335V8ZM12.0002 10.6667V22.6667H14.6668V10.6667H12.0002ZM17.3335 10.6667V22.6667H20.0002V10.6667H17.3335Z" />
+                                        </svg>
+                                    </button>
+                                    <button class="favorite">
+                                        <svg viewBox="0 0 60 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path id="Vector" d="M30 57L25.65 52.8997C10.2 38.3935 0 28.7951 0 17.0845C0 7.4861 7.26 0 16.5 0C21.72 0 26.73 2.51608 30 6.46104C33.27 2.51608 38.28 0 43.5 0C52.74 0 60 7.4861 60 17.0845C60 28.7951 49.8 38.3935 34.35 52.8997L30 57Z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="price">
+                                    <span class="total-price-product">@item.Product.CorrectPrice(item.TotalPrice)</span>
+                                    <span class="price-for-one@(item.Quantity > 1 ? " visible" : "")">@(item.Quantity > 1 ? item.Product.CorrectPrice(item.Product.FinalPrice) + "/шт." : "")</span>
+                                </div>
+                                <div class="template__checkboxes">
+                                    <input type="checkbox" class="hidden-checkbox" name="selectedProducts" id="checkbox@(item.Product.Id)" value="@item.Product.Id" @(item.IsSelected ? "checked" : "") />
+                                    <label for="checkbox@(item.Product.Id)" class="checkbox-label"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        @if (Model.Any())
+        {
+            <div class="basket-info" id="cart-info">
+                <h1>Ваша корзина</h1>
+                <div class="info">
+                    <div class="cart-price">
+                        <span class="total-title">Итого:</span>
+                        <span id="total-price">@ViewBag.CartCost</span>
+                    </div>
+                    <button class="expand-all-selected-products" id="expand-all-spc">
+                        <span id="total-quantity-selected">@ViewBag.SelectedCount</span>
+                        <svg id="all-spc-arrow" style="transform:rotate(180deg);" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.5755 4.98489L2.45048 19.6099C2.33369 19.7787 2.26531 19.9762 2.25272 20.181C2.24014 20.3859 2.28384 20.5903 2.37908 20.7721C2.47433 20.9539 2.6175 21.1062 2.79309 21.2125C2.96867 21.3187 3.16999 21.3749 3.37523 21.375L23.6252 21.375C23.8306 21.3751 24.032 21.3191 24.2078 21.2129C24.3835 21.1067 24.5269 20.9544 24.6222 20.7726C24.7176 20.5907 24.7614 20.3863 24.7489 20.1813C24.7363 19.9764 24.6679 19.7787 24.5511 19.6099L14.4261 4.98489C14.3221 4.83589 14.1837 4.71421 14.0226 4.63019C13.8615 4.54617 13.6825 4.50229 13.5008 4.50229C13.3191 4.50229 13.1401 4.54617 12.979 4.63019C12.8179 4.71421 12.6795 4.83589 12.5755 4.98489Z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="all-selected-products-cart" id="all-spc" style="opacity:0;max-height:0px;">
+                    @foreach (var p in Model.Where(p => p.IsSelected))
+                    {
+                        <div class="selected-product-cart" data-productid="@p.Product.Id" data-price="@p.TotalPrice">
+                            <div>
+                                <span class="spc-name">@p.Product.Name</span>
+                                <span class="spc-quantity"><span class="spc-quantity-number">@p.Quantity</span> шт.</span>
+                                <span class="spc-price">@p.TotalPrice</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="delivery-cart">
+                    <svg viewBox="0 0 62 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.75016 24.875L5.81266 21H19.3752L17.8252 17.125H5.16683L3.22933 13.25H23.3793L21.8293 9.37498H2.86766L0.645996 5.49998H10.3335C10.3335 4.12969 10.8778 2.81553 11.8468 1.84659C12.8157 0.877656 14.1299 0.333313 15.5002 0.333313H46.5002V10.6666H54.2502L62.0002 21V33.9166H56.8335C56.8335 35.9721 56.017 37.9433 54.5636 39.3967C53.1102 40.8501 51.1389 41.6666 49.0835 41.6666C47.0281 41.6666 45.0568 40.8501 43.6034 39.3967C42.15 37.9433 41.3335 35.9721 41.3335 33.9166H31.0002C31.0002 35.9721 30.1837 37.9433 28.7302 39.3967C27.2768 40.8501 25.3056 41.6666 23.2502 41.6666C21.1947 41.6666 19.2235 40.8501 17.7701 39.3967C16.3167 37.9433 15.5002 35.9721 15.5002 33.9166H10.3335V24.875H7.75016ZM49.0835 37.7916C50.1112 37.7916 51.0968 37.3834 51.8235 36.6567C52.5502 35.93 52.9585 34.9444 52.9585 33.9166C52.9585 32.8889 52.5502 31.9033 51.8235 31.1766C51.0968 30.4499 50.1112 30.0416 49.0835 30.0416C48.0558 30.0416 47.0702 30.4499 46.3435 31.1766C45.6168 31.9033 45.2085 32.8889 45.2085 33.9166C45.2085 34.9444 45.6168 35.93 46.3435 36.6567C47.0702 37.3834 48.0558 37.7916 49.0835 37.7916ZM52.9585 14.5416H46.5002V21H58.0218L52.9585 14.5416ZM23.2502 37.7916C24.2779 37.7916 25.2635 37.3834 25.9902 36.6567C26.7169 35.93 27.1252 34.9444 27.1252 33.9166C27.1252 32.8889 26.7169 31.9033 25.9902 31.1766C25.2635 30.4499 24.2779 30.0416 23.2502 30.0416C22.2225 30.0416 21.2368 30.4499 20.5101 31.1766C19.7834 31.9033 19.3752 32.8889 19.3752 33.9166C19.3752 34.9444 19.7834 35.93 20.5101 36.6567C21.2368 37.3834 22.2225 37.7916 23.2502 37.7916Z" />
+                    </svg>
+                    <span>Доставим в <span class="city">Астрахань</span> <span class="delivery-time">завтра</span></span>
+                </div>
+                <button id="place-order">
+                    Перейти к оформлению
+                </button>
+            </div>
+        }
+    </div>
+</section>

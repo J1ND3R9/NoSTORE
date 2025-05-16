@@ -16,6 +16,37 @@
         return { isAuthenticated: false };
     }
 }
+async function circlesQuantities() {
+    const quantities = await getQuantities();
+    const favBtn = document.querySelector('#favorite-button .icon-wrapper');
+    const cartBtn = document.querySelector('#basket-button .icon-wrapper');
+
+    if (quantities.favorite > 0) {
+        const badge = document.createElement('div');
+        badge.id = 'favBadge'
+        badge.className = 'badge';
+        badge.innerText = quantities.favorite;
+        favBtn.appendChild(badge);
+    }
+    if (quantities.cart > 0) {
+        const badge = document.createElement('div');
+        badge.id = 'cartBadge'
+        badge.className = 'badge';
+        badge.innerText = quantities.cart;
+        cartBtn.appendChild(badge);
+    }
+
+}
+
+async function getQuantities() {
+    const response = await fetch('/api/apiproduct/getQuantities');
+    const data = await response.json();
+
+    return {
+        favorite: parseInt(data.favoriteQuantity),
+        cart: parseInt(data.cartQuantity)
+    }
+}
 
 function profileModal() {
     const profile = document.getElementById('profile');
@@ -36,7 +67,7 @@ function profileModal() {
                     if (!profileModal.matches(':hover')) {
                         profileModal.style.display = 'none';
                     }
-                }, 200); 
+                }, 200);
             }
         }, 100);
     });
@@ -69,8 +100,8 @@ function updateHeaderUI() {
         } else {
             document.getElementById('profile-text').textContent = user.nickname;
         }
-        
-        
+
+
     } else {
         profile.innerHTML = `
         <svg width="115" height="125" viewBox="0 0 115 125" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -99,4 +130,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (JSON.parse(localStorage.getItem('user'))?.isAuthenticated) {
         profileModal();
     }
+    await circlesQuantities();
 });

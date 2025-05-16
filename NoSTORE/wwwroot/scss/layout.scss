@@ -1,6 +1,5 @@
 ﻿@use 'variables';
 
-
 .modal {
     @include variables.font($size: 1rem);
     color: variables.$text-color;
@@ -240,37 +239,150 @@ header {
                 }
             }
 
-            .search-form {
+            .search-container {
                 flex: 1;
                 position: relative;
-                display: flex;
-                align-items: center;
-                background-color: transparent;
-                border: 2px solid variables.$additional-color;
-                height: 3.6rem;
-                border-radius: 8px;
-                overflow: hidden;
 
-
-                input {
-                    flex: 1;
-                    @include variables.font($size: 1.5rem);
-                    outline: none;
-                    border: none;
-                    padding: 0.6rem;
-                    padding-left: 1rem;
-                    background: transparent;
-                    color: variables.$text-color;
-                }
-
-                button {
-                    padding: 1rem;
+                .search-form {
+                    position: relative;
                     display: flex;
-                    justify-content: center;
                     align-items: center;
                     background-color: transparent;
-                    border: none;
-                    cursor: pointer;
+                    border: 2px solid variables.$additional-color;
+                    height: 3.6rem;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    transition: border 0.2s ease;
+
+                    &.active {
+                        border: 2px solid variables.$accent-color;
+                    }
+
+                    input {
+                        flex: 1;
+                        @include variables.font($size: 1.5rem);
+                        outline: none;
+                        border: none;
+                        padding: 0.6rem;
+                        padding-left: 1rem;
+                        background: transparent;
+                        color: variables.$text-color;
+                        transition: background 0.1s ease;
+
+                        &:focus {
+                            background: variables.$bg-color;
+                        }
+
+                        &:focus + button {
+                            background: variables.$bg-color;
+                        }
+                    }
+
+
+
+                    button {
+                        padding: 1rem;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        background-color: transparent;
+                        border: none;
+                        cursor: pointer;
+                        transition: background 0.1s ease;
+                    }
+                }
+
+                .search-results-list {
+                    position: absolute;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    margin-top: 30px;
+                    background: lighten(variables.$block-color, 5%);
+                    border-radius: 6px;
+                    width: 100%;
+                    -webkit-box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+                    -moz-box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+                    box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+
+                    .search-result-item {
+                        gap: 1rem;
+                        padding: 4px;
+                        transition: background 0.1s ease;
+                        height: 110px;
+
+                        &:not(:last-child):after {
+                            content: '';
+                            display: block;
+                            height: 2px;
+                            background-color: variables.$bg-color;
+                            border-radius: 5px;
+                            margin-top: 10px;
+                        }
+
+                        &:first-child {
+                            border-radius: 6px 6px 0px 0px
+                        }
+
+                        &:last-child {
+                            border-radius: 0px 0px 6px 6px
+                        }
+
+                        &:hover {
+                            background: variables.$block-color
+                        }
+                    }
+
+                    .sr {
+                        display: flex;
+                        gap: 5px;
+
+                        .sr-image {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            img {
+                                width: 10vh;
+                                height: 10vh;
+                            }
+                        }
+
+                        .sr-info {
+                            @include variables.font();
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+
+                            h2 {
+                                font-size: 1.4rem;
+                                color: variables.$text-color;
+                            }
+
+                            h3 {
+                                font-size: 1.6rem;
+                                color: variables.$accent-color;
+                            }
+                        }
+                    }
+                }
+
+                .no-results {
+                    position: absolute;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    margin-top: 30px;
+                    background: lighten(variables.$block-color, 5%);
+                    border-radius: 6px;
+                    width: 100%;
+                    -webkit-box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+                    -moz-box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+                    box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+                    @include variables.font();
+                    padding: 10px;
+                    color: variables.$bad-color;
+                    font-size: 1.4rem;
                 }
             }
         }
@@ -310,10 +422,30 @@ header {
                 outline: none;
                 border: none;
 
+                .icon-wrapper {
+                    position: relative;
+                    .badge {
+                        border-radius: 50%;
+                        background-color: variables.$additional-color;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        color: variables.$bg-color;
+                        font-size: 1rem;
+                        position: absolute;
+                        width: 20px;
+                        height: 20px;
+                        top: -5px;
+                        right: -10px;
+                        transition: 0.1s ease;
+                    }
+                }
+
                 svg {
                     height: 36px;
                     width: 36px;
                     overflow: visible;
+                    position: relative;
 
                     #favorite, #basket, #profile path {
                         fill: transparent;
@@ -334,6 +466,10 @@ header {
                 &:hover {
                     color: variables.$additional-color;
                     filter: drop-shadow(0px 0px 15px rgba(63, 104, 135, 0.6));
+
+                    .badge {
+                        background-color: variables.$accent-color;
+                    }
 
                     svg {
                         #favorite, #basket, #profile path {

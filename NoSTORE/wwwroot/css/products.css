@@ -116,7 +116,7 @@
 }
 .products .products__main .list .product .product__about span {
   font-family: "Strong", sans-serif;
-  font-size: 2rem;
+  font-size: 1.9rem;
   font-weight: 0;
   color: #3ABBD1;
 }
@@ -125,16 +125,22 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 3px;
 }
 .products .products__main .list .product .product__about .product__activity button {
   background: none;
   outline: none;
   border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  padding: 8px;
 }
 .products .products__main .list .product .product__about .product__activity button svg {
   overflow: visible;
   width: 1.8rem;
+  height: 1.8rem;
 }
 .products .products__main .list .product .product__about .product__activity button svg path {
   stroke: #66A7C8;
@@ -146,10 +152,22 @@
   stroke-width: 2px;
   transition: 0.1s ease;
 }
-.products .products__main .list .product .product__about .product__activity #favorite:hover svg path, .products .products__main .list .product .product__about .product__activity #basket:hover svg path {
+.products .products__main .list .product .product__about .product__activity .favorite:hover svg path, .products .products__main .list .product .product__about .product__activity .basket:hover svg path {
   fill: #66A7C8;
 }
-.products .products__main .list .product .product__about .product__activity #compare:hover svg g path {
+.products .products__main .list .product .product__about .product__activity .compare:hover svg g path {
+  stroke-width: 3px;
+}
+.products .products__main .list .product .product__about .product__activity .favorite.active, .products .products__main .list .product .product__about .product__activity .basket.active {
+  background: #26262B;
+}
+.products .products__main .list .product .product__about .product__activity .favorite.active svg path, .products .products__main .list .product .product__about .product__activity .basket.active svg path {
+  fill: #66A7C8;
+}
+.products .products__main .list .product .product__about .product__activity .compare.active {
+  background: #26262B;
+}
+.products .products__main .list .product .product__about .product__activity .compare.active svg g path {
   stroke-width: 3px;
 }
 .products .products__main .template__buttons {

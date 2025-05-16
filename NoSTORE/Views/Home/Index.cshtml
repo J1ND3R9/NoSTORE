@@ -101,7 +101,7 @@
             {
                 <div class="swiper-slide">
                     <div class="product">
-                        <a href="/product/@product.Id/@product.SEOName()">
+                        <a href="/product/@product.Id/@product.SEOName">
                             <div>
                                 <div class="product__image">
                                     @if (product.ImageExist())
@@ -160,7 +160,7 @@
                 {
                     <div class="swiper-slide">
                         <div class="product">
-                            <a href="/product/@product.Id/@product.SEOName()">
+                            <a href="/product/@product.Id/@product.SEOName">
                                 <div>
                                     <div class="product__image">
                                         @if (product.ImageExist())
@@ -183,7 +183,7 @@
                             <div class="product__activity">
                                 <div class="product__price">
                                     <p>@product.CorrectPrice(product.Price)</p>
-                                    <p>@product.CorrectPrice(product.PriceDiscount())</p>
+                                    <p>@product.CorrectPrice(product.FinalPrice)</p>
                                 </div>
                                 <div class="product__about">
                                     <span>Подробнее</span>

@@ -184,13 +184,13 @@
                 <h2>Часто сравнивают с:</h2>
                 @for (int i = 0; i < 5; i++)
                 {
-                    <a href="/product/@Model.Id/@Model.SEOName()">
+                    <a href="/product/@Model.Id/@Model.SEOName">
                         <div class="mini__product">
                             <img class="mini__image" src="~/photos/products/@Model.Name/@Model.Images[0]" />
                             <div class="mini__info">
                                 <h3>@Model.Name</h3>
                                 <div>
-                                    <p>@Model.CorrectPrice(Model.Discount > 0 ? Model.PriceDiscount() : Model.Price)</p>
+                                    <p>@Model.CorrectPrice(Model.FinalPrice)</p>
                                     <div class="mini__rating">
                                         <img src="~/svg/activites/noact/star.svg" />
                                         <span>@Model.Rating</span>

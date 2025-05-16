@@ -15,5 +15,6 @@ namespace NoSTORE.Services
         public async Task<List<Product>> GetAllAsync() => await _products.Find(_ => true).ToListAsync();
         public async Task<List<Product>> GetOnlyDiscount() => await _products.Find(p => p.Discount > 0).ToListAsync();
         public async Task<Product> GetByIdAsync(string id) => await _products.Find(p => p.Id == id).FirstOrDefaultAsync();
+        public async Task<List<Product>> GetByIdsAsync(List<string> ids) => await _products.Find(p => ids.Contains(p.Id)).ToListAsync();
     }
 }

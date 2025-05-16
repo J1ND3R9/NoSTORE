@@ -1,0 +1,243 @@
+@font-face {
+  font-family: "Strong";
+  src: url(../Fonts/Strong-Regular.ttf) format("truetype");
+}
+.products {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.products .titles {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #3F3F46;
+  border-radius: 10px;
+  padding: 10px;
+}
+.products .titles .title {
+  font-family: "Strong", sans-serif;
+  font-size: 16px;
+  font-weight: 0;
+  font-size: 1.8rem;
+  color: #E0E0E0;
+}
+.products .titles .title #sum {
+  color: #3ABBD1;
+}
+.products .titles .buttons {
+  font-family: "Strong", sans-serif;
+  font-size: 16px;
+  font-weight: 0;
+  display: flex;
+  gap: 3rem;
+  font-size: 1.5rem;
+}
+.products .titles .buttons button {
+  padding: 10px;
+  background: none;
+  border: none;
+  color: #66A7C8;
+  border-radius: 6px;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+.products .titles .buttons #inCart {
+  background: #66A7C8;
+  color: #26262B;
+}
+.products .titles .buttons #inCart:hover, .products .titles .buttons #inCartactive {
+  background: #26262B;
+  color: #66A7C8;
+}
+.products .titles .buttons #inCart.active:hover {
+  background: #66A7C8;
+  color: #26262B;
+}
+.products .titles .buttons #selectFavorite.active {
+  color: #E36B3F;
+}
+.products .list {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-column-gap: 30px;
+  grid-row-gap: 30px;
+}
+.products .list .product {
+  display: flex;
+  flex-direction: column;
+  background-color: #3F3F46;
+  border-radius: 10px;
+  padding: 10px;
+  transition: transform 0.2s ease, -webkit-box-shadow 0.2s ease, -moz-box-shadow 0.2s ease, box-shadow 0.2s ease;
+}
+.products .list .product.disable-transitions {
+  transition: none !important;
+}
+.products .list .product:hover {
+  -webkit-box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+  -moz-box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+  box-shadow: 0px 0px 26px 5px rgba(63, 104, 135, 0.18);
+  transform: translateY(-5px);
+}
+.products .list .product a {
+  text-decoration: none;
+  color: none;
+}
+.products .list .product a .main_image {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.products .list .product a .main_image img {
+  height: 26vh;
+}
+.products .list .product a .main_image .template__checkboxes {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.products .list .product a .main_image .template__checkboxes .hidden-checkbox {
+  display: none;
+}
+.products .list .product a .main_image .template__checkboxes .hidden-checkbox:checked + .checkbox-label::before {
+  background-color: #3ABBD1;
+}
+.products .list .product a .main_image .template__checkboxes .checkbox-label {
+  cursor: pointer;
+  user-select: none;
+}
+.products .list .product a .main_image .template__checkboxes .checkbox-label::before {
+  content: "";
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 4px;
+  background-color: #26262B;
+  transition: 0.1s ease;
+}
+.products .list .product a .main_image::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #26262B;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.products .list .product a .product__name {
+  display: -webkit-box;
+  max-width: 400px;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: "Strong", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 0;
+  color: #E0E0E0;
+}
+.products .list .product a .product__tags {
+  font-family: "Strong", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 0;
+  color: rgb(147.5, 147.5, 147.5);
+  margin-bottom: 1.5rem;
+}
+.products .list .product a .product__info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #26262B;
+  border-radius: 5px;
+  color: #3ABBD1;
+  padding: 3px;
+  gap: 10px;
+  font-family: "Strong", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 0;
+  margin-bottom: 10px;
+}
+.products .list .product a .product__info div {
+  display: flex;
+  gap: 5px;
+}
+.products .list .product a .product__info div img {
+  width: 35px;
+  height: 35px;
+}
+.products .list .product a .product__info .date_icon {
+  width: 32px;
+  height: 32px;
+}
+.products .list .product a .product__info .date_icon path {
+  fill: #3ABBD1;
+}
+.products .list .product .product__about {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.products .list .product .product__about span {
+  font-family: "Strong", sans-serif;
+  font-size: 1.9rem;
+  font-weight: 0;
+  color: #3ABBD1;
+}
+.products .list .product .product__about .product__activity {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+}
+.products .list .product .product__about .product__activity button {
+  background: none;
+  outline: none;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  padding: 8px;
+}
+.products .list .product .product__about .product__activity button svg {
+  overflow: visible;
+  width: 1.8rem;
+  height: 1.8rem;
+}
+.products .list .product .product__about .product__activity button svg path {
+  stroke: #66A7C8;
+  stroke-width: 3px;
+  fill: transparent;
+  transition: 0.1s ease;
+}
+.products .list .product .product__about .product__activity button svg g path {
+  stroke-width: 2px;
+  transition: 0.1s ease;
+}
+.products .list .product .product__about .product__activity .favorite:hover svg path, .products .list .product .product__about .product__activity .basket:hover svg path {
+  fill: #66A7C8;
+}
+.products .list .product .product__about .product__activity .compare:hover svg g path {
+  stroke-width: 3px;
+}
+.products .list .product .product__about .product__activity .favorite.active, .products .list .product .product__about .product__activity .basket.active {
+  background: #26262B;
+}
+.products .list .product .product__about .product__activity .favorite.active svg path, .products .list .product .product__about .product__activity .basket.active svg path {
+  fill: #66A7C8;
+}
+.products .list .product .product__about .product__activity .compare.active {
+  background: #26262B;
+}
+.products .list .product .product__about .product__activity .compare.active svg g path {
+  stroke-width: 3px;
+}
+
+/*# sourceMappingURL=favorite.css.map */

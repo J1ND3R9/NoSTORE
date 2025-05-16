@@ -209,8 +209,11 @@ header nav .left .catalog__button svg {
 header nav .left .catalog__button svg path {
   fill: #26262B;
 }
-header nav .left .search-form {
+header nav .left .search-container {
   flex: 1;
+  position: relative;
+}
+header nav .left .search-container .search-form {
   position: relative;
   display: flex;
   align-items: center;
@@ -219,8 +222,12 @@ header nav .left .search-form {
   height: 3.6rem;
   border-radius: 8px;
   overflow: hidden;
+  transition: border 0.2s ease;
 }
-header nav .left .search-form input {
+header nav .left .search-container .search-form.active {
+  border: 2px solid #3ABBD1;
+}
+header nav .left .search-container .search-form input {
   flex: 1;
   font-family: "Strong", sans-serif;
   font-size: 1.5rem;
@@ -231,8 +238,15 @@ header nav .left .search-form input {
   padding-left: 1rem;
   background: transparent;
   color: #E0E0E0;
+  transition: background 0.1s ease;
 }
-header nav .left .search-form button {
+header nav .left .search-container .search-form input:focus {
+  background: #26262B;
+}
+header nav .left .search-container .search-form input:focus + button {
+  background: #26262B;
+}
+header nav .left .search-container .search-form button {
   padding: 1rem;
   display: flex;
   justify-content: center;
@@ -240,6 +254,91 @@ header nav .left .search-form button {
   background-color: transparent;
   border: none;
   cursor: pointer;
+  transition: background 0.1s ease;
+}
+header nav .left .search-container .search-results-list {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 30px;
+  background: rgb(75.0789473684, 75.0789473684, 83.4210526316);
+  border-radius: 6px;
+  width: 100%;
+  -webkit-box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+  -moz-box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+  box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+}
+header nav .left .search-container .search-results-list .search-result-item {
+  gap: 1rem;
+  padding: 4px;
+  transition: background 0.1s ease;
+  height: 110px;
+}
+header nav .left .search-container .search-results-list .search-result-item:not(:last-child):after {
+  content: "";
+  display: block;
+  height: 2px;
+  background-color: #26262B;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+header nav .left .search-container .search-results-list .search-result-item:first-child {
+  border-radius: 6px 6px 0px 0px;
+}
+header nav .left .search-container .search-results-list .search-result-item:last-child {
+  border-radius: 0px 0px 6px 6px;
+}
+header nav .left .search-container .search-results-list .search-result-item:hover {
+  background: #3F3F46;
+}
+header nav .left .search-container .search-results-list .sr {
+  display: flex;
+  gap: 5px;
+}
+header nav .left .search-container .search-results-list .sr .sr-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+header nav .left .search-container .search-results-list .sr .sr-image img {
+  width: 10vh;
+  height: 10vh;
+}
+header nav .left .search-container .search-results-list .sr .sr-info {
+  font-family: "Strong", sans-serif;
+  font-size: 16px;
+  font-weight: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+header nav .left .search-container .search-results-list .sr .sr-info h2 {
+  font-size: 1.4rem;
+  color: #E0E0E0;
+}
+header nav .left .search-container .search-results-list .sr .sr-info h3 {
+  font-size: 1.6rem;
+  color: #3ABBD1;
+}
+header nav .left .search-container .no-results {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 30px;
+  background: rgb(75.0789473684, 75.0789473684, 83.4210526316);
+  border-radius: 6px;
+  width: 100%;
+  -webkit-box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+  -moz-box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+  box-shadow: 0px 14px 18px 8px rgba(0, 0, 0, 0.33);
+  font-family: "Strong", sans-serif;
+  font-size: 16px;
+  font-weight: 0;
+  padding: 10px;
+  color: #E36B3F;
+  font-size: 1.4rem;
 }
 header nav .buttons {
   display: flex;
@@ -275,10 +374,29 @@ header nav .buttons a, header nav .buttons button {
   outline: none;
   border: none;
 }
+header nav .buttons a .icon-wrapper, header nav .buttons button .icon-wrapper {
+  position: relative;
+}
+header nav .buttons a .icon-wrapper .badge, header nav .buttons button .icon-wrapper .badge {
+  border-radius: 50%;
+  background-color: #66A7C8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #26262B;
+  font-size: 1rem;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: -5px;
+  right: -10px;
+  transition: 0.1s ease;
+}
 header nav .buttons a svg, header nav .buttons button svg {
   height: 36px;
   width: 36px;
   overflow: visible;
+  position: relative;
 }
 header nav .buttons a svg #favorite, header nav .buttons a svg #basket, header nav .buttons a svg #profile path, header nav .buttons button svg #favorite, header nav .buttons button svg #basket, header nav .buttons button svg #profile path {
   fill: transparent;
@@ -294,6 +412,9 @@ header nav .buttons a svg #chart-histogram path, header nav .buttons button svg 
 header nav .buttons a:hover, header nav .buttons button:hover {
   color: #66A7C8;
   filter: drop-shadow(0px 0px 15px rgba(63, 104, 135, 0.6));
+}
+header nav .buttons a:hover .badge, header nav .buttons button:hover .badge {
+  background-color: #3ABBD1;
 }
 header nav .buttons a:hover svg #favorite, header nav .buttons a:hover svg #basket, header nav .buttons a:hover svg #profile path, header nav .buttons button:hover svg #favorite, header nav .buttons button:hover svg #basket, header nav .buttons button:hover svg #profile path {
   fill: #3ABBD1;

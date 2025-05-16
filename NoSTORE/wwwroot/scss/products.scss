@@ -117,7 +117,7 @@
                     align-items: center;
 
                     span {
-                        @include variables.font($size: 2rem);
+                        @include variables.font($size: 1.9rem);
                         color: variables.$accent-color;
                     }
 
@@ -126,16 +126,22 @@
                         flex-direction: row;
                         justify-content: center;
                         align-items: center;
-                        gap: 1rem;
+                        gap: 3px;
 
                         button {
                             background: none;
                             outline: none;
                             border: none;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            border-radius: 5px;
+                            padding: 8px;
 
                             svg {
                                 overflow: visible;
                                 width: 1.8rem;
+                                height: 1.8rem;
 
                                 path {
                                     stroke: variables.$additional-color;
@@ -153,7 +159,28 @@
                             }
                         }
 
-                        #favorite:hover, #basket:hover {
+                        .favorite:hover, .basket:hover {
+                            svg {
+
+                                path {
+                                    fill: variables.$additional-color;
+                                }
+                            }
+                        }
+
+                        .compare:hover {
+                            svg {
+                                g {
+                                    path {
+                                        stroke-width: 3px;
+                                    }
+                                }
+                            }
+                        }
+
+                        .favorite.active, .basket.active {
+                            background: variables.$bg-color;
+
                             svg {
                                 path {
                                     fill: variables.$additional-color;
@@ -161,7 +188,9 @@
                             }
                         }
 
-                        #compare:hover {
+                        .compare.active {
+                            background: variables.$bg-color;
+
                             svg {
                                 g {
                                     path {
