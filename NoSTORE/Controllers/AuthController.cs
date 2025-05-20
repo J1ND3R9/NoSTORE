@@ -48,9 +48,9 @@ namespace NoSTORE.Controllers
         public async Task<IActionResult> Login([FromBody] Login model, CancellationToken ct)
         {
             if (await CheckLogin(model))
-                return BadRequest("Неверная почта или пароль");
+                return BadRequest(new { error = "Неверная почта или пароль" });
             //if (!await _verificationService.IsValidCodeAsync(model.Email, model.Code))
-            //    return Unauthorized("Неверный код");
+            //    return BadRequest(new { error = "Неверный код" });
             var user = await _userService.GetUserByEmailAsync(model.Email);
 
             var claims = new List<Claim>
@@ -146,23 +146,23 @@ namespace NoSTORE.Controllers
             });
         }
 
-        [HttpPost("login/send-code")]
+        [HttpPost("login/try-send-code")]
         public async Task<IActionResult> LoginSend([FromBody] Login model, CancellationToken ct)
         {
             if (await CheckLogin(model))
-                return Unauthorized("Неверная почта или пароль");
+                return BadRequest(new { error = "Неверная почта или пароль" });
             //if (!await _verificationService.SendVerificationCodeAsync(model.Email, ct))
             //    return Unauthorized("Ошибка на стороне сервера, обратитесь к администратору");
             return Ok();
         }
 
-        [HttpPost("register/send-code")]
+        [HttpPost("register/try-send-code")]
         public async Task<IActionResult> RegisterSend([FromBody] Register model, CancellationToken ct)
         {
             if (await RegisterEmailIsExist(model))
-                return Unauthorized("Пользователь уже существует");
-            if (!await _verificationService.SendVerificationCodeAsync(model.Email, ct))
-                return Unauthorized("Ошибка на стороне сервера, обратитесь к администратору");
+                return BadRequest(new { error = "Пользователь уже существует" });
+            //if (!await _verificationService.SendVerificationCodeAsync(model.Email, ct))
+            //    return BadRequest("Ошибка на стороне сервера, обратитесь к администратору");
             return Ok();
         }
 

@@ -18,9 +18,10 @@
 .cart .cart-container .products {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   overflow: hidden;
+  gap: 1rem;
   transition: height 0.4s ease;
+  flex: 1;
 }
 .cart .cart-container .products .no_items {
   padding: 1rem;
@@ -38,7 +39,7 @@
   align-items: center;
 }
 .cart .cart-container .products .no_items .main-image img {
-  height: 4vh;
+  width: 4vh;
 }
 .cart .cart-container .products .no_items .info {
   display: flex;
@@ -88,7 +89,9 @@
   align-items: center;
 }
 .cart .cart-container .products .product .main-image img {
-  height: 17vh;
+  width: 10rem;
+  height: 10rem;
+  object-fit: scale-down;
 }
 .cart .cart-container .products .product .info {
   display: flex;

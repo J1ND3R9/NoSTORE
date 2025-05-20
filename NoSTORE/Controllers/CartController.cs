@@ -6,6 +6,8 @@ using System.Security.Claims;
 using MongoDB.Bson.Serialization.IdGenerators;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Tls;
+using NoSTORE.Models.DTO;
+using NoSTORE.Models.ViewModels;
 
 namespace NoSTORE.Controllers
 {
@@ -36,14 +38,14 @@ namespace NoSTORE.Controllers
             }
             var basket = user.Basket;
             if (basket == null || !basket.Any())
-                return View(new List<BasketItemViewModel>());
+                return View(new List<CartViewModel>());
 
             var productIds = basket.Select(b => b.ProductId).ToList();
             var products = await _productService.GetByIdsAsync(productIds);
 
-            var cartItems = basket.Select(b => new BasketItemViewModel
+            var cartItems = basket.Select(b => new CartViewModel
             {
-                Product = products.FirstOrDefault(p => p.Id == b.ProductId),
+                Product = new ProductDto(products.FirstOrDefault(p => p.Id == b.ProductId)),
                 Quantity = b.Quantity,
                 IsSelected = b.IsSelected ?? true
             })
@@ -59,6 +61,46 @@ namespace NoSTORE.Controllers
             cartItems.Reverse();
 
             return View(cartItems);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCartPartial()
+        {
+            User user = new();
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                user = await _userService.GetUserById(userId);
+            }
+            else
+            {
+                // Гость
+            }
+            var basket = user.Basket;
+            if (basket == null || !basket.Any())
+                return View(new List<CartViewModel>());
+
+            var productIds = basket.Select(b => b.ProductId).ToList();
+            var products = await _productService.GetByIdsAsync(productIds);
+
+            var cartItems = basket.Select(b => new CartViewModel
+            {
+                Product = new ProductDto(products.FirstOrDefault(p => p.Id == b.ProductId)),
+                Quantity = b.Quantity,
+                IsSelected = b.IsSelected ?? true
+            })
+                .Where(item => item.Product != null)
+                .ToList();
+
+            int cartCost = cartItems.Where(i => i.IsSelected).Sum(i => i.TotalPrice);
+            int selectedCount = cartItems.Count(i => i.IsSelected);
+
+            ViewBag.CartCost = cartCost;
+            ViewBag.SelectedCount = selectedCount;
+
+            cartItems.Reverse();
+
+            return PartialView("_CartPartial", cartItems);
         }
     }
 }

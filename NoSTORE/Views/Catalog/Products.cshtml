@@ -6,7 +6,6 @@
 
 @model ProductCategory
 
-
 <section class="products">
     <div class="products__title">
         <h2>@Model.CategoryName</h2>
@@ -31,133 +30,67 @@
                         <button class="toggle-button"></button>
                     </div>
                     <div class="price__inputs">
-                        <input placeholder="от @Model.Products.Min(s => s.Price)" type="search">
-                        <input placeholder="до @Model.Products.Max(s => s.Price)" type="search">
+                        <input placeholder="от @Model.Products[0].CorrectPrice(Model.Products.Min(s => s.Price)).Replace("₽", "")" type="number" id="minPriceInput" min="@Model.Products.Min(s => s.Price)" max="@Model.Products.Max(s => s.Price)">
+                        <input placeholder="до @Model.Products[0].CorrectPrice(Model.Products.Max(s => s.Price)).Replace("₽", "")" type="number" id="maxPriceInput" min="@Model.Products.Min(s => s.Price)" max="@Model.Products.Max(s => s.Price)">
                     </div>
                     <div class="template__buttons">
                         <button class="button_drop">Сбросить</button>
                     </div>
                 </div>
             </div>
-            @foreach (var f in Model.Filter.Properties)
-            {
-                <div class="line">
-                    <div class="filters__template">
-                        <div class="template__title">
-                            <h3>@f.Key.Remove(f.Key.Length - 1, 1)</h3>
-                            <button class="toggle-button">
-                                <svg id="arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 17L14 21L18 17" stroke="#66A7C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    <path d="M6 5H12.5C13.3285 5 14 5.67155 14 6.5V21" stroke="#66A7C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="template__searchbox">
-                            <input placeholder="Поиск" type="search" />
-                            <button type="submit">
-                                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M29.5788 27.4709L24.0171 21.95C26.1759 19.2561 27.2214 15.8369 26.9386 12.3953C26.6557 8.95378 25.066 5.75147 22.4963 3.44689C19.9266 1.1423 16.5722 -0.0893989 13.1229 0.00505728C9.67366 0.0995135 6.39163 1.51294 3.95171 3.95472C1.51179 6.39649 0.0994379 9.68101 0.00505344 13.1329C-0.0893311 16.5848 1.14143 19.9417 3.44427 22.5133C5.74711 25.085 8.94698 26.6759 12.3859 26.959C15.8249 27.2421 19.2415 26.1958 21.9333 24.0353L27.45 29.5562C27.5894 29.6968 27.7552 29.8085 27.9379 29.8846C28.1206 29.9608 28.3165 30 28.5144 30C28.7123 30 28.9082 29.9608 29.0909 29.8846C29.2736 29.8085 29.4394 29.6968 29.5788 29.5562C29.849 29.2765 30 28.9026 30 28.5136C30 28.1245 29.849 27.7506 29.5788 27.4709ZM13.5233 24.0353C11.4478 24.0353 9.41898 23.4194 7.69329 22.2655C5.9676 21.1115 4.62259 19.4714 3.82834 17.5524C3.03409 15.6335 2.82628 13.5219 3.23118 11.4848C3.63609 9.44766 4.63552 7.57643 6.1031 6.10774C7.57068 4.63904 9.44049 3.63885 11.4761 3.23364C13.5117 2.82843 15.6216 3.0364 17.5391 3.83125C19.4566 4.6261 21.0955 5.97213 22.2486 7.69913C23.4016 9.42614 24.0171 11.4565 24.0171 13.5336C24.0171 16.3188 22.9115 18.99 20.9435 20.9594C18.9756 22.9289 16.3064 24.0353 13.5233 24.0353Z" fill="#E0E0E0" />
-                                </svg>
-                            </button>
-                        </div>
-                        @{
-                            int currentLimit = Math.Min(limitList, f.Value.Count);
-                        }
-                        @for (int i = 0; i < currentLimit; i++)
-                        {
-                            <div class="template__checkboxes">
-                                <input type="checkbox" class="hidden-checkbox" id="checkbox@(f.Value[i])" />
-                                <label for="checkbox@(f.Value[i])" class="checkbox-label">@(f.Value[i] == "True" ? "есть" : f.Value[i] == "False" ? "нету" : f.Value[i])</label>
-                            </div>
-                        }
-                        <div class="template__buttons">
-                            @if (f.Value.Count > 6)
-                            {
-                                <button class="button_show_all">Показать всё</button>
-                            }
-                            <button class="button_drop">Сбросить</button>
-                        </div>
-
-                    </div>
-                </div>
-            }
-        </div>
-        <div class="products__list">
-            <div class="sort">
-                <span>Отсортировать</span>
-                @* <div class="dropdown">
-                    <button class="dropdown-button">по популярности</button>
-                    <ul class="dropdown-list">
-                        <li data-sort="popular" data-selected="true">по популярности</li>
-                        <li data-sort="expensive">сначала дорогие</li>
-                        <li data-sort="cheap">сначала дешёвые</li>
-                        <li data-sort="new">по новизне</li>
-                        <li data-sort="rating">с высоким рейтингом</li>
-                        <li data-sort="quantity">по количеству отзывов</li>
-                    </ul>
-                </div> *@
-            </div>
-            <script src="~/js/catalog.js"></script>
-            <div class="list">
-                @foreach (var product in Model.Products)
+            <div id="show-button" class="show-button" hidden>Применить</div>
+                @foreach (var group in Model.Filter.Properties)
                 {
-                    <div class="product" data-productid="@product.Id">
-                        <a href="/product/@product.Id/@product.SEOName">
-                            <div class="main_image">
-                                @if (product.ImageExist())
-                                {
-                                    <img src="~/photos/products/@product.Name/@product.Images[0]" />
+                    @foreach (var f in group.Value)
+                    {
+                        <div class="line">
+                            <div class="filters__template">
+                                <div class="template__title">
+                                    <h3>@f.Key.Remove(f.Key.Length - 1, 1)</h3>
+                                    <button type="button" class="toggle-button">
+                                        <svg id="arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10 17L14 21L18 17" stroke="#66A7C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M6 5H12.5C13.3285 5 14 5.67155 14 6.5V21" stroke="#66A7C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="template__searchbox">
+                                    <input placeholder="Поиск" type="search" />
+                                    <button type="submit">
+                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M29.5788 27.4709L24.0171 21.95C26.1759 19.2561 27.2214 15.8369 26.9386 12.3953C26.6557 8.95378 25.066 5.75147 22.4963 3.44689C19.9266 1.1423 16.5722 -0.0893989 13.1229 0.00505728C9.67366 0.0995135 6.39163 1.51294 3.95171 3.95472C1.51179 6.39649 0.0994379 9.68101 0.00505344 13.1329C-0.0893311 16.5848 1.14143 19.9417 3.44427 22.5133C5.74711 25.085 8.94698 26.6759 12.3859 26.959C15.8249 27.2421 19.2415 26.1958 21.9333 24.0353L27.45 29.5562C27.5894 29.6968 27.7552 29.8085 27.9379 29.8846C28.1206 29.9608 28.3165 30 28.5144 30C28.7123 30 28.9082 29.9608 29.0909 29.8846C29.2736 29.8085 29.4394 29.6968 29.5788 29.5562C29.849 29.2765 30 28.9026 30 28.5136C30 28.1245 29.849 27.7506 29.5788 27.4709ZM13.5233 24.0353C11.4478 24.0353 9.41898 23.4194 7.69329 22.2655C5.9676 21.1115 4.62259 19.4714 3.82834 17.5524C3.03409 15.6335 2.82628 13.5219 3.23118 11.4848C3.63609 9.44766 4.63552 7.57643 6.1031 6.10774C7.57068 4.63904 9.44049 3.63885 11.4761 3.23364C13.5117 2.82843 15.6216 3.0364 17.5391 3.83125C19.4566 4.6261 21.0955 5.97213 22.2486 7.69913C23.4016 9.42614 24.0171 11.4565 24.0171 13.5336C24.0171 16.3188 22.9115 18.99 20.9435 20.9594C18.9756 22.9289 16.3064 24.0353 13.5233 24.0353Z" fill="#E0E0E0" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                @{
+                                    int currentLimit = Math.Min(limitList, f.Value.Count);
                                 }
-                                else
+                                @for (int i = 0; i < currentLimit; i++)
                                 {
-                                    <img src="https://placehold.co/240" />
+                                    <div class="template__checkboxes">
+                                        <input type="checkbox" class="hidden-checkbox" id="checkbox@(f.Value[i])" value="@f.Value[i]" name="@group.Key.@f.Key"/>
+                                        <label for="checkbox@(f.Value[i])" class="checkbox-label">
+                                            @(f.Value[i] == "True" ? "есть" : f.Value[i] == "False" ? "нету" : f.Value[i])
+                                        </label>
+                                    </div>
                                 }
-                            </div>
-                            <h3 class="product__name">@product.Name</h3>
-                            <div class="product__tags">
-                                <span class="product__tags">@product.TagsInString()</span>
-                            </div>
+                                <div class="template__buttons">
+                                    @if (f.Value.Count > 6)
+                                    {
+                                        <button type="button" class="button_show_all">Показать всё</button>
+                                    }
+                                    <button type="button" class="button_drop">Сбросить</button>
+                                </div>
 
-                            <div class="product__info">
-                                <div class="delivery">
-                                    <img class="delivery_icon" src="~/svg/truck-fast.svg" />
-                                    <span>1 д.</span>
-                                </div>
-                                <div class="rating">
-                                    <img class="star_icon" src="~/svg/activites/noact/star.svg" />
-                                    <span>@(product.Rating > 0 ? product.Rating : "Нет оценок")</span>
-                                </div>
-                            </div>
-                        </a>
-                        <div class="product__about">
-                            <span>@product.CorrectPrice(product.Price)</span>
-                            <div class="product__activity">
-                                <button class="basket">
-                                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path id="Vector" d="M18 50C20.2019 50 22 51.7811 22 54C22 54.9946 21.6293 55.9508 20.9648 56.6846L20.8281 56.8281C20.078 57.5783 19.0609 58 18 58C17.0054 58 16.0492 57.6293 15.3154 56.9648L15.1719 56.8281C14.4217 56.078 14 55.0609 14 54C14 51.7746 15.7746 50 18 50ZM48 50C50.2019 50 52 51.7811 52 54C52 54.9946 51.6293 55.9508 50.9648 56.6846L50.8281 56.8281C50.078 57.5783 49.0609 58 48 58C47.0054 58 46.0492 57.6293 45.3154 56.9648L45.1719 56.8281C44.4217 56.078 44 55.0609 44 54C44 51.7746 45.7746 50 48 50ZM8.54004 2L10.8203 6.85059L11.3604 8H57C57.2652 8 57.5195 8.10543 57.707 8.29297C57.8946 8.4805 58 8.73478 58 9C58 9.12192 57.9612 9.3248 57.834 9.63086L47.1533 28.9365C46.4706 30.1614 45.1427 30.9999 43.6504 31H20.1201L19.5488 32.0332L16.8496 36.9229C16.6128 37.3362 16.5312 37.7551 16.5137 38.0947L16.5098 38.25L16.5234 38.5215C16.5859 39.1511 16.8642 39.743 17.3154 40.1943C17.8311 40.71 18.5305 40.9999 19.2598 41H52V43H18C17.0054 43 16.0492 42.6293 15.3154 41.9648L15.1719 41.8281C14.4217 41.078 14 40.0609 14 39C14 38.2919 14.1831 37.6251 14.4834 37.0645L14.4824 37.0635L18.5488 29.7402L19.0479 28.8418L18.6074 27.9131L7.80664 5.14258L7.26465 4H2V2H8.54004Z" />
-                                    </svg>
-                                </button>
-                                <button class="favorite">
-                                    <svg width="60" height="57" viewBox="0 0 60 57" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path id="Vector" d="M30 57L25.65 52.8997C10.2 38.3935 0 28.7951 0 17.0845C0 7.4861 7.26 0 16.5 0C21.72 0 26.73 2.51608 30 6.46104C33.27 2.51608 38.28 0 43.5 0C52.74 0 60 7.4861 60 17.0845C60 28.7951 49.8 38.3935 34.35 52.8997L30 57Z"/>
-                                    </svg>
-                                </button>
-                                <button class="compare">
-                                    <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g id="chart-histogram">
-                                            <path id="Vector" d="M4.375 4.375V30.625H30.625" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path id="Vector_2" d="M10.2085 21.875V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path id="Vector_3" d="M16.0415 16.0417V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path id="Vector_4" d="M21.875 4.375V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path id="Vector_5" d="M27.7085 10.2083V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
-                                        </g>
-                                    </svg>
-                                </button>
                             </div>
                         </div>
-                    </div>
+                    }
                 }
-            </div>
+        </div>
+        <div class="products__list" id="products">
+            @Html.Partial("_ProductsPartial", Model.Products)
         </div>
     </section>
 </section>
+<script src="~/js-new/pages/catalogIndex.js"></script>
+

@@ -102,7 +102,9 @@
                     position: relative;
 
                     img {
-                        height: 26vh;
+                        height: 15rem;
+                        width: 15rem;
+                        object-fit: scale-down;
                     }
 
                     .template__checkboxes {

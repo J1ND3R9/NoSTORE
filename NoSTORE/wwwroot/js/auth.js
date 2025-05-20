@@ -35,7 +35,6 @@ async function circlesQuantities() {
         badge.innerText = quantities.cart;
         cartBtn.appendChild(badge);
     }
-
 }
 
 async function getQuantities() {

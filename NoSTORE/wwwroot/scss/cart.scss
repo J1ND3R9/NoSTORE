@@ -16,9 +16,10 @@
         .products {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
             overflow: hidden;
+            gap: 1rem;
             transition: height 0.4s ease;
+            flex: 1;
 
             .no_items {
                 padding: 1rem;
@@ -36,7 +37,7 @@
                     align-items: center;
 
                     img {
-                        height: 4vh;
+                        width: 4vh;
                     }
                 }
 
@@ -93,7 +94,9 @@
                     align-items: center;
 
                     img {
-                        height: 17vh;
+                        width: 10rem;
+                        height: 10rem;
+                        object-fit: scale-down;
                     }
                 }
 

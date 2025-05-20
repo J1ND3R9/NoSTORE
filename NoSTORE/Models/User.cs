@@ -29,7 +29,7 @@ namespace NoSTORE.Models
         public string RoleId { get; set; }
 
         [BsonElement("favorites")]
-        public List<FavoriteItem> Favorites { get; set; }
+        public List<string> Favorites { get; set; }
 
         [BsonElement("basket")]
         public List<BasketItem> Basket { get; set; }
@@ -57,16 +57,6 @@ namespace NoSTORE.Models
             [BsonElement("selected")]
             public bool? IsSelected { get; set; } = true;
 
-        }
-
-        public class FavoriteItem
-        {
-            [BsonElement("product_id")]
-            [BsonRepresentation(BsonType.ObjectId)]
-            public string ProductId { get; set; }
-
-            [BsonElement("date")]
-            public DateTime Date { get; set; }
         }
 
     }

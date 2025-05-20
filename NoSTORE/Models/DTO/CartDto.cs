@@ -1,8 +1,8 @@
-﻿namespace NoSTORE.Models
+﻿namespace NoSTORE.Models.DTO
 {
-    public class BasketItemViewModel
+    public class CartDto
     {
-        public Product Product { get; set; }
+        public ProductDto Product { get; set; }
         public int Quantity { get; set; }
         public bool IsSelected { get; set; }
         public int TotalPrice => Product.FinalPrice * Quantity;

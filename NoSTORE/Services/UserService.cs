@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using NoSTORE.Data;
 using NoSTORE.Models;
+using NoSTORE.Models.DTO;
 using System.Numerics;
 using System.Threading.Tasks;
 
@@ -22,23 +23,28 @@ namespace NoSTORE.Services
         public async Task<User> GetUserByEmailAsync(string email) => await _user.Find(u => u.Email == email).FirstOrDefaultAsync();
         public async Task<User> GetUserByPhoneAsync(string phone) => await _user.Find(u => u.Phone == phone).FirstOrDefaultAsync();
 
-        public async Task ChangeQuantityInBasket(string userId, string productId, int quantity)
+        public async Task<CartDto> ChangeQuantityInBasket(string userId, string productId, int quantity)
         {
             var user = await GetUserById(userId);
             if (user == null)
-                return;
+                return null;
             var existingItem = user.Basket?.FirstOrDefault(b => b.ProductId == productId) ?? null;
             if (existingItem == null)
-                return;
-
-            if (existingItem.Quantity + quantity <= 0)
+                return null;
+            var product = await _productService.GetByIdAsync(productId);
+            var newQuantity = existingItem.Quantity + quantity;
+            if (newQuantity <= 0)
             {
                 await RemoveFromBasket(userId, productId);
-                return;
+                return new CartDto
+                {
+                    IsSelected = true,
+                    Product = new ProductDto(product),
+                    Quantity = 0,
+                };
             }
-            var product = await _productService.GetByIdAsync(productId);
-            if (existingItem.Quantity + quantity > product.Quantity)
-                return;
+            if (newQuantity > product.Quantity)
+                return null;
 
 
             var filter = Builders<User>.Filter.And(
@@ -47,16 +53,28 @@ namespace NoSTORE.Services
             var update = Builders<User>.Update.Inc("basket.$.quantity", quantity);
             await _user.UpdateOneAsync(filter, update);
 
+            return new CartDto
+            {
+                IsSelected = true,
+                Product = new ProductDto(product),
+                Quantity = newQuantity,
+            };
+
         }
 
-        public async Task InsertInBasket(string userId, string productId)
+        public async Task<CartDto> InsertInBasket(string userId, string productId)
         {
             var user = await GetUserById(userId);
             if (user == null)
-                return;
+                return null;
             var existingItem = user.Basket?.FirstOrDefault(b => b.ProductId == productId) ?? null;
             if (existingItem != null)
-                return;
+                return new CartDto
+                {
+                    IsSelected = true,
+                    Product = new ProductDto(await _productService.GetByIdAsync(productId)),
+                    Quantity = 1
+                };
 
             var update = Builders<User>.Update.Push("basket", new User.BasketItem
             {
@@ -65,67 +83,88 @@ namespace NoSTORE.Services
                 IsSelected = true
             });
             await _user.UpdateOneAsync(u => u.Id == userId, update);
+            return new CartDto
+            {
+                IsSelected = true,
+                Product = new ProductDto(await _productService.GetByIdAsync(productId)),
+                Quantity = 1
+            };
         }
 
-        public async Task SelectBasketChange(string userId, string productId, bool select)
+        public async Task<CartDto> SelectBasketChange(string userId, string productId, bool select)
         {
             var user = await GetUserById(userId);
             if (user == null)
-                return;
+                return null;
             var existingItem = user.Basket?.FirstOrDefault(b => b.ProductId == productId) ?? null;
             if (existingItem == null)
-                return;
+                return null;
             var filter = Builders<User>.Filter.And(
                 Builders<User>.Filter.Eq(u => u.Id, userId),
                 Builders<User>.Filter.ElemMatch(x => x.Basket, b => b.ProductId == productId));
             var update = Builders<User>.Update.Set("basket.$.selected", select);
 
             await _user.UpdateOneAsync(filter, update);
+            return new CartDto
+            {
+                IsSelected = select,
+                Product = new ProductDto(await _productService.GetByIdAsync(productId)),
+                Quantity = existingItem.Quantity
+            };
         }
 
-        public async Task RemoveFromBasket(string userId, string productId)
+        public async Task<CartDto> RemoveFromBasket(string userId, string productId)
         {
             var user = await GetUserById(userId);
             if (user == null)
-                return;
+                return null;
             var existingItem = user.Basket.FirstOrDefault(b => b.ProductId == productId);
 
             if (existingItem == null)
-                return;
+                return null;
 
             var update = Builders<User>.Update.PullFilter(x => x.Basket, b => b.ProductId == productId);
             await _user.UpdateOneAsync(u => u.Id == userId, update);
-        }
-
-        public async Task InsertInFavorite(string userId, string productId)
-        {
-            var user = await GetUserById(userId);
-            if (user == null)
-                return;
-            var existingItem = user.Favorites.FirstOrDefault(fav => fav.ProductId == productId);
-            if (existingItem != null)
-                return;
-
-            var update = Builders<User>.Update.Push("favorites", new User.FavoriteItem
+            return new CartDto
             {
-                ProductId = productId,
-                Date = DateTime.UtcNow
-            });
-            await _user.UpdateOneAsync(u => u.Id == userId, update);
+                Product = new ProductDto(await _productService.GetByIdAsync(productId))
+            };
         }
 
-        public async Task RemoveFromFavorite(string userId, string productId)
+        public async Task<FavoriteDto> InsertInFavorite(string userId, string productId)
         {
             var user = await GetUserById(userId);
             if (user == null)
-                return;
-            var existingItem = user.Favorites.FirstOrDefault(fav => fav.ProductId == productId);
+                return null;
+            var existingItem = user.Favorites.FirstOrDefault(fav => fav == productId);
+            if (existingItem != null)
+                return null;
+
+            var update = Builders<User>.Update.Push("favorites", productId);
+            await _user.UpdateOneAsync(u => u.Id == userId, update);
+            return new FavoriteDto
+            {
+                Product = new ProductDto(await _productService.GetByIdAsync(productId)),
+                ActionType = "Added"
+            };
+        }
+
+        public async Task<FavoriteDto> RemoveFromFavorite(string userId, string productId)
+        {
+            var user = await GetUserById(userId);
+            if (user == null)
+                return null;
+            var existingItem = user.Favorites.FirstOrDefault(fav => fav == productId);
 
             if (existingItem == null)
-                return;
+                return null;
 
-            var update = Builders<User>.Update.PullFilter(x => x.Favorites, fav => fav.ProductId == productId);
-            var x = await _user.UpdateOneAsync(u => u.Id == userId, update);
+            var update = Builders<User>.Update.PullFilter(x => x.Favorites, fav => fav == productId);
+            await _user.UpdateOneAsync(u => u.Id == userId, update);
+            return new FavoriteDto {
+                Product = new ProductDto(await _productService.GetByIdAsync(productId)),
+                ActionType = "Removed"
+            };
         }
 
         public async Task<bool> UserExistsByEmail(string email)

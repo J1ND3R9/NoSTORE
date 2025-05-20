@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using NoSTORE.Models;
+using NoSTORE.Models.DTO;
 using NoSTORE.Services;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.Security.Claims;
@@ -25,7 +26,7 @@ namespace NoSTORE.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userService.GetUserById(userId);
 
-            var model = new UserProfileSafe(
+            var model = new UserDto(
                 user.Id,
                 user.Nickname,
                 user.Avatar,

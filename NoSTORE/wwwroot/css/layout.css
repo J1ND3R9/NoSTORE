@@ -121,11 +121,12 @@
 }
 
 #profile-modal {
+  opacity: 0;
+  visibility: hidden;
   display: none;
   overflow: visible;
   position: absolute;
   right: 0%;
-  opacity: 0;
   background-color: white;
   z-index: 1000;
   padding: 1rem;
@@ -134,11 +135,6 @@
   -moz-box-shadow: 0px 0px 16px 22px rgba(0, 0, 0, 0.2);
   box-shadow: 0px 0px 16px 22px rgba(0, 0, 0, 0.2);
   border-radius: 0.4rem;
-  transition: opacity 0.2s ease-out;
-}
-#profile-modal:hover {
-  display: block;
-  opacity: 1;
 }
 #profile-modal .p-modal_content div {
   margin-top: 0.3rem;
@@ -294,7 +290,7 @@ header nav .left .search-container .search-results-list .search-result-item:hove
 }
 header nav .left .search-container .search-results-list .sr {
   display: flex;
-  gap: 5px;
+  gap: 10px;
 }
 header nav .left .search-container .search-results-list .sr .sr-image {
   display: flex;
@@ -302,8 +298,9 @@ header nav .left .search-container .search-results-list .sr .sr-image {
   align-items: center;
 }
 header nav .left .search-container .search-results-list .sr .sr-image img {
-  width: 10vh;
-  height: 10vh;
+  width: 6rem;
+  height: 6rem;
+  object-fit: scale-down;
 }
 header nav .left .search-container .search-results-list .sr .sr-info {
   font-family: "Strong", sans-serif;

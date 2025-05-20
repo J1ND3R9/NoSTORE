@@ -2,6 +2,22 @@
   font-family: "Strong";
   src: url(../Fonts/Strong-Regular.ttf) format("truetype");
 }
+.show-button {
+  position: absolute;
+  margin-left: 20px;
+  background: #3F3F46;
+  z-index: 100;
+  padding: 1rem;
+  border-radius: 6px;
+  -webkit-box-shadow: 0px 0px 18px 16px rgba(38, 40, 41, 0.53);
+  -moz-box-shadow: 0px 0px 18px 16px rgba(38, 40, 41, 0.53);
+  box-shadow: 0px 0px 18px 16px rgba(38, 40, 41, 0.53);
+  transition: background 0.2s ease;
+}
+.show-button:hover {
+  background: #26262B;
+}
+
 .products {
   display: flex;
   flex-direction: column;
@@ -58,7 +74,9 @@
   align-items: center;
 }
 .products .products__main .list .product a .main_image img {
-  height: 26vh;
+  width: 14rem;
+  height: 14rem;
+  object-fit: scale-down;
 }
 .products .products__main .list .product a .main_image::after {
   content: "";
@@ -228,15 +246,17 @@
   border-radius: 4px;
   border: 2px solid #66A7C8;
   outline: none;
-  padding: 5px;
+  padding: 5px 15px 5px 5px;
   color: #E0E0E0;
   background-color: #26262B;
   font-size: 24px;
   width: 100%;
+  justify-content: space-between;
 }
 .products .products__main .main__filters .filters__searchbox input {
   border: none;
   background: none;
+  font-size: 1.4rem;
 }
 .products .products__main .main__filters .filters__searchbox button {
   display: flex;
@@ -253,6 +273,9 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
+}
+.products .products__main .main__filters .template__title h3 {
+  font-size: 1.6rem;
 }
 .products .products__main .main__filters .template__title button {
   background: none;
@@ -276,6 +299,7 @@
   color: #E0E0E0;
   background-color: #26262B;
   width: 8rem;
+  font-size: 1.2rem;
 }
 .products .products__main .main__filters .filters__template .template__searchbox {
   display: flex;
@@ -283,15 +307,17 @@
   border-radius: 4px;
   border: 2px solid #66A7C8;
   outline: none;
-  padding: 5px;
+  padding: 5px 15px 5px 5px;
   color: #E0E0E0;
   background-color: #26262B;
   font-size: 24px;
   width: 100%;
+  justify-content: space-between;
 }
 .products .products__main .main__filters .filters__template .template__searchbox input {
   border: none;
   background: none;
+  font-size: 1.4rem;
 }
 .products .products__main .main__filters .filters__template .template__searchbox button {
   display: flex;

@@ -1,12 +1,13 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json.Linq;
+using NoSTORE.Models;
 using System.Globalization;
 using Unidecode.NET;
 
-namespace NoSTORE.Models
+namespace NoSTORE.Models.DTO
 {
-    public class ProductSearchModel
+    public class ProductSearchDto
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -17,7 +18,7 @@ namespace NoSTORE.Models
         public int Discount { get; set; }
         public string Image { get; set; }
 
-        public ProductSearchModel(Product p)
+        public ProductSearchDto(Product p)
         {
             Id = p.Id;
             Name = p.Name;

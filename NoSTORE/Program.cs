@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using NoSTORE.Data;
+using NoSTORE.Hubs;
 using NoSTORE.Services;
 using NoSTORE.Settings;
 using Org.BouncyCastle.Pkix;
@@ -81,7 +82,8 @@ namespace NoSTORE
             builder.Services
                 .AddAuthServices()
                 .AddAppServices()
-                .AddEmailServices();
+                .AddEmailServices()
+                .AddSignalR();
 
             var app = builder.Build();
 
@@ -101,6 +103,8 @@ namespace NoSTORE
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapHub<UserHub>("/userHub");
 
             app.MapControllerRoute(
                 name: "default",

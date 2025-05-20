@@ -40,7 +40,9 @@
   background-color: rgb(42.7851851852, 42.7851851852, 48.4148148148);
 }
 .additonal__info .top__info .popular__compares .mini__product img {
-  width: 10vh;
+  width: 6rem;
+  height: 6rem;
+  object-fit: scale-down;
 }
 .additonal__info .top__info .popular__compares .mini__product .mini__info h3 {
   display: -webkit-box;
@@ -189,10 +191,13 @@
   border-radius: 10px;
   padding: 1rem;
   display: flex;
+  flex-direction: row;
   gap: 2rem;
   margin-bottom: 2rem;
+  width: 100%;
 }
 .main .images {
+  display: flex;
   height: 30rem;
   display: flex;
   gap: 1rem;
@@ -203,13 +208,25 @@
 }
 .main .images .images__slider img {
   height: 90px;
+  width: 90px;
+  object-fit: scale-down;
+}
+.main .images .main_image {
+  width: 30rem;
 }
 .main .images .main_image img {
   height: 100%;
+  width: 30rem;
+  object-fit: scale-down;
+}
+.main .mi {
+  flex: 1;
 }
 .main .main__info {
   display: flex;
   justify-content: space-between;
+  width: 100%;
+  align-items: start;
 }
 .main .main__info .titles h1 {
   font-family: "Strong", sans-serif;
@@ -233,6 +250,8 @@
 .main .manufracturer img {
   margin-top: 10px;
   width: 120px;
+  height: 40px;
+  object-fit: scale-down;
 }
 .main .manufracturer .rating {
   font-family: "Strong", sans-serif;

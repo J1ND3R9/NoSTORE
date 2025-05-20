@@ -15,17 +15,19 @@ namespace NoSTORE.Models
         public string Category { get; set; }
 
         [BsonElement("properties")]
-        public Dictionary<string, List<string>> Properties { get; set; }
+        public Dictionary<string, Dictionary<string, List<string>>> Properties { get; set; }
 
-        public Dictionary<string, List<string>> PropertiesInDictionary(BsonDocument bson)
+        public Dictionary<string, Dictionary<string, List<string>>> PropertiesInDictionary(BsonDocument bson)
         {
-            Dictionary<string, List<string>> dict = new();
+            Dictionary<string, Dictionary<string, List<string>>> dict = new();
             JObject root = JObject.Parse(bson.ToJson());
             var properties = root["properties"];
             foreach (var property in properties)
             {
                 foreach (var category in property.Children<JProperty>())
                 {
+                    string parent = category.Name;
+                    Dictionary<string, List<string>> keyValuePairs = new Dictionary<string, List<string>>();
                     foreach (var item in category.Value)
                     {
                         foreach (var kvp in item.Children<JProperty>())
@@ -41,10 +43,11 @@ namespace NoSTORE.Models
                                 }
                                 if (!isArray)
                                     strings.Add(kvp.Value.ToString());
-                                dict[kvp.Name] = strings;
+                                keyValuePairs[kvp.Name] = strings;
                             }
                         }
                     }
+                    dict[parent] = keyValuePairs;
                 }
             }
             return dict;

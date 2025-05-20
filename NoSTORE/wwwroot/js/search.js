@@ -26,7 +26,7 @@ function clickOnDocument() {
         const searchResults = document.getElementById('searchResult');
 
         let mouseDownInside = false;
-
+        searchResults.style.pointerEvents = 'auto';
         document.addEventListener('mousedown', (e) => {
             mouseDownInside = searchInput.contains(e.target) || searchResults.contains(e.target);
         })
@@ -34,17 +34,22 @@ function clickOnDocument() {
         document.addEventListener('mouseup', (e) => {
             const mouseUpInside = searchInput.contains(e.target) || searchResults.contains(e.target);
 
+            gsap.killTweensOf(searchResults)
+
             if (!mouseDownInside && !mouseUpInside) {
                 gsap.to(searchResults, {
                     autoAlpha: 0,
                     y: -20,
-                    duration: 0.2
+                    duration: 0.15,
+                    onComplete: () => {
+                        searchResults.style.pointerEvents = 'none';
+                    }
                 });
             } else {
                 gsap.to(searchResults, {
                     autoAlpha: 1,
                     y: 10,
-                    duration: 0.2
+                    duration: 0.15
                 });
             }
 
@@ -105,5 +110,11 @@ function displayResults(results) {
         list.appendChild(item);
     });
     container.appendChild(list);
-    container.classList.add('visible');
+    gsap.from(".search-result-item", {
+        opacity: 0,
+        y: 10,
+        duration: 0.4,
+        stagger: 0.05,
+        ease: "power2.out"
+    });
 }

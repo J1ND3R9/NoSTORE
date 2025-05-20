@@ -28,33 +28,59 @@ namespace NoSTORE.Controllers
 
         public async Task UpdateFilters(Product product, string category)
         {
-            Filter? filters = await _filterService.GetFiltersByCategory(category);
-            var propertiesFilters = filters.Properties;
-            var propertiesProduct = filters.PropertiesInDictionary(product.Properties);
+            //Filter? filters = await _filterService.GetFiltersByCategory(category);
+            //var propertiesFilters = filters.Properties;
+            //var propertiesProduct = filters.PropertiesInDictionary(product.Properties);
 
-            bool containsAll = propertiesProduct.All(pair =>
-            propertiesFilters.ContainsKey(pair.Key) && pair.Value.All(value => propertiesFilters[pair.Key].Contains(value)));
+            //bool containsAll = propertiesProduct.All(pair =>
+            //propertiesFilters.ContainsKey(pair.Key) && pair.Value.All(value => propertiesFilters[pair.Key].Contains(value)));
+
+            //if (containsAll)
+            //    return;
+
+            //var filterUpdate1 = Builders<Filter>.Filter.Eq("category", category);
+            //var filterUpdate2 = Builders<Filter>.Update.Push("", "");
+
+            //foreach (var kvp in propertiesProduct)
+            //{
+            //    if (propertiesFilters.ContainsKey(kvp.Key))
+            //    {
+            //        propertiesFilters[kvp.Key] = propertiesFilters[kvp.Key].Union(kvp.Value).ToList();
+            //    }
+            //    else
+            //    {
+            //        propertiesFilters[kvp.Key] = kvp.Value;
+            //    }
+            //    filterUpdate2 = Builders<Filter>.Update.AddToSetEach($"properties.{kvp.Key}", kvp.Value);
+            //    await _filterService.UpdateDocument(filterUpdate1, filterUpdate2);
+            //}
+
+            Filter? filter = await _filterService.GetFiltersByCategory(category);
+
+            var propertiesFilters = filter.Properties;
+            var propertiesProduct = filter.PropertiesInDictionary(product.Properties);
+
+            bool containsAll = propertiesProduct.All(group =>
+            propertiesFilters.TryGetValue(group.Key, out var existingGroup) &&
+            group.Value.All(prop =>
+            existingGroup.TryGetValue(prop.Key, out var existingValues) && 
+            prop.Value.All(v => existingValues.Contains(v))));
 
             if (containsAll)
                 return;
-
-            var filterUpdate1 = Builders<Filter>.Filter.Eq("category", category);
-            var filterUpdate2 = Builders<Filter>.Update.Push("", "");
-
-            foreach (var kvp in propertiesProduct)
+            var filterUpdate = Builders<Filter>.Filter.Eq("category", category);
+            foreach (var group in propertiesProduct)
             {
-                if (propertiesFilters.ContainsKey(kvp.Key))
+                string groupKey = group.Key;
+                foreach (var property in group.Value)
                 {
-                    propertiesFilters[kvp.Key] = propertiesFilters[kvp.Key].Union(kvp.Value).ToList();
+                    string propertyKey = property.Key;
+                    List<string> valuesToAdd = property.Value.Select(s => s.Replace('ё', 'е')).ToList();
+                    var update = Builders<Filter>.Update.AddToSetEach($"properties.{groupKey}.{propertyKey}", valuesToAdd);
+
+                    await _filterService.UpdateDocument(filterUpdate, update);
                 }
-                else
-                {
-                    propertiesFilters[kvp.Key] = kvp.Value;
-                }
-                filterUpdate2 = Builders<Filter>.Update.AddToSetEach($"properties.{kvp.Key}", kvp.Value);
-                await _filterService.UpdateDocument(filterUpdate1, filterUpdate2);
             }
-            
         }
         public async Task InsertFiltersAsync(List<Product> products, string category)
         {
@@ -144,5 +170,19 @@ namespace NoSTORE.Controllers
 
             return null;
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GetFilteredProducts([FromBody] FilterRequest FR)
+        {
+            var products = await _productService.FilterProducts(FR.Dictionary);
+            return PartialView("_ProductsPartial", products);
+        }
+    }
+
+    public class FilterRequest
+    {
+        public Dictionary<string, Dictionary<string, List<string>>> Dictionary { get; set; }
+        public int? MinPrice { get; set; }
+        public int? MaxPrice { get; set; }
     }
 }

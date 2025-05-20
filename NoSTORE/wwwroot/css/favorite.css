@@ -92,7 +92,9 @@
   position: relative;
 }
 .products .list .product a .main_image img {
-  height: 26vh;
+  height: 15rem;
+  width: 15rem;
+  object-fit: scale-down;
 }
 .products .list .product a .main_image .template__checkboxes {
   position: absolute;

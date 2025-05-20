@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Product>
+
+<div class="sort">
+    <span>Отсортировать</span>
+    @* <div class="dropdown">
+                    <button class="dropdown-button">по популярности</button>
+                    <ul class="dropdown-list">
+                        <li data-sort="popular" data-selected="true">по популярности</li>
+                        <li data-sort="expensive">сначала дорогие</li>
+                        <li data-sort="cheap">сначала дешёвые</li>
+                        <li data-sort="new">по новизне</li>
+                        <li data-sort="rating">с высоким рейтингом</li>
+                        <li data-sort="quantity">по количеству отзывов</li>
+                    </ul>
+                </div> *@
+</div>
+<div class="list">
+    @if (Model.Count() == 0)
+    {
+        <div>Сосал?</div>
+        return;   
+    }
+    @foreach (var product in Model)
+    {
+        <div class="product" data-productid="@product.Id">
+            <a href="/product/@product.Id/@product.SEOName">
+                <div class="main_image">
+                    @if (product.ImageExist())
+                    {
+                        <img src="~/photos/products/@product.Name/@product.Images[0]" />
+                    }
+                    else
+                    {
+                        <img src="https://placehold.co/240" />
+                    }
+                </div>
+                <h3 class="product__name">@product.Name</h3>
+                <div class="product__tags">
+                    <span class="product__tags">@product.TagsInString()</span>
+                </div>
+
+                <div class="product__info">
+                    <div class="delivery">
+                        <img class="delivery_icon" src="~/svg/truck-fast.svg" />
+                        <span>1 д.</span>
+                    </div>
+                    <div class="rating">
+                        <img class="star_icon" src="~/svg/activites/noact/star.svg" />
+                        <span>@(product.Rating > 0 ? product.Rating : "Нет оценок")</span>
+                    </div>
+                </div>
+            </a>
+            <div class="product__about">
+                <span>@product.CorrectPrice(product.Price)</span>
+                <div class="product__activity">
+                    <button class="basket">
+                        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path id="Vector" d="M18 50C20.2019 50 22 51.7811 22 54C22 54.9946 21.6293 55.9508 20.9648 56.6846L20.8281 56.8281C20.078 57.5783 19.0609 58 18 58C17.0054 58 16.0492 57.6293 15.3154 56.9648L15.1719 56.8281C14.4217 56.078 14 55.0609 14 54C14 51.7746 15.7746 50 18 50ZM48 50C50.2019 50 52 51.7811 52 54C52 54.9946 51.6293 55.9508 50.9648 56.6846L50.8281 56.8281C50.078 57.5783 49.0609 58 48 58C47.0054 58 46.0492 57.6293 45.3154 56.9648L45.1719 56.8281C44.4217 56.078 44 55.0609 44 54C44 51.7746 45.7746 50 48 50ZM8.54004 2L10.8203 6.85059L11.3604 8H57C57.2652 8 57.5195 8.10543 57.707 8.29297C57.8946 8.4805 58 8.73478 58 9C58 9.12192 57.9612 9.3248 57.834 9.63086L47.1533 28.9365C46.4706 30.1614 45.1427 30.9999 43.6504 31H20.1201L19.5488 32.0332L16.8496 36.9229C16.6128 37.3362 16.5312 37.7551 16.5137 38.0947L16.5098 38.25L16.5234 38.5215C16.5859 39.1511 16.8642 39.743 17.3154 40.1943C17.8311 40.71 18.5305 40.9999 19.2598 41H52V43H18C17.0054 43 16.0492 42.6293 15.3154 41.9648L15.1719 41.8281C14.4217 41.078 14 40.0609 14 39C14 38.2919 14.1831 37.6251 14.4834 37.0645L14.4824 37.0635L18.5488 29.7402L19.0479 28.8418L18.6074 27.9131L7.80664 5.14258L7.26465 4H2V2H8.54004Z" />
+                        </svg>
+                    </button>
+                    <button class="favorite">
+                        <svg width="60" height="57" viewBox="0 0 60 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path id="Vector" d="M30 57L25.65 52.8997C10.2 38.3935 0 28.7951 0 17.0845C0 7.4861 7.26 0 16.5 0C21.72 0 26.73 2.51608 30 6.46104C33.27 2.51608 38.28 0 43.5 0C52.74 0 60 7.4861 60 17.0845C60 28.7951 49.8 38.3935 34.35 52.8997L30 57Z" />
+                        </svg>
+                    </button>
+                    <button class="compare">
+                        <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="chart-histogram">
+                                <path id="Vector" d="M4.375 4.375V30.625H30.625" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
+                                <path id="Vector_2" d="M10.2085 21.875V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
+                                <path id="Vector_3" d="M16.0415 16.0417V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
+                                <path id="Vector_4" d="M21.875 4.375V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
+                                <path id="Vector_5" d="M27.7085 10.2083V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
+                            </g>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>

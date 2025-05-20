@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NoSTORE.Models;
+using NoSTORE.Models.DTO;
+using NoSTORE.Models.ViewModels;
 using NoSTORE.Services;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -31,19 +33,32 @@ namespace NoSTORE.Controllers
                 // Гость
             }
             var favorites = user.Favorites;
-            var favoritesProducts = await _productService.GetByIdsAsync(favorites.Select(s => s.ProductId).ToList());
+            var favoritesProducts = await _productService.GetByIdsAsync(favorites);
 
-            var favoriteItems = favorites.Select(f => new FavoriteItemViewModel
+            favoritesProducts.Reverse();
+
+            return View(favoritesProducts);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFavoritePartial()
+        {
+            var user = new User();
+            if (User.Identity.IsAuthenticated)
             {
-                Product = favoritesProducts.FirstOrDefault(p => p.Id == f.ProductId),
-                Date = f.Date
-            })
-                .Where(i => i.Product != null)
-                .ToList();
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                user = await _userService.GetUserById(userId);
+            }
+            else
+            {
+                // Гость
+            }
+            var favorites = user.Favorites;
+            var favoritesProducts = await _productService.GetByIdsAsync(favorites);
 
-            favoriteItems = favoriteItems.OrderByDescending(f => f.Date).ToList();
+            favoritesProducts.Reverse();
 
-            return View(favoriteItems);
+            return PartialView("_FavoritePartial", favoritesProducts);
         }
     }
 }
