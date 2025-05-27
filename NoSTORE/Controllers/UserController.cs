@@ -29,7 +29,7 @@ namespace NoSTORE.Controllers
             var model = new UserDto(
                 user.Id,
                 user.Nickname,
-                user.Avatar,
+                user.AvatarExtension,
                 user.Email,
                 user.Phone,
                 user.RoleId,
@@ -37,7 +37,8 @@ namespace NoSTORE.Controllers
                 user.Basket,
                 user.PCs,
                 user.Orders,
-                user.Reviews
+                user.Reviews,
+                user.RegistrationDate
             );
 
             if (Request.Headers.XRequestedWith == "XMLHttpRequest")

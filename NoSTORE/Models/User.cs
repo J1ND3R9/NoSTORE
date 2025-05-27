@@ -12,8 +12,8 @@ namespace NoSTORE.Models
         [BsonElement("nickname")]
         public string Nickname { get; set; }
 
-        [BsonElement("avatar")]
-        public string Avatar { get; set; }
+        [BsonElement("avatar_ext")]
+        public string? AvatarExtension { get; set; }
 
         [BsonElement("password")]
         public string PasswordHash { get; set; }
@@ -24,24 +24,30 @@ namespace NoSTORE.Models
         [BsonElement("phone")]
         public string? Phone { get; set; }
 
+        [BsonElement("registration_date")]
+        public DateTime RegistrationDate { get; set; }
+
         [BsonElement("role")]
         [BsonRepresentation(BsonType.ObjectId)]
         public string RoleId { get; set; }
 
         [BsonElement("favorites")]
-        public List<string> Favorites { get; set; }
+        public List<string> Favorites { get; set; } = new();
 
         [BsonElement("basket")]
-        public List<BasketItem> Basket { get; set; }
+        public List<BasketItem> Basket { get; set; } = new();
+
+        [BsonElement("compares")]
+        public List<CompareItem> Compares { get; set; } = new();
 
         [BsonElement("pcs")]
-        public List<string> PCs { get; set; }
+        public List<string> PCs { get; set; } = new();
 
         [BsonElement("orders")]
-        public List<string> Orders { get; set; }
+        public List<string> Orders { get; set; } = new();
 
         [BsonElement("reviews")]
-        public List<string> Reviews { get; set; }
+        public List<string> Reviews { get; set; } = new();
 
 
         public class BasketItem
@@ -59,5 +65,13 @@ namespace NoSTORE.Models
 
         }
 
+        public class CompareItem
+        {
+            [BsonElement("category")]
+            public string Category { get; set; }
+
+            [BsonElement("product_ids")]
+            public List<string> ProductIds { get; set; }
+        }
     }
 }

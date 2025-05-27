@@ -142,7 +142,6 @@
     display: none;
     overflow: visible;
     position: absolute;
-    right: 0%;
     background-color: white;
     z-index: 1000;
     padding: 1rem;
@@ -183,25 +182,27 @@
 }
 
 header {
-    top: 0;
-    margin: 0;
-    width: 81%;
     position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 1000;
-    border-radius: 0 0 10px 10px;
-    -webkit-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
-    -moz-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
-    box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
-    background-color: variables.$block-color;
-    padding: 1rem;
 
     nav {
+        border-radius: 0 0 10px 10px;
+        padding: 1rem;
+        background-color: variables.$block-color;
+        max-width: 81%;
+        margin: 0 auto;
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
         gap: 2rem;
+        -webkit-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+        -moz-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+        box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
 
         .left {
             display: flex;
@@ -326,7 +327,6 @@ header {
                         &:hover {
                             background: variables.$block-color
                         }
-
                     }
 
                     .sr {
@@ -394,15 +394,55 @@ header {
                 width: 36px;
                 height: 36px;
                 border-radius: 100%;
-                overflow: hidden;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
 
-                img {
-                    display: block;
-                    width: 100%;
-                    object-fit: cover;
+            .skeleton-loader {
+                width: 36px;
+                height: 36px;
+                border-radius: 100%;
+                background-color: #e0e0e0;
+                display: inline-block;
+                position: relative;
+                overflow: hidden;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    left: -50%;
+                    top: 0;
+                    height: 100%;
+                    width: 200%;
+                    background: linear-gradient(to right, transparent 25%, #f0f0f0 50%, transparent 75%);
+                    animation: pulse 1.5s infinite;
+                }
+            }
+
+            @keyframes pulse {
+                0% {
+                    opacity: 0.8;
+                }
+
+                50% {
+                    opacity: 0.4;
+                }
+
+                100% {
+                    opacity: 0.8;
+                }
+            }
+
+            #profile-user-container {
+                flex-direction: column;
+                justify-content: center;
+                margin: 0 auto;
+                gap: 0.4rem;
+                align-items: center;
+
+                span {
+                    margin: 0;
                 }
             }
 
@@ -418,6 +458,7 @@ header {
                 background: none;
                 outline: none;
                 border: none;
+
 
                 .icon-wrapper {
                     position: relative;
@@ -492,13 +533,12 @@ footer {
     display: flex;
     justify-content: center;
     background-color: variables.$block-color;
-    margin-top: 10%;
-    width: 100%;
+    margin-top: 10rem;
+    padding: 1rem;
+    border-radius: 1rem 1rem 0 0;
 }
 
 .footer__inside {
-    width: 81%;
-
     .footer_site__logo {
         margin-top: 24px;
         margin-bottom: 65px;
@@ -510,7 +550,7 @@ footer {
 
         section {
             h1 {
-                @include variables.font($size: 48px);
+                @include variables.font($size: 2rem);
                 width: 100%;
                 color: variables.$accent-color;
                 position: relative;
@@ -538,7 +578,7 @@ footer {
 
 
             ul {
-                @include variables.font($size: 36px );
+                @include variables.font($size: 1.7rem);
                 color: variables.$additional-color;
                 list-style: none;
                 margin: 0;
@@ -551,18 +591,18 @@ footer {
         }
 
         &:nth-child(2) {
-            @include variables.font($size: 36px );
+            @include variables.font($size: 1.7rem);
             color: variables.$additional-color;
 
             .footer__section__feedbackphone {
                 h3 {
-                    @include variables.font($size: 36px );
+                    @include variables.font($size: 1.7rem);
                     position: relative;
 
                     &::after {
                         content: "с 05:00 до 00:00 (МСК)";
                         display: block;
-                        font-size: 22px;
+                        font-size: 1.2rem;
                     }
                 }
             }
@@ -595,7 +635,7 @@ footer {
         display: block;
 
         div {
-            @include variables.font($size: 36px);
+            @include variables.font($size: 2rem);
             display: flex;
             border-radius: 8px;
             justify-content: center;

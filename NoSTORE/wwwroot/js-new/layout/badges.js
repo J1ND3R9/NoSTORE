@@ -7,9 +7,11 @@ async function initBadges() {
 
     const favQ = quantities.favorite;
     const cartQ = quantities.cart;
+    const compQ = quantities.comp;
 
     const favIcon = document.querySelector('#favorite-button .icon-wrapper');
     const cartIcon = document.querySelector('#basket-button .icon-wrapper');
+    const compIcon = document.querySelector('#compare-button .icon-wrapper');
 
     if (favQ > 0) {
         setBadge(favIcon, favQ)
@@ -20,6 +22,11 @@ async function initBadges() {
         setBadge(cartIcon, cartQ)
     } else {
         removeBadge(cartIcon);
+    }
+    if (compQ > 0) {
+        setBadge(compIcon, compQ)
+    } else {
+        removeBadge(compIcon);
     }
 }
 
@@ -33,6 +40,7 @@ function badgeSubscribeEvent() {
 
     userConnection.on('CartChanged', handleUpdate);
     userConnection.on('FavoriteChanged', handleUpdate);
+    userConnection.on('ComparesChanged', handleUpdate);
 }
 
 
@@ -46,13 +54,15 @@ async function getQuantities() {
 
         return {
             favorite: parseInt(data.favoriteQuantity),
-            cart: parseInt(data.cartQuantity)
+            cart: parseInt(data.cartQuantity),
+            comp: parseInt(data.compareQuantity)
         }
     } catch (err) {
         console.error('Ошибка загрузки статуса: ' + err);
         return {
             favorite: 0,
-            cart: 0
+            cart: 0,
+            comp: 0
         }
     }
 }

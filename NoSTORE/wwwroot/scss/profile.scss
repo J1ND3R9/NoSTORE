@@ -73,10 +73,146 @@
     transition: opacity 0.1s ease-in-out;
     padding: 1rem;
     display: flex;
+    flex-direction: column;
     flex: 1;
     background-color: variables.$block-color;
     border-radius: 1rem;
+    @include variables.font();
+    gap: 1rem;
+
     &.content-fadeout {
         opacity: 0;
-    } 
+    }
+}
+
+// Settings
+.top-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .avatar {
+        height: 100px;
+        width: 100px;
+        border: none;
+        background-color: transparent;
+        border-radius: 100%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .nickname {
+        color: variables.$text-color;
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        button {
+            border: none;
+            background: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            svg {
+                width: 30px;
+                height: 30px;
+
+                path {
+                    stroke: variables.$accent-color;
+                    stroke-width: 1px;
+                    fill: transparent;
+                    transition: fill 0.1s ease;
+                }
+            }
+            &:hover > svg > path{
+                fill: variables.$accent-color;
+            }
+        }
+    }
+
+    .date {
+        font-size: 1.2rem;
+        color: darken(variables.$text-color, 20%);
+    }
+}
+
+.middle-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 30px;
+    color: variables.$text-color;
+
+    #email, #phone {
+        display: flex;
+        background: variables.$bg-color;
+        padding: 0.6rem;
+        border-radius: 6px;
+        justify-content: space-between;
+
+        div {
+            display: flex;
+            flex-direction: column;
+
+            span:first-child {
+                font-size: 1.2rem;
+                color: darken(variables.$text-color, 20%);
+            }
+
+            span:last-child {
+                font-size: 1.4rem;
+            }
+        }
+
+        button {
+            border: none;
+            background: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+
+            svg {
+                width: 30px;
+                height: 30px;
+
+                path {
+                    stroke: variables.$accent-color;
+                    stroke-width: 1px;
+                    fill: transparent;
+                    transition: fill 0.1s ease;
+                }
+            }
+
+            &:hover > svg > path {
+                fill: variables.$accent-color;
+            }
+        }
+    }
+}
+
+.bottom-info {
+    display: flex;
+    gap: 1rem;
+
+    button {
+        padding: 0.5rem;
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        transition: background 0.1s ease;
+        border-radius: 6px;
+
+        &:hover {
+            background: variables.$bg-color;
+        }
+    }
+
+    button:first-child {
+        color: variables.$additional-color;
+    }
+
+    button:last-child {
+        color: variables.$bad-color;
+    }
 }

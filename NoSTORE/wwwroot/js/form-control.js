@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+﻿    document.addEventListener('DOMContentLoaded', () => {
 
     const registerSection = document.getElementById('register-section');
     const accountButton = document.getElementById('no-account');

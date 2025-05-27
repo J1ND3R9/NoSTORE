@@ -69,17 +69,6 @@ function cartSubscribeEvent() {
     userConnection.on("CartChanged", (update) => {
         if (isTabActive) return;
         partialRefresh();
-
-        //if (isTabActive) return;
-        //const action = update.actionType;
-        //const cartItem = update.cart;
-        //if (action === 'Updated') {
-        //    updateProductEvent(cartItem);
-        //} else if (action === 'Removed') {
-
-        //} else if (action === 'Added') {
-        //    addProductEvent(cartItem);
-        //}
     })
 }
 
@@ -132,7 +121,7 @@ async function toggleFavorite(btn, productId) {
         : '/api/apiproduct/add_product_favorite';
 
     try {
-        const res = await fetch(url, {
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -184,7 +173,7 @@ async function toggleSelection(card, checked, productId) {
         : '/api/apiproduct/unselect_product_cart';
 
     try {
-        const res = await fetch(url, {
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -192,7 +181,7 @@ async function toggleSelection(card, checked, productId) {
             body: JSON.stringify({ productId })
         });
 
-        if (!res.ok) throw new Error('Ошибка со стороны сервера');
+        if (!response.ok) throw new Error('Ошибка со стороны сервера');
         checkSelectedProducts(card, checked)
         initCart();
     } catch (err) {
@@ -206,13 +195,13 @@ async function changeQuantity(card, delta, productId, quantityEl, totalPriceEl, 
         if (QuantityHandler(card, incBtn, decBtn, delta)) {
             return;
         }
-        const res = await fetch('/api/apiproduct/quantity_product_cart', {
+        const response = await fetch('/api/apiproduct/quantity_product_cart', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ productId, quantity: delta })
         });
 
-        if (!res.ok) throw new Error('Ошибка со стороны сервера');
+        if (!response.ok) throw new Error('Ошибка со стороны сервера');
 
         card.dataset.quantity = parseFloat(card.dataset.quantity) + delta;
 

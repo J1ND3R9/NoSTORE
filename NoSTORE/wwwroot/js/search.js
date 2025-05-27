@@ -65,7 +65,7 @@ async function loadAllProducts() {
 
         allProducts = await response.json();
 
-        fuse = new Fuse(allProducts, { keys: ['Name'] })
+        fuse = new Fuse(allProducts, { keys: ['Name', 'Tags', 'Description'] })
     } catch (err) {
         console.error('Ошибка загрузки данных:', err);
     }

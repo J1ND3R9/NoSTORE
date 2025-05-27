@@ -5,6 +5,11 @@ $accent-color: #3ABBD1;
 $additional-color: #66A7C8;
 $bad-color: #E36B3F;
 
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
 @font-face {
     font-family: "Strong";
     src: url(../Fonts/Strong-Regular.ttf) format('truetype')

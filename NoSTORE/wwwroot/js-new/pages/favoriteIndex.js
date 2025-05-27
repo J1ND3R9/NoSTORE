@@ -331,6 +331,7 @@ function animationBasket(el, text) {
 function formatCurrency(value) {
     return new Intl.NumberFormat('ru-RU').format(value) + ' ₽';
 }
+
 function pluralForm(count) {
     const remainder10 = count % 10;
     const remainder100 = count % 100;

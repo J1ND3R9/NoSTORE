@@ -5,7 +5,7 @@ namespace NoSTORE.Models.DTO
     public record UserDto(
         string Id,
         string Nickname,
-        string Avatar,
+        string? AvatarExt,
         string Email,
         string? Phone,
         string RoleId,
@@ -13,6 +13,7 @@ namespace NoSTORE.Models.DTO
         List<User.BasketItem> Basket,
         List<string> PCs,
         List<string> Orders,
-        List<string> Reviews
+        List<string> Reviews,
+        DateTime RegistrationDate
         );
 }

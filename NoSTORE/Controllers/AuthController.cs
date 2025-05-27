@@ -55,10 +55,7 @@ namespace NoSTORE.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Nickname),
-                new Claim("avatar", user.Avatar),
-                new Claim(ClaimTypes.Role, user.RoleId.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
@@ -90,14 +87,15 @@ namespace NoSTORE.Controllers
             {
                 Email = model.Email,
                 PasswordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(model.Password),
-                Nickname = model.Nickname
+                Nickname = model.Nickname,
+                RegistrationDate = DateTime.UtcNow
             };
+           
+            await _userService.InsertUser(user);
+            var userdb = await _userService.GetUserByEmailAsync(model.Email);
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Nickname),
-                new Claim("avatar", user.Avatar),
-                new Claim(ClaimTypes.Role, user.RoleId.ToString())
+                new Claim(ClaimTypes.NameIdentifier, userdb.Id.ToString())
             };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
@@ -112,7 +110,6 @@ namespace NoSTORE.Controllers
                 principal,
                 authProperties
                 );
-            await _userService.InsertUser(user);
             return Ok();
         }
 
@@ -124,7 +121,7 @@ namespace NoSTORE.Controllers
         }
 
         [HttpGet("me")]
-        public IActionResult GetUserInfo()
+        public async Task<IActionResult> GetUserInfo()
         {
             if (!User.Identity.IsAuthenticated)
                 return Ok(new
@@ -132,9 +129,9 @@ namespace NoSTORE.Controllers
                     isAuthenticated = false
                 });
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var nickname = User.Identity.Name;
-            var avatar = User.FindFirstValue("avatar");
-            var role = User.FindFirstValue(ClaimTypes.Role);
+            var nickname = await _userService.GetNickname(userId);
+            var avatar = await _userService.GetAvatarExtension(userId);
+            var role = await _userService.GetRole(userId);
 
             return Ok(new
             {

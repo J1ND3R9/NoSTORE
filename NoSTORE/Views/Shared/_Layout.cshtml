@@ -27,8 +27,8 @@
                     </svg>
                 </a>
                 <div class="search-container">
-                    <form class="search-form">
-                        <input type="text" id="searchInput" placeholder="Искать по сайту" />
+                    <form class="search-form" action="/search" method="GET">
+                        <input type="text" id="searchInput" placeholder="Искать по сайту" name="q" />
                         <button type="submit" id="searchButton">
                             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M29.5788 27.4709L24.0171 21.95C26.1759 19.2561 27.2214 15.8369 26.9386 12.3953C26.6557 8.95378 25.066 5.75147 22.4963 3.44689C19.9266 1.1423 16.5722 -0.0893989 13.1229 0.00505728C9.67366 0.0995135 6.39163 1.51294 3.95171 3.95472C1.51179 6.39649 0.0994379 9.68101 0.00505344 13.1329C-0.0893311 16.5848 1.14143 19.9417 3.44427 22.5133C5.74711 25.085 8.94698 26.6759 12.3859 26.959C15.8249 27.2421 19.2415 26.1958 21.9333 24.0353L27.45 29.5562C27.5894 29.6968 27.7552 29.8085 27.9379 29.8846C28.1206 29.9608 28.3165 30 28.5144 30C28.7123 30 28.9082 29.9608 29.0909 29.8846C29.2736 29.8085 29.4394 29.6968 29.5788 29.5562C29.849 29.2765 30 28.9026 30 28.5136C30 28.1245 29.849 27.7506 29.5788 27.4709ZM13.5233 24.0353C11.4478 24.0353 9.41898 23.4194 7.69329 22.2655C5.9676 21.1115 4.62259 19.4714 3.82834 17.5524C3.03409 15.6335 2.82628 13.5219 3.23118 11.4848C3.63609 9.44766 4.63552 7.57643 6.1031 6.10774C7.57068 4.63904 9.44049 3.63885 11.4761 3.23364C13.5117 2.82843 15.6216 3.0364 17.5391 3.83125C19.4566 4.6261 21.0955 5.97213 22.2486 7.69913C23.4016 9.42614 24.0171 11.4565 24.0171 13.5336C24.0171 16.3188 22.9115 18.99 20.9435 20.9594C18.9756 22.9289 16.3064 24.0353 13.5233 24.0353Z" fill="#E0E0E0" />
@@ -56,27 +56,31 @@
                     </div>
                     Корзина
                 </a>
-                <button class="compare__button" id="compare-button">
-                    <svg width="35" height="35" viewBox="0 0 35 35" xmlns="http://www.w3.org/2000/svg">
-                        <g id="chart-histogram">
-                            <path id="Vector" d="M4.375 4.375V30.625H30.625" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
-                            <path id="Vector_2" d="M10.2085 21.875V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
-                            <path id="Vector_3" d="M16.0415 16.0417V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
-                            <path id="Vector_4" d="M21.875 4.375V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
-                            <path id="Vector_5" d="M27.7085 10.2083V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
-                        </g>
-                    </svg>
+                <a class="compare__button" id="compare-button" href="/compare">
+                    <div class="icon-wrapper">
+                        <svg width="35" height="35" viewBox="0 0 35 35" xmlns="http://www.w3.org/2000/svg">
+                            <g id="chart-histogram">
+                                <path id="Vector" d="M4.375 4.375V30.625H30.625" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
+                                <path id="Vector_2" d="M10.2085 21.875V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
+                                <path id="Vector_3" d="M16.0415 16.0417V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
+                                <path id="Vector_4" d="M21.875 4.375V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
+                                <path id="Vector_5" d="M27.7085 10.2083V24.7917" stroke="#3ABBD1" stroke-linecap="round" stroke-linejoin="round" />
+                            </g>
+                        </svg>
+                    </div>
                     <span>Сравнение</span>
-                </button>
+                </a>
                 <div id="profile">
                     <button class="profile__button" id="profile-button">
-                        <svg width="115" height="125" viewBox="0 0 115 125" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <div class="skeleton-loader" style="display: block;"></div>
+                        <svg width="115" height="125" id="profile-guest" viewBox="0 0 115 125" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
                             <g id="profile">
                                 <path id="p" d="M83.4279 29.4483C82.2718 45.0408 70.4513 57.7608 57.4748 57.7608C44.4982 57.7608 32.6571 45.0438 31.5217 29.4483C30.342 13.2276 41.8439 1.1358 57.4748 1.1358C73.1056 1.1358 84.6076 13.5225 83.4279 29.4483Z" stroke="black" stroke-width="1.49989" stroke-linecap="round" stroke-linejoin="round" />
                                 <path id="p_1" d="M57.4858 76.6361C31.8276 76.6361 5.78602 90.7924 0.966996 117.512C0.386 120.733 2.20862 123.824 5.57957 123.824H109.392C112.766 123.824 114.589 120.733 114.008 117.512C109.186 90.7924 83.144 76.6361 57.4858 76.6361Z" stroke="black" stroke-width="1.49989" stroke-miterlimit="10" />
                             </g>
                         </svg>
-                        <span id="profile-text">Войти</span>
+                        <span id="profile-text" style="display: none;">Войти</span>
+                        <div id="profile-user-container" style="display: none;"></div>
                     </button>
                     <div id="profile-modal">
                         <div class="p-modal_content">
@@ -100,7 +104,7 @@
             </div>
         </nav>
     </header>
-@*     <script src="~/js/form-control.js"></script>
+    @*     <script src="~/js/form-control.js"></script>
     <script type="module" src="~/js/auth.js"></script> *@
     <div id="login-modal" class="modal" style="display: none;">
         <div class="modal-content" id="modal-content">
@@ -129,9 +133,6 @@
             </form>
         </div>
     </div>
-
-
-
     <main>
         @RenderBody()
     </main>
@@ -212,7 +213,7 @@
             </div>
         </div>
     </footer>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.js"></script>

@@ -32,8 +32,9 @@
                     content.classList.remove('content-fadeout');
                 }, 100);
                 history.pushState(null, '', url);
-
                 setActiveLink();
+
+
             } catch (error) {
                 console.error('Ошибка загрузки содержимого: ', error);
             }

@@ -174,7 +174,7 @@ namespace NoSTORE.Controllers
         [HttpPost]
         public async Task<IActionResult> GetFilteredProducts([FromBody] FilterRequest FR)
         {
-            var products = await _productService.FilterProducts(FR.Dictionary);
+            var products = await _productService.FilterProducts(FR.Dictionary, FR.MinPrice, FR.MaxPrice);
             return PartialView("_ProductsPartial", products);
         }
     }

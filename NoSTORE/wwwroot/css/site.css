@@ -28,6 +28,8 @@ input[type=search]::-webkit-search-results-decoration {
 
 html {
   font-size: 1rem;
+  margin: 0 auto;
+  max-width: 81%;
 }
 
 p {
@@ -35,17 +37,11 @@ p {
 }
 
 body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 10px;
   background-color: #26262B;
 }
 
 main {
-  margin-top: 7%;
-  width: 81%;
-  height: 100%;
+  margin-top: 10rem;
 }
 
 a {

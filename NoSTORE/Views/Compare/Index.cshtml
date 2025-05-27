@@ -1,0 +1,50 @@
+﻿@using NoSTORE.Models.DTO
+@model CompareDto
+
+@{
+    ViewData["Title"] = "Сравнения";
+    ViewData["CSS"] = "compare.css";
+}
+@if (!Model.Compares.Any())
+{
+    <a class="no_items" href="/catalog">
+        <div class="main-image">
+            <img src="~/svg/nothing.svg" />
+        </div>
+        <div class="info">
+            <span>У вас нет ничего в сравнениях! Посмотрите наш каталог и выберите лучший для вас вариант!</span>
+        </div>
+    </a>
+    return;
+}
+<script type="module" src="~/js-new/pages/compareIndex.js"></script>
+<section class="compares-page">
+    <div class="titles">
+        <h1>Ваши сравнения</h1>
+        <button id="deleteAll">
+            Удалить все
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.0002 4V5.33333H5.3335V8H6.66683V25.3333C6.66683 26.0406 6.94778 26.7189 7.44788 27.219C7.94797 27.719 8.62625 28 9.3335 28H22.6668C23.3741 28 24.0524 27.719 24.5524 27.219C25.0525 26.7189 25.3335 26.0406 25.3335 25.3333V8H26.6668V5.33333H20.0002V4H12.0002ZM9.3335 8H22.6668V25.3333H9.3335V8ZM12.0002 10.6667V22.6667H14.6668V10.6667H12.0002ZM17.3335 10.6667V22.6667H20.0002V10.6667H17.3335Z" />
+            </svg>
+        </button>
+    </div>
+    <div class="compares">
+        <div class="categories">
+            @foreach (var compare in Model.Compares)
+            {
+                <button class="category-btn" data-category="@compare.Key">
+                    @compare.Key (@compare.Value.Count())
+                </button>
+            }
+        </div>
+        <div class="products">
+            @Html.Partial("_ComparePartial", Model.Compares.Values.FirstOrDefault());
+        </div>
+    </div>
+</section>
+
+<style>
+    header {
+        position: absolute !important;
+    }
+</style>

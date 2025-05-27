@@ -20,6 +20,8 @@ namespace NoSTORE.Models.DTO
         public string Image { get; set; }
         public int Quantity { get; set; }
         public double Rating { get; set; }
+        public string FinalPriceString { get; set; }
+        public string Description { get; set; }
 
         public ProductDto(Product p)
         {
@@ -32,6 +34,8 @@ namespace NoSTORE.Models.DTO
             Quantity = p.Quantity;
             Tags = p.TagsInString();
             Rating = p.Rating;
+            FinalPriceString = p.CorrectPrice(p.FinalPrice);
+            Description = p.Description;
         }
     }
 }

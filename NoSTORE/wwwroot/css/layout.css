@@ -126,7 +126,6 @@
   display: none;
   overflow: visible;
   position: absolute;
-  right: 0%;
   background-color: white;
   z-index: 1000;
   padding: 1rem;
@@ -158,25 +157,27 @@
 }
 
 header {
-  top: 0;
-  margin: 0;
-  width: 81%;
   position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
-  border-radius: 0 0 10px 10px;
-  -webkit-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
-  -moz-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
-  box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
-  background-color: #3F3F46;
-  padding: 1rem;
 }
 header nav {
+  border-radius: 0 0 10px 10px;
+  padding: 1rem;
+  background-color: #3F3F46;
+  max-width: 81%;
+  margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
+  -webkit-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+  -moz-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+  box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
 }
 header nav .left {
   display: flex;
@@ -346,15 +347,49 @@ header nav .buttons .profile-mini_avatar {
   width: 36px;
   height: 36px;
   border-radius: 100%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
-header nav .buttons .profile-mini_avatar img {
-  display: block;
-  width: 100%;
-  object-fit: cover;
+header nav .buttons .skeleton-loader {
+  width: 36px;
+  height: 36px;
+  border-radius: 100%;
+  background-color: #e0e0e0;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+header nav .buttons .skeleton-loader::after {
+  content: "";
+  position: absolute;
+  left: -50%;
+  top: 0;
+  height: 100%;
+  width: 200%;
+  background: linear-gradient(to right, transparent 25%, #f0f0f0 50%, transparent 75%);
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+header nav .buttons #profile-user-container {
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  gap: 0.4rem;
+  align-items: center;
+}
+header nav .buttons #profile-user-container span {
+  margin: 0;
 }
 header nav .buttons a, header nav .buttons button {
   font-family: "Strong", sans-serif;
@@ -426,13 +461,11 @@ footer {
   display: flex;
   justify-content: center;
   background-color: #3F3F46;
-  margin-top: 10%;
-  width: 100%;
+  margin-top: 10rem;
+  padding: 1rem;
+  border-radius: 1rem 1rem 0 0;
 }
 
-.footer__inside {
-  width: 81%;
-}
 .footer__inside .footer_site__logo {
   margin-top: 24px;
   margin-bottom: 65px;
@@ -443,7 +476,7 @@ footer {
 }
 .footer__inside .sections section h1 {
   font-family: "Strong", sans-serif;
-  font-size: 48px;
+  font-size: 2rem;
   font-weight: 0;
   width: 100%;
   color: #3ABBD1;
@@ -468,7 +501,7 @@ footer {
 }
 .footer__inside .sections section ul {
   font-family: "Strong", sans-serif;
-  font-size: 36px;
+  font-size: 1.7rem;
   font-weight: 0;
   color: #66A7C8;
   list-style: none;
@@ -480,20 +513,20 @@ footer {
 }
 .footer__inside .sections:nth-child(2) {
   font-family: "Strong", sans-serif;
-  font-size: 36px;
+  font-size: 1.7rem;
   font-weight: 0;
   color: #66A7C8;
 }
 .footer__inside .sections:nth-child(2) .footer__section__feedbackphone h3 {
   font-family: "Strong", sans-serif;
-  font-size: 36px;
+  font-size: 1.7rem;
   font-weight: 0;
   position: relative;
 }
 .footer__inside .sections:nth-child(2) .footer__section__feedbackphone h3::after {
   content: "с 05:00 до 00:00 (МСК)";
   display: block;
-  font-size: 22px;
+  font-size: 1.2rem;
 }
 .footer__inside .sections:nth-child(2) .footer__section__socials {
   display: flex;
@@ -517,7 +550,7 @@ footer {
 }
 .footer__inside .app div {
   font-family: "Strong", sans-serif;
-  font-size: 36px;
+  font-size: 2rem;
   font-weight: 0;
   display: flex;
   border-radius: 8px;

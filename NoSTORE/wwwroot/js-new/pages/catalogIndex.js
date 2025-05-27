@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initFilter();
     const checkboxes = document.querySelectorAll('.hidden-checkbox');
     checkboxes.forEach(initCheckbox);
-    const button = document.getElementById('show-button');
-    //button.addEventListener('click', func);
+    const button = document.getElementById('apply-filters');
+    button.addEventListener('click', () => applyFilters());
 });
 
 // === Инициализации ===
@@ -24,22 +24,24 @@ function initCheckbox(cb) {
 
 // Инициализация продукта
 function initProduct(card) {
-
     const productId = card.dataset.productid;
     const favBtn = card.querySelector('.favorite');
     const cartBtn = card.querySelector('.basket');
-    fetchStatus(productId, favBtn, cartBtn);
+    const compBtn = card.querySelector('.compare');
+    fetchStatus(productId, favBtn, cartBtn, compBtn);
 
     favBtn.addEventListener('click', () => addInFavorite(productId, favBtn));
     cartBtn.addEventListener('click', () => addInCart(productId, cartBtn));
+    compBtn.addEventListener('click', () => addInCompare(productId, compBtn));
 }
 
 // Инициализация фильтров
 function initFilter() {
     const minPriceEl = document.getElementById('minPriceInput');
     const maxPriceEl = document.getElementById('maxPriceInput');
+    const button = document.getElementById('apply-filters');
     if (maxPriceEl && minPriceEl) {
-        minPriceEl.addEventListener('focusout', () => {
+        minPriceEl.addEventListener('focusout', (e) => {
             if (!minPriceEl.value)
                 return;
             if (maxPriceEl.value) {
@@ -55,9 +57,13 @@ function initFilter() {
             if (parseInt(maxPriceEl.value) > parseInt(maxPriceEl.max)) {
                 maxPriceEl.value = maxPriceEl.max;
             }
+            if (parseInt(minPriceEl.value) > parseInt(maxPriceEl.max)) {
+                minPriceEl.value = maxPriceEl.max;
+            }
+            showButton(e);
         });
 
-        maxPriceEl.addEventListener('focusout', () => {
+        maxPriceEl.addEventListener('focusout', (e) => {
             if (!maxPriceEl.value)
                 return;
 
@@ -74,6 +80,10 @@ function initFilter() {
             if (parseInt(minPriceEl.value) < parseInt(minPriceEl.min)) {
                 minPriceEl.value = minPriceEl.min;
             }
+            if (parseInt(maxPriceEl.value) < parseInt(minPriceEl.min)) {
+                maxPriceEl.value = minPriceEl.min;
+            }
+            showButton(e);
         });
     }
 }
@@ -81,15 +91,34 @@ function initFilter() {
 // === API функции ===
 
 // Получение статуса
-async function fetchStatus(productId, favBtn, cartBtn) {
+async function fetchStatus(productId, favBtn, cartBtn, compBtn) {
     try {
         const response = await fetch(`/api/apiproduct/${productId}`);
         const data = await response.json();
 
         if (data.inFavorite) favBtn.classList.add('active');
         if (data.inCart) cartBtn.classList.add('active');
+        if (data.inCompare) compBtn.classList.add('active');
     } catch (err) {
         console.error('Ошибка загрузки статуса: ', err);
+    }
+}
+
+// Добавление в сравнение
+async function addInCompare(productId, compBtn) {
+    const url = compBtn.classList.contains('active') ? '/api/apiproduct/remove_compare' : '/api/apiproduct/add_compare';
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId })
+        });
+        if (!response.ok) throw new Error('Ошибка сервера');
+        compBtn.classList.toggle('active');
+    } catch (err) {
+        console.error('Ошибка сравнения: ', err);
     }
 }
 
@@ -133,60 +162,111 @@ async function addInCart(productId, cartBtn) {
 
 // Фильтрация каталога
 async function applyFilters() {
-    //const form = document.getElementById('filterForm');
+    const checkboxes = document.querySelectorAll('.hidden-checkbox');
 
-    //const formData = new FormData(form);
+    const filters = {};
 
-    //const filters = {};
+    const minPriceV = parseInt(document.getElementById('minPriceInput').value);
+    const maxPriceV = parseInt(document.getElementById('maxPriceInput').value);
 
-    //for (const [key, value] of formData.entries()) {
-    //    const parts = key.split('.');
+    checkboxes.forEach(cb => {
+        if (cb.checked) {
+            const name = cb.dataset.name;
+            const parts = name.split('.');
 
-    //    const category = parts[0];
-    //    const param = parts[1];
+            const category = parts[0];
+            const param = parts[1];
+            if (!filters[category]) filters[category] = {};
+            if (!filters[category][param]) filters[category][param] = [];
 
-    //    if (!filters[category]) filters[category] = {};
-    //    if (!filters[category][param]) filters[category][param] = [];
+            filters[category][param].push(cb.value);
+        }
+    });
+    try {
+        const response = await fetch('/catalog/getfilteredproducts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                dictionary: filters,
+                minprice: minPriceV,
+                maxprice: maxPriceV
+            })
+        });
+        const html = await response.text();
+        const container = document.getElementById('products');
+        gsap.to(container, {
+            autoAlpha: 0,
+            duration: 0.1,
+            onComplete: () => {
+                const button = document.getElementById('apply-filters');
+                container.innerHTML = html;
+                initCatalogDOM();
+                gsap.to(container, {
+                    autoAlpha: 1,
+                    duration: 0.1
+                });
+                gsap.to(button, {
+                    autoAlpha: 0,
+                    duration: 0.1,
+                    onComplete: () => {
+                        showButton.hidden = true;
+                        showButton.style.pointerEvents = 'none';
+                    }
+                })
+            }
+        });
+    } catch (err) {
+        console.error('Ошибка фильтрации:', err);
+    }
+    //fetch('/catalog/getfilteredproducts', {
+    //    method: 'POST',
+    //    headers: { 'Content-Type': 'application/json' },
+    //    body: JSON.stringify({ dictionary: filters })
+    //})
+    //    .then(res => res.text())
+    //    .then(html => {
+    //        document.getElementById('products').innerHTML = html;
+    //        initCatalogDOM();
+    //    })
+    //    .catch(err => console.error('Ошибка фильтрации:', err));
 
-    //    filters[category][param].push(value);
-    //}
-
-    //let minPrice = 0;
-    //let maxPrice = 0;
-
-    //try {
-    //    const response = await fetch('/catalog/getfilteredproducts', {
-    //        method: 'POST',
-    //        headers: { 'Content-Type': 'application/json' },
-    //        body: JSON.stringify({
-    //            dictionary: filters
-    //        })
-    //    });
-    //    const html = await response.text();
-    //    document.getElementById('products').innerHTML = html;
-    //    initCatalogDOM();
-    //} catch (err) {
-    //    console.error('Ошибка фильтрации:', err);
-    //}
 }
 
 // === Вспомогательные функции ===
 
 // Показ кнопки
 function showButton(e) {
-    const showButton = document.getElementById('show-button');
+    const showButton = document.getElementById('apply-filters');
 
     const label = document.querySelector(`label[for="${e.target.id}"]`);
-    const rect = label.getBoundingClientRect();
+    let rect;
+    if (!label) {
+        rect = document.getElementById('maxPriceInput').getBoundingClientRect();
+    } else {
+        rect = label.getBoundingClientRect();
+    }
+
+    const x = window.scrollX + rect.right + 10;
+    const y = window.scrollY + rect.top - 15;
+
     if (showButton.hidden === true) {
+        gsap.set(showButton, {
+            autoAlpha: 0,
+            pointerEvents: "none"
+        });
         showButton.hidden = false;
     }
 
     gsap.to(showButton, {
-        top: showButton.style.top = `${window.scrollY + rect.top - 15}px`
-
+        autoAlpha: 1,
+        left: `${x}px`,
+        top: `${y}px`,
+        ease: "power2.out",
+        duration: 0.4,
+        onComplete: () => {
+            showButton.style.pointerEvents = 'all';
+        }
     });
-    showButton.style.left = `${window.scrollX + rect.right + 10}px`;
 }
 
 // === Вспомогательные утилиты ===

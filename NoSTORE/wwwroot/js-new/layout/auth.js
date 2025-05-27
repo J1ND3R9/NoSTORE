@@ -15,6 +15,7 @@ function initLoginModal() {
 
     const noAccountBtn = document.getElementById('no-account');
     const submitBtn = document.getElementById('check-combination');
+    const profileBtn = document.getElementById('profile-button');
 
     const emailInput = document.getElementById('email');
 
@@ -25,6 +26,7 @@ function initLoginModal() {
     loginModal.addEventListener('click', (e) => loginModalVisibilityController(loginModal, e));
     noAccountBtn.addEventListener('click', () => registerSectionVisibility(noAccountBtn, submitBtn, registerScn));
     submitBtn.addEventListener('click', (e) => initSubmit(e, noAccountBtn, submitBtn, codeScn))
+    profileBtn.addEventListener('click', () => showWindow(loginModal));
 
     document.addEventListener('keydown', (e) => loginModalHotkey(loginModal, e));
 
@@ -98,8 +100,44 @@ async function logout() {
     } catch (err) {
         console.error(err.message);
     }
+}
 
+// Сохранение пользователя в localStorage
+async function fetchUserAndSaveToStorage() {
+    try {
+        const response = await fetch('/api/auth/me');
+        const data = await response.json();
 
+        await handleResponse(response);
+
+        if (data.isAuthenticated) {
+            localStorage.setItem('user', JSON.stringify(data));
+        } else {
+            localStorage.removeItem('user');
+        }
+        return data;
+    } catch (error) {
+        console.error('Ошибка при получении данных пользователя:', error);
+        localStorage.removeItem('user');
+        return { isAuthenticated: false };
+    }
+}
+
+// Показ окна при входе
+async function showWindow(modal) {
+    try {
+        const response = await fetch('/api/auth/me');
+        await handleResponse(response);
+        const data = await response.json();
+        if (!data.isAuthenticated) {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+    } catch (err) {
+        console.error(err.message);
+    }
 }
 
 // Этап входа
@@ -243,4 +281,5 @@ function isEmailValid(value) {
 // === Экспорт ===
 export function initAuthModal() {
     initLoginModal();
+    fetchUserAndSaveToStorage();
 }

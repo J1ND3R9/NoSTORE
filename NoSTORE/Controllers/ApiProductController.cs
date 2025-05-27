@@ -9,6 +9,8 @@ using NoSTORE.Models;
 using NoSTORE.Services;
 using System.Security.Claims;
 using MongoDB.Driver;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace NoSTORE.Controllers
 {
@@ -17,33 +19,24 @@ namespace NoSTORE.Controllers
     [Authorize]
     public class ApiProductController : ControllerBase
     {
-            private readonly UserService _userService;
-            private readonly ProductService _productService;
-            private readonly IHubContext<UserHub> _userHub;
-            public ApiProductController(UserService userService, ProductService productService, IHubContext<UserHub> hubContext)
-            {
-                _userService = userService;
-                _productService = productService;
-                _userHub = hubContext;
-            }
+        private readonly UserService _userService;
+        private readonly ProductService _productService;
+        private readonly IHubContext<UserHub> _userHub;
+        public ApiProductController(UserService userService, ProductService productService, IHubContext<UserHub> hubContext)
+        {
+            _userService = userService;
+            _productService = productService;
+            _userHub = hubContext;
+        }
 
         [HttpGet("all")]
         public async Task<IActionResult> AllProducts()
         {
             var products = await _productService.GetAllAsync();
-            var productsModel = products.Select(p => new ProductSearchDto(p));
+            var productsModel = products.Select(p => new ProductDto(p));
             return Ok(productsModel.ToJson());
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> QueryProducts(string query)
-        {
-            if (string.IsNullOrWhiteSpace(query))
-                return Ok(new List<Product>());
-            var products = await _productService.GetAllAsync();
-            var results = products.Where(p => p.Name.ToLower().Contains(query.ToLower()) || p.Description.ToLower().Contains(query.ToLower())).Take(5).Select(p => new ProductSearchDto(p)).ToList();
-            return Ok(results.ToJson());
-        }
         [HttpGet("getQuantities")]
         public async Task<IActionResult> GetQuantity()
         {
@@ -57,14 +50,21 @@ namespace NoSTORE.Controllers
                 // Гость
             }
             var user = await _userService.GetUserById(userId);
+            if (user == null)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return BadRequest();
+            }
 
             int favQuantity = user.Favorites?.Count() ?? 0;
             int cartQuantity = user.Basket?.Count() ?? 0;
+            int compQuantity = user.Compares?.Sum(c => c.ProductIds.Count) ?? 0;
 
             return Ok(new
             {
                 FavoriteQuantity = favQuantity,
-                CartQuantity = cartQuantity
+                CartQuantity = cartQuantity,
+                CompareQuantity = compQuantity
             });
         }
 
@@ -84,11 +84,13 @@ namespace NoSTORE.Controllers
 
             bool inFavorite = user.Favorites?.Contains(productId) ?? false;
             bool inCart = user.Basket?.Any(b => b.ProductId == productId) ?? false;
+            bool inCompare = user.Compares?.Any(c => c.ProductIds.Contains(productId)) ?? false;
 
             return Ok(new
             {
                 inFavorite,
-                inCart
+                inCart,
+                inCompare
             });
         }
 
@@ -100,7 +102,7 @@ namespace NoSTORE.Controllers
                 return Unauthorized();
 
             var updateDto = await _userService.SelectBasketChange(userId, request.ProductId, true);
-            await _userHub.Clients.User(userId).SendAsync("CartChanged", new CartUpdateDto { ActionType = "Updated", Cart = updateDto});
+            await _userHub.Clients.User(userId).SendAsync("CartChanged", new CartUpdateDto { ActionType = "Updated", Cart = updateDto });
 
             return Ok();
         }
@@ -113,31 +115,31 @@ namespace NoSTORE.Controllers
                 return Unauthorized();
 
             var updateDto = await _userService.SelectBasketChange(userId, request.ProductId, false);
-            await _userHub.Clients.User(userId).SendAsync("CartChanged", new CartUpdateDto { ActionType = "Updated", Cart = updateDto});
+            await _userHub.Clients.User(userId).SendAsync("CartChanged", new CartUpdateDto { ActionType = "Updated", Cart = updateDto });
 
             return Ok();
         }
 
-            [HttpPost("quantity_product_cart")]
-            public async Task<IActionResult> ChangeQuantity([FromBody] ProductRequest request)
+        [HttpPost("quantity_product_cart")]
+        public async Task<IActionResult> ChangeQuantity([FromBody] ProductRequest request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+                return Unauthorized();
+            if (request.Quantity == null)
+                request.Quantity = 1;
+
+            var updatedProduct = await _userService.ChangeQuantityInBasket(userId, request.ProductId, (int)request.Quantity);
+
+            var updateDto = new CartUpdateDto
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (userId == null)
-                    return Unauthorized();
-                if (request.Quantity == null)
-                    request.Quantity = 1;
+                ActionType = updatedProduct.Quantity <= 0 ? "Removed" : "Updated",
+                Cart = updatedProduct
+            };
 
-                var updatedProduct = await _userService.ChangeQuantityInBasket(userId, request.ProductId, (int)request.Quantity);
-
-                var updateDto = new CartUpdateDto
-                {
-                    ActionType = updatedProduct.Quantity <= 0 ? "Removed" : "Updated",
-                    Cart = updatedProduct
-                };
-
-                await _userHub.Clients.User(userId).SendAsync("CartChanged", updateDto);
-                return Ok();
-            }
+            await _userHub.Clients.User(userId).SendAsync("CartChanged", updateDto);
+            return Ok();
+        }
 
         [HttpPost("add_product_cart")]
         public async Task<IActionResult> ToUserCartAsync([FromBody] ProductRequest request)
@@ -157,7 +159,7 @@ namespace NoSTORE.Controllers
             {
                 cartDto = await _userService.InsertInBasket(userId, request.ProductId);
             }
-            await _userHub.Clients.User(userId).SendAsync("CartChanged", new CartUpdateDto { ActionType = "Added", Cart = cartDto});
+            await _userHub.Clients.User(userId).SendAsync("CartChanged", new CartUpdateDto { ActionType = "Added", Cart = cartDto });
             return Ok();
         }
 
@@ -169,7 +171,7 @@ namespace NoSTORE.Controllers
                 return Unauthorized();
 
             var cartDto = await _userService.RemoveFromBasket(userId, request.ProductId);
-            await _userHub.Clients.User(userId).SendAsync("CartChanged", new CartUpdateDto { ActionType = "Removed", Cart = cartDto});
+            await _userHub.Clients.User(userId).SendAsync("CartChanged", new CartUpdateDto { ActionType = "Removed", Cart = cartDto });
             return Ok();
         }
 
@@ -194,6 +196,40 @@ namespace NoSTORE.Controllers
 
             var favDto = await _userService.RemoveFromFavorite(userId, request.ProductId);
             await _userHub.Clients.User(userId).SendAsync("FavoriteChanged", favDto);
+            return Ok();
+        }
+
+        [HttpPost("add_compare")]
+        public async Task<IActionResult> AddToCompare([FromBody] ProductRequest request)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+
+            }
+            else
+            {
+                // Гость
+            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _userService.InsertCompare(userId, request.ProductId);
+            await _userHub.Clients.User(userId).SendAsync("ComparesChanged", new CompareUpdateDto { ActionType = "Added" });
+            return Ok();
+        }
+
+        [HttpPost("remove_compare")]
+        public async Task<IActionResult> RemoveFromCompare([FromBody] ProductRequest request)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+
+            }
+            else
+            {
+                // Гость
+            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _userService.RemoveCompare(userId, request.ProductId);
+            await _userHub.Clients.User(userId).SendAsync("ComparesChanged", new CompareUpdateDto { ActionType = "Removed" });
             return Ok();
         }
     }

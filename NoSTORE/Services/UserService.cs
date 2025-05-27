@@ -5,6 +5,7 @@ using NoSTORE.Models;
 using NoSTORE.Models.DTO;
 using System.Numerics;
 using System.Threading.Tasks;
+using static NoSTORE.Models.User;
 
 namespace NoSTORE.Services
 {
@@ -18,10 +19,98 @@ namespace NoSTORE.Services
             _user = dbContext.GetCollection<User>("users");
             _productService = productService;
         }
-        public async Task<List<User>> GetAllAsync() => await _user.Find(_ => true).ToListAsync();
         public async Task<User> GetUserById(string id) => await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
         public async Task<User> GetUserByEmailAsync(string email) => await _user.Find(u => u.Email == email).FirstOrDefaultAsync();
         public async Task<User> GetUserByPhoneAsync(string phone) => await _user.Find(u => u.Phone == phone).FirstOrDefaultAsync();
+
+        public async Task<string> GetAvatarExtension(string id)
+        {
+            var user = await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return "";
+            return user.AvatarExtension ?? "";
+        }
+
+        public async Task<string> GetNickname(string id)
+        {
+            var user = await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return "";
+            return user.Nickname;
+        }
+
+        public async Task<string> GetRole(string id)
+        {
+            var user = await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return "";
+            return user.RoleId;
+        }
+
+        public async Task InsertCompare(string userId, string productId)
+        {
+            var item = await _productService.GetByIdAsync(productId);
+            if (item == null)
+                return;
+            var user = await GetUserById(userId);
+            if (user == null)
+                return;
+            var existingCategory = user.Compares?.FirstOrDefault(i => i.Category == item.Category) ?? null;
+            if (existingCategory != null)
+            {
+                var itemIsExist = existingCategory.ProductIds.Contains(item.Id);
+                if (itemIsExist)
+                    return;
+                var filter = Builders<User>.Filter.And(
+                Builders<User>.Filter.Eq(u => u.Id, userId),
+                Builders<User>.Filter.ElemMatch(x => x.Compares, b => b.Category == item.Category));
+                var update = Builders<User>.Update.Push("compares.$.product_ids", item.Id);
+                await _user.UpdateOneAsync(filter, update);
+            }
+            else
+            {
+                var update = Builders<User>.Update.Push("compares", new CompareItem
+                {
+                    Category = item.Category,
+                    ProductIds = new List<string> { item.Id }
+                });
+                await _user.UpdateOneAsync(u => u.Id == userId, update);
+            }
+        }
+
+        public async Task RemoveCompare(string userId, string productId)
+        {
+            var item = await _productService.GetByIdAsync(productId);
+            if (item == null) return;
+
+            var user = await GetUserById(userId);
+            if (user == null) return;
+
+            var existingCategory = user.Compares?.FirstOrDefault(i => i.Category == item.Category) ?? null;
+            if (existingCategory == null) return;
+
+            var itemIsExist = existingCategory.ProductIds.Contains(item.Id);
+            if (!itemIsExist) return;
+
+            var filter = Builders<User>.Filter.And(
+               Builders<User>.Filter.Eq(u => u.Id, userId),
+               Builders<User>.Filter.ElemMatch(x => x.Compares, b => b.Category == item.Category));
+            var update = Builders<User>.Update.Pull("compares.$.product_ids", item.Id);
+            await _user.UpdateOneAsync(filter, update);
+
+            // Повторно проходимся по User и проверяем на пустой массив
+            user = await GetUserById(userId);
+            if (user == null) return;
+            var category = user.Compares?.FirstOrDefault(i => i.Category == item.Category) ?? null;
+            if (category != null && category.ProductIds.Count == 0)
+            {
+                var removeFilter = Builders<User>.Filter.Eq(u => u.Id, userId);
+                var removeUpdate = Builders<User>.Update.PullFilter(u => u.Compares, Builders<CompareItem>.Filter.Eq(c => c.Category, item.Category));
+
+                await _user.UpdateOneAsync(removeFilter, removeUpdate);
+            }
+
+        }
 
         public async Task<CartDto> ChangeQuantityInBasket(string userId, string productId, int quantity)
         {
@@ -76,7 +165,7 @@ namespace NoSTORE.Services
                     Quantity = 1
                 };
 
-            var update = Builders<User>.Update.Push("basket", new User.BasketItem
+            var update = Builders<User>.Update.Push("basket", new BasketItem
             {
                 ProductId = productId,
                 Quantity = 1,
@@ -161,7 +250,8 @@ namespace NoSTORE.Services
 
             var update = Builders<User>.Update.PullFilter(x => x.Favorites, fav => fav == productId);
             await _user.UpdateOneAsync(u => u.Id == userId, update);
-            return new FavoriteDto {
+            return new FavoriteDto
+            {
                 Product = new ProductDto(await _productService.GetByIdAsync(productId)),
                 ActionType = "Removed"
             };

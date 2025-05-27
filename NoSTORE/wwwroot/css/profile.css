@@ -66,12 +66,132 @@
   transition: opacity 0.1s ease-in-out;
   padding: 1rem;
   display: flex;
+  flex-direction: column;
   flex: 1;
   background-color: #3F3F46;
   border-radius: 1rem;
+  font-family: "Strong", sans-serif;
+  font-size: 16px;
+  font-weight: 0;
+  gap: 1rem;
 }
 #profile-content.content-fadeout {
   opacity: 0;
+}
+
+.top-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.top-info .avatar {
+  height: 100px;
+  width: 100px;
+  border: none;
+  background-color: transparent;
+  border-radius: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.top-info .nickname {
+  color: #E0E0E0;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.top-info .nickname button {
+  border: none;
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.top-info .nickname button svg {
+  width: 30px;
+  height: 30px;
+}
+.top-info .nickname button svg path {
+  stroke: #3ABBD1;
+  stroke-width: 1px;
+  fill: transparent;
+  transition: fill 0.1s ease;
+}
+.top-info .nickname button:hover > svg > path {
+  fill: #3ABBD1;
+}
+.top-info .date {
+  font-size: 1.2rem;
+  color: #adadad;
+}
+
+.middle-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: 30px;
+  color: #E0E0E0;
+}
+.middle-info #email, .middle-info #phone {
+  display: flex;
+  background: #26262B;
+  padding: 0.6rem;
+  border-radius: 6px;
+  justify-content: space-between;
+}
+.middle-info #email div, .middle-info #phone div {
+  display: flex;
+  flex-direction: column;
+}
+.middle-info #email div span:first-child, .middle-info #phone div span:first-child {
+  font-size: 1.2rem;
+  color: #adadad;
+}
+.middle-info #email div span:last-child, .middle-info #phone div span:last-child {
+  font-size: 1.4rem;
+}
+.middle-info #email button, .middle-info #phone button {
+  border: none;
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.middle-info #email button svg, .middle-info #phone button svg {
+  width: 30px;
+  height: 30px;
+}
+.middle-info #email button svg path, .middle-info #phone button svg path {
+  stroke: #3ABBD1;
+  stroke-width: 1px;
+  fill: transparent;
+  transition: fill 0.1s ease;
+}
+.middle-info #email button:hover > svg > path, .middle-info #phone button:hover > svg > path {
+  fill: #3ABBD1;
+}
+
+.bottom-info {
+  display: flex;
+  gap: 1rem;
+}
+.bottom-info button {
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  transition: background 0.1s ease;
+  border-radius: 6px;
+}
+.bottom-info button:hover {
+  background: #26262B;
+}
+.bottom-info button:first-child {
+  color: #66A7C8;
+}
+.bottom-info button:last-child {
+  color: #E36B3F;
 }
 
 /*# sourceMappingURL=profile.css.map */

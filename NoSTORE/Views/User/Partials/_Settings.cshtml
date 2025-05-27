@@ -1,6 +1,49 @@
 ﻿@using NoSTORE.Models.DTO
 @model UserDto
 
-<div>
-    <h1>Настройки</h1>
+<div class="top-info">
+    <button id="userAvatar" class="avatar"></button>
+    <div class="nick-info">
+        <div class="nickname">
+            <span>@Model.Nickname</span>
+            <button id="changeNickname">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.71 7.04006C21.1 6.65006 21.1 6.00006 20.71 5.63006L18.37 3.29006C18 2.90006 17.35 2.90006 16.96 3.29006L15.12 5.12006L18.87 8.87006L20.71 7.04006ZM3 17.2501V21.0001H6.75L17.81 9.93006L14.06 6.18006L3 17.2501Z" />
+                </svg>
+            </button>
+        </div>
+        <span class="date">Дата регистрации: <span id="registrationDate" data-time="@Model.RegistrationDate.ToUniversalTime().ToString("o")"></span></span>
+    </div>
+</div>
+<div class="middle-info">
+    <div id="email">
+        <div class="email-title">
+            <span>Электронная почта</span>
+            <span>@Model.Email</span>
+        </div>
+        <button id="changeEmail">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.71 7.04006C21.1 6.65006 21.1 6.00006 20.71 5.63006L18.37 3.29006C18 2.90006 17.35 2.90006 16.96 3.29006L15.12 5.12006L18.87 8.87006L20.71 7.04006ZM3 17.2501V21.0001H6.75L17.81 9.93006L14.06 6.18006L3 17.2501Z" />
+            </svg>
+        </button>
+    </div>
+    <div id="phone">
+        <div class="phone-title">
+            <span>Телефон</span>
+            <span>@(Model.Phone ?? "Не указан")</span>
+        </div>
+        <button id="changePhone">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.71 7.04006C21.1 6.65006 21.1 6.00006 20.71 5.63006L18.37 3.29006C18 2.90006 17.35 2.90006 16.96 3.29006L15.12 5.12006L18.87 8.87006L20.71 7.04006ZM3 17.2501V21.0001H6.75L17.81 9.93006L14.06 6.18006L3 17.2501Z" />
+            </svg>
+        </button>
+    </div>
+</div>
+<div class="bottom-info">
+    <button id="changePassword">
+        Сменить пароль
+    </button>
+    <button id="deleteProfile">
+        Удалить профиль
+    </button>
 </div>

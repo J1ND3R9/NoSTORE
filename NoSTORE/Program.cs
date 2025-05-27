@@ -68,8 +68,8 @@ namespace NoSTORE
                     options.Cookie.Domain = null;
 
                     options.Cookie.HttpOnly = true;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                    options.Cookie.SameSite = SameSiteMode.Strict;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                    options.Cookie.SameSite = SameSiteMode.Lax;
 
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
                     options.SlidingExpiration = true;
@@ -84,6 +84,8 @@ namespace NoSTORE
                 .AddAppServices()
                 .AddEmailServices()
                 .AddSignalR();
+
+            //builder.WebHost.UseUrls("https://26.208.227.42:5000"); // ׀אסרוינ
 
             var app = builder.Build();
 
