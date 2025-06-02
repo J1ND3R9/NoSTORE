@@ -258,7 +258,7 @@ function addInSPC(cart) {
             duration: 0.2
         })
         gsap.to(arrow, {
-            rotation: 180,
+            rotation: 0,
             transformOrigin: "50% 50%",
             duration: 0.2
         });

@@ -23,6 +23,8 @@ namespace NoSTORE.Models.DTO
         public string FinalPriceString { get; set; }
         public string Description { get; set; }
 
+        public Dictionary<string, List<Dictionary<string, string>>> Properties { get; set; }
+
         public ProductDto(Product p)
         {
             Id = p.Id;
@@ -36,6 +38,7 @@ namespace NoSTORE.Models.DTO
             Rating = p.Rating;
             FinalPriceString = p.CorrectPrice(p.FinalPrice);
             Description = p.Description;
+            Properties = p.PropertiesDict();
         }
     }
 }

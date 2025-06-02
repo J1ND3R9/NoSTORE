@@ -25,18 +25,27 @@ namespace NoSTORE.Controllers
         [Route("~/cart")]
         public async Task<IActionResult> Index()
         {
-            
-            User user = new();
+
+            string userId = "";
             if (User.Identity.IsAuthenticated)
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                user = await _userService.GetUserById(userId);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
             else
             {
-                // Гость
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
             }
-            var basket = user.Basket;
+            var user = await _userService.GetUserById(userId);
+            
+            var basket = user == null ? null : user.Basket;
             if (basket == null || !basket.Any())
                 return View(new List<CartViewModel>());
 

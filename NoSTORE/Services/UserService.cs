@@ -20,8 +20,63 @@ namespace NoSTORE.Services
             _productService = productService;
         }
         public async Task<User> GetUserById(string id) => await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
+        public async Task<List<User>> GetUsersByIdsAsync(List<string> ids)
+        {
+            return await _user.Find(u => ids.Contains(u.Id)).ToListAsync();
+        }
         public async Task<User> GetUserByEmailAsync(string email) => await _user.Find(u => u.Email == email).FirstOrDefaultAsync();
         public async Task<User> GetUserByPhoneAsync(string phone) => await _user.Find(u => u.Phone == phone).FirstOrDefaultAsync();
+        public async Task DeleteUserAsync(string id) => await _user.DeleteOneAsync(u => u.Id == id);
+
+        public async Task ChangeEmail(string id, string newEmail)
+        {
+            var user = await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return;
+            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+            var update = Builders<User>.Update.Set(u => u.Email, newEmail);
+            await _user.UpdateOneAsync(filter, update);
+        }
+
+        public async Task ChangeNickname(string id, string newNickname)
+        {
+            var user = await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return;
+            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+            var update = Builders<User>.Update.Set(u => u.Nickname, newNickname);
+            await _user.UpdateOneAsync(filter, update);
+        }
+
+        public async Task ChangePhone(string id, string newPhone)
+        {
+            var user = await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return;
+            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+            var update = Builders<User>.Update.Set(u => u.Phone, newPhone);
+            await _user.UpdateOneAsync(filter, update);
+        }
+
+        public async Task ChangeAvatar(string id, string extension)
+        {
+            var user = await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return;
+            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+            var update = Builders<User>.Update.Set(u => u.AvatarExtension, extension);
+            await _user.UpdateOneAsync(filter, update);
+        }
+
+        public async Task ChangePassword(string id, string passHash)
+        {
+            var user = await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return;
+            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+            var update = Builders<User>.Update.Set(u => u.PasswordHash, passHash);
+            await _user.UpdateOneAsync(filter, update);
+        }
 
         public async Task<string> GetAvatarExtension(string id)
         {
@@ -275,8 +330,18 @@ namespace NoSTORE.Services
             {
                 user.RoleId = "67e27e725cce8193928f9f28";
             }
+            user.IsGuest = false;
             await _user.InsertOneAsync(user);
         }
 
+        public async Task<User> CreateGuest()
+        {
+            User user = new();
+            user.Id = ObjectId.GenerateNewId().ToString();
+            user.RoleId = "67e27e725cce8193928f9f28";
+            user.IsGuest = true;
+            await _user.InsertOneAsync(user);
+            return user;
+        }
     }
 }

@@ -32,16 +32,17 @@ async function initBadges() {
 
 // === События ===
 function badgeSubscribeEvent() {
-    const handleUpdate = (update) => {
-        const action = update.actionType;
-        if (action === 'Update') return;
-        initBadges();
-    }
-
     userConnection.on('CartChanged', handleUpdate);
     userConnection.on('FavoriteChanged', handleUpdate);
     userConnection.on('ComparesChanged', handleUpdate);
 }
+
+function handleUpdate(update) {
+    const action = update.actionType;
+    if (action === 'Update') return;
+    initBadges();
+}
+
 
 
 // === API функции ===

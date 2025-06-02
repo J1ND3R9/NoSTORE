@@ -1,42 +1,16 @@
-﻿@model IEnumerable<Product>
-
-<div class="sort">
-    <span>Отсортировать</span>
-    @* <div class="dropdown">
-                    <button class="dropdown-button">по популярности</button>
-                    <ul class="dropdown-list">
-                        <li data-sort="popular" data-selected="true">по популярности</li>
-                        <li data-sort="expensive">сначала дорогие</li>
-                        <li data-sort="cheap">сначала дешёвые</li>
-                        <li data-sort="new">по новизне</li>
-                        <li data-sort="rating">с высоким рейтингом</li>
-                        <li data-sort="quantity">по количеству отзывов</li>
-                    </ul>
-                </div> *@
-</div>
+﻿@using NoSTORE.Models.DTO
+@model IEnumerable<ProductDto>
 <div class="list">
-    @if (Model.Count() == 0)
-    {
-        <div>Сосал?</div>
-        return;   
-    }
     @foreach (var product in Model)
     {
         <div class="product" data-productid="@product.Id">
             <a href="/product/@product.Id/@product.SEOName">
                 <div class="main_image">
-                    @if (product.ImageExist())
-                    {
-                        <img src="~/photos/products/@product.Name/@product.Images[0]" />
-                    }
-                    else
-                    {
-                        <img src="https://placehold.co/240" />
-                    }
+                    <img src="~/photos/products/@product.Name/@product.Image" />
                 </div>
                 <h3 class="product__name">@product.Name</h3>
                 <div class="product__tags">
-                    <span class="product__tags">@product.TagsInString()</span>
+                    <span class="product__tags">@product.Tags</span>
                 </div>
 
                 <div class="product__info">
@@ -51,7 +25,7 @@
                 </div>
             </a>
             <div class="product__about">
-                <span>@product.CorrectPrice(product.Price)</span>
+                <span>@product.FinalPriceString</span>
                 <div class="product__activity">
                     <button class="basket">
                         <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">

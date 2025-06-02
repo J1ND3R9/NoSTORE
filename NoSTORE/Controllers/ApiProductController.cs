@@ -16,7 +16,6 @@ namespace NoSTORE.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class ApiProductController : ControllerBase
     {
         private readonly UserService _userService;
@@ -47,7 +46,15 @@ namespace NoSTORE.Controllers
             }
             else
             {
-                // Гость
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
             }
             var user = await _userService.GetUserById(userId);
             if (user == null)
@@ -71,15 +78,23 @@ namespace NoSTORE.Controllers
         [HttpGet("{productId}")]
         public async Task<IActionResult> GetProducts(string productId)
         {
+            string userId = "";
             if (User.Identity.IsAuthenticated)
             {
-
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
             else
             {
-                // Гость
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
             }
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userService.GetUserById(userId);
 
             bool inFavorite = user.Favorites?.Contains(productId) ?? false;
@@ -97,7 +112,24 @@ namespace NoSTORE.Controllers
         [HttpPost("select_product_cart")]
         public async Task<IActionResult> SelectProductAsync([FromBody] ProductRequest request)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = "";
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            else
+            {
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
+            }
+
             if (userId == null)
                 return Unauthorized();
 
@@ -110,7 +142,23 @@ namespace NoSTORE.Controllers
         [HttpPost("unselect_product_cart")]
         public async Task<IActionResult> UnSelectProductAsync([FromBody] ProductRequest request)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = "";
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            else
+            {
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
+            }
             if (userId == null)
                 return Unauthorized();
 
@@ -123,7 +171,23 @@ namespace NoSTORE.Controllers
         [HttpPost("quantity_product_cart")]
         public async Task<IActionResult> ChangeQuantity([FromBody] ProductRequest request)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = "";
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            else
+            {
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
+            }
             if (userId == null)
                 return Unauthorized();
             if (request.Quantity == null)
@@ -144,7 +208,23 @@ namespace NoSTORE.Controllers
         [HttpPost("add_product_cart")]
         public async Task<IActionResult> ToUserCartAsync([FromBody] ProductRequest request)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = "";
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            else
+            {
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
+            }
             if (userId == null)
                 return Unauthorized();
             var cartDto = new CartDto();
@@ -166,7 +246,23 @@ namespace NoSTORE.Controllers
         [HttpPost("remove_product_cart")]
         public async Task<IActionResult> FromUserCart([FromBody] ProductRequest request)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = "";
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            else
+            {
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
+            }
             if (userId == null)
                 return Unauthorized();
 
@@ -178,7 +274,23 @@ namespace NoSTORE.Controllers
         [HttpPost("add_product_favorite")]
         public async Task<IActionResult> ToUserFavoriteAsync([FromBody] ProductRequest request)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = "";
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            else
+            {
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
+            }
             if (userId == null)
                 return Unauthorized();
 
@@ -190,7 +302,23 @@ namespace NoSTORE.Controllers
         [HttpPost("remove_product_favorite")]
         public async Task<IActionResult> FromUserFavorite([FromBody] ProductRequest request)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = "";
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            else
+            {
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
+            }
             if (userId == null)
                 return Unauthorized();
 
@@ -202,15 +330,27 @@ namespace NoSTORE.Controllers
         [HttpPost("add_compare")]
         public async Task<IActionResult> AddToCompare([FromBody] ProductRequest request)
         {
+            string userId = "";
             if (User.Identity.IsAuthenticated)
             {
-
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
             else
             {
-                // Гость
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
             }
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+                return Unauthorized();
+
             await _userService.InsertCompare(userId, request.ProductId);
             await _userHub.Clients.User(userId).SendAsync("ComparesChanged", new CompareUpdateDto { ActionType = "Added" });
             return Ok();
@@ -219,15 +359,27 @@ namespace NoSTORE.Controllers
         [HttpPost("remove_compare")]
         public async Task<IActionResult> RemoveFromCompare([FromBody] ProductRequest request)
         {
+            string userId = "";
             if (User.Identity.IsAuthenticated)
             {
-
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
             else
             {
-                // Гость
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
             }
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+                return Unauthorized();
+
             await _userService.RemoveCompare(userId, request.ProductId);
             await _userHub.Clients.User(userId).SendAsync("ComparesChanged", new CompareUpdateDto { ActionType = "Removed" });
             return Ok();

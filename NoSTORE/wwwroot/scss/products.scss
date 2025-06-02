@@ -1,5 +1,74 @@
 ﻿@use 'variables';
 
+.sort {
+    background: variables.$block-color;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    @include variables.font();
+    font-size: 1.6rem;
+    color: variables.$text-color;
+    display: flex;
+    gap: 1rem;
+    margin-left: 20px;
+    align-items: center;
+
+    .dropdown {
+        position: relative;
+
+        button {
+            background: variables.$bg-color;
+            color: variables.$accent-color;
+            padding: 0.2rem 1rem;
+            border: none;
+            border-radius: 5px;
+            width: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            svg {
+                width: 1.4rem;
+                height: 1.4rem;
+
+                path {
+                    fill: variables.$accent-color;
+                }
+            }
+        }
+
+        .dropdown-list {
+            display: none;
+            position: absolute;
+            z-index: 1;
+            list-style: none;
+            background-color: variables.$bg-color;
+            border-radius: 5px;
+            padding: 0;
+            width: 100%;
+            -webkit-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+            -moz-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+            box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+
+            li {
+                display: flex;
+                padding: 0.4rem 1rem;
+                transition: color 0.1s ease, background-color 0.2s ease;
+
+                &:hover {
+                    background-color: variables.$block-color;
+                    color: variables.$additional-color;
+                }
+
+                &.selected {
+                    background-color: variables.$block-color;
+                    color: variables.$accent-color;
+                }
+            }
+        }
+    }
+}
+
 .show-button {
     position: absolute;
     margin-left: 20px;

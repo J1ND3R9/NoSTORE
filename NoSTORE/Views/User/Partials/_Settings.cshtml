@@ -1,6 +1,10 @@
 ﻿@using NoSTORE.Models.DTO
 @model UserDto
 
+<form id="avatarForm" enctype="multipart/form-data" style="display: none;">
+    <input type="file" id="avatarInput" name="avatar" accept="image/*" />
+</form>
+
 <div class="top-info">
     <button id="userAvatar" class="avatar"></button>
     <div class="nick-info">
@@ -46,4 +50,11 @@
     <button id="deleteProfile">
         Удалить профиль
     </button>
+</div>
+<div id="settings-modal" class="modal" style="display: none;">
+    <div class="modal-content" id="modal-content">
+        <h2 id="modal-title"></h2>
+        <span id="modal-description" style="max-height: 0;overflow:hidden;opacity: 0;"></span>
+        <form id="modal-form"></form>
+    </div>
 </div>

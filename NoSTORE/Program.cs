@@ -5,12 +5,14 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using NoSTORE.Data;
 using NoSTORE.Hubs;
+using NoSTORE.Middlewares;
 using NoSTORE.Services;
 using NoSTORE.Settings;
 using Org.BouncyCastle.Pkix;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NoSTORE
 {
@@ -23,6 +25,7 @@ namespace NoSTORE
             services.AddScoped<FilterService>();
             services.AddScoped<UserService>();
             services.AddScoped<RoleService>();
+            services.AddScoped<ReviewService>();
             return services;
         }
         public static IServiceCollection AddAuthServices(this IServiceCollection services)
@@ -41,7 +44,7 @@ namespace NoSTORE
     }
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -85,11 +88,12 @@ namespace NoSTORE
                 .AddEmailServices()
                 .AddSignalR();
 
+            builder.Services.AddScoped<GuestMiddleware>();
+
+
             //builder.WebHost.UseUrls("https://26.208.227.42:5000"); // ׀אסרוינ
 
             var app = builder.Build();
-
-
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -105,6 +109,8 @@ namespace NoSTORE
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<GuestMiddleware>();
 
             app.MapHub<UserHub>("/userHub");
 

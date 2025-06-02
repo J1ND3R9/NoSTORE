@@ -18,16 +18,24 @@ namespace NoSTORE.Controllers
 
         public async Task<IActionResult> Index()
         {
-            User user = new();
+            string userId = "";
             if (User.Identity.IsAuthenticated)
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                user = await _userService.GetUserById(userId);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
             else
             {
-                // Гость
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
             }
+            var user = await _userService.GetUserById(userId);
             var compares = user.Compares;
             CompareDto dto = new();
             foreach (var compare in compares)

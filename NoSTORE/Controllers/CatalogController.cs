@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MailKit.Search;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 using NoSTORE.Models;
+using NoSTORE.Models.DTO;
 using NoSTORE.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -63,7 +65,7 @@ namespace NoSTORE.Controllers
             bool containsAll = propertiesProduct.All(group =>
             propertiesFilters.TryGetValue(group.Key, out var existingGroup) &&
             group.Value.All(prop =>
-            existingGroup.TryGetValue(prop.Key, out var existingValues) && 
+            existingGroup.TryGetValue(prop.Key, out var existingValues) &&
             prop.Value.All(v => existingValues.Contains(v))));
 
             if (containsAll)
@@ -132,6 +134,7 @@ namespace NoSTORE.Controllers
                 return View("Index", category.Subcategories);
             }
             var products = await GetProductsAsync(category.Name);
+
             await CreateFilters(products.Products, category.Name);
             products.Filter = await _filterService.GetFiltersByCategory(category.Name);
             return View("Products", products);
@@ -141,10 +144,12 @@ namespace NoSTORE.Controllers
         {
             List<Product> products = await _productService.GetAllAsync();
             List<Product> filteredProducts = products.Where(p => p.Category == category).ToList();
+            List<ProductDto> dto = filteredProducts.Select(p => new ProductDto(p)).ToList();
             ProductCategory productCategory = new ProductCategory
             {
                 CategoryName = category,
-                Products = filteredProducts
+                Products = filteredProducts,
+                ProductsDto = dto
             };
             return productCategory;
         }
@@ -175,7 +180,32 @@ namespace NoSTORE.Controllers
         public async Task<IActionResult> GetFilteredProducts([FromBody] FilterRequest FR)
         {
             var products = await _productService.FilterProducts(FR.Dictionary, FR.MinPrice, FR.MaxPrice);
-            return PartialView("_ProductsPartial", products);
+            var dto = products.Select(p => new ProductDto(p)).ToList();
+            if (FR.Sort != null)
+                dto = Sorting(dto, FR.Sort);
+            return PartialView("_ProductsPartial", dto);
+        }
+
+        public List<ProductDto> Sorting(List<ProductDto> products, string type)
+        {
+            var sorted = new List<ProductDto>();
+            switch (type)
+            {
+                case "cheap":
+                    products.Sort((p1, p2) => p1.Price.CompareTo(p2.Price));
+                    break;
+                case "expensive":
+                    products.Sort((p1, p2) => p2.Price.CompareTo(p1.Price));
+                    break;
+                case "new":
+                    products.Reverse();
+                    break;
+                case "rating":
+                    products.Sort((p1, p2) => p2.Rating.CompareTo(p1.Rating));
+                    break;
+            }
+            sorted = products;
+            return sorted;
         }
     }
 
@@ -184,5 +214,6 @@ namespace NoSTORE.Controllers
         public Dictionary<string, Dictionary<string, List<string>>> Dictionary { get; set; }
         public int? MinPrice { get; set; }
         public int? MaxPrice { get; set; }
+        public string? Sort { get; set; }
     }
 }

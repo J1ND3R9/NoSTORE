@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json.Linq;
+using NoSTORE.Models.DTO;
 using System.Globalization;
 using Unidecode.NET;
 
@@ -15,6 +16,7 @@ namespace NoSTORE.Models
     {
         public string CategoryName { get; set; }
         public List<Product> Products { get; set; }
+        public List<ProductDto> ProductsDto { get; set; }
         public Filter Filter { get; set; }
 
         public string PluralForm()
@@ -117,6 +119,9 @@ namespace NoSTORE.Models
         [BsonElement("properties")]
         [BsonExtraElements]
         public BsonDocument Properties { get; set; }
+
+        [BsonElement("reviews")]
+        public List<string> Reviews { get; set; } = new List<string>();
 
         public Dictionary<string, List<Dictionary<string, string>>> PropertiesDict()
         {

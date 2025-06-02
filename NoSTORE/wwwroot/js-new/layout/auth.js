@@ -1,10 +1,16 @@
 ﻿// === Всё, что связано с аутентификацией пользователя (модалка, логика) ===
 
+import { userConnection } from '../signal/connection.js';
+
 // Текущий этап входа (логин, регистер, коды)
 let currentStage = 'login';
 
 // Почта regex
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
+
+// Пароль regex
+const PASSWORD_REGEXP = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+
 
 // === Инициализации ===
 
@@ -12,7 +18,6 @@ const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@((
 function initLoginModal() {
     const registerScn = document.getElementById('register-section');
     const codeScn = document.getElementById('code-section');
-
     const noAccountBtn = document.getElementById('no-account');
     const submitBtn = document.getElementById('check-combination');
     const profileBtn = document.getElementById('profile-button');
@@ -23,14 +28,12 @@ function initLoginModal() {
 
     emailInput.addEventListener('input', () => inputEmailValid(emailInput));
 
-    loginModal.addEventListener('click', (e) => loginModalVisibilityController(loginModal, e));
     noAccountBtn.addEventListener('click', () => registerSectionVisibility(noAccountBtn, submitBtn, registerScn));
     submitBtn.addEventListener('click', (e) => initSubmit(e, noAccountBtn, submitBtn, codeScn))
     profileBtn.addEventListener('click', () => showWindow(loginModal));
 
-    document.addEventListener('keydown', (e) => loginModalHotkey(loginModal, e));
+    modalVisibilityController(loginModal);
 
-    // Временное решение?
     const logoutBtn = document.getElementById('button-logout');
     logoutBtn.addEventListener('click', () => logout())
 }
@@ -151,8 +154,69 @@ async function loginStageCheck(email, noAccBtn, subBtn, codeScn) {
         });
         await handleResponse(response);
         stageComplete('codeLogin', noAccBtn, subBtn, codeScn);
+        const desc = document.getElementById('description');
+        if (!desc.classList.contains('visible')) {
+            desc.textContent = 'А теперь введите код, который мы прислали на вашу почту!';
+            desc.style.color = '#E0E0E0';
+            desc.classList.add('visible');
+            gsap.fromTo(desc, {
+                maxHeight: 0,
+                autoAlpha: 0,
+                x: -10
+            }, {
+                maxHeight: 500,
+                autoAlpha: 1,
+                duration: 0.2,
+                x: 0
+            });
+        } else {
+            gsap.fromTo(desc, {
+                autoAlpha: 1,
+                y: 0
+            }, {
+                y: -20,
+                autoAlpha: 0,
+                duration: 0.2,
+                onComplete: () => {
+                    desc.textContent = 'А теперь введите код, который мы прислали на вашу почту!';
+                    desc.style.color = '#E0E0E0';
+                    gsap.fromTo(desc, {
+                        autoAlpha: 0,
+                        y: -20
+                    }, {
+                        autoAlpha: 1,
+                        y: 0,
+                        duration: 0.2
+                    })
+                }
+            });
+        }
     } catch (err) {
-        console.error(err.message);
+        const desc = document.getElementById('description');
+        desc.textContent = 'Мы не нашли такой аккаунт! Проверьте ваши данные';
+        desc.style.color = '#E36B3F';
+        if (!desc.classList.contains('visible')) {
+            desc.classList.add('visible');
+            gsap.fromTo(desc, {
+                maxHeight: 0,
+                autoAlpha: 0,
+                x: -10
+            }, {
+                maxHeight: 500,
+                autoAlpha: 1,
+                duration: 0.2,
+                x: 0
+            });
+        } else {
+            gsap.fromTo(desc, {
+                x: 0
+            }, {
+                x: 5,
+                duration: 0.1,
+                repeat: 3,
+                yoyo: true
+            });
+        }
     }
 }
 
@@ -168,9 +232,37 @@ async function loginCodeStageCheck(email) {
             body: JSON.stringify({ email, password, code })
         });
         await handleResponse(response);
+        await userConnection.stop();
+        await userConnection.start()
+            .then(() => console.log('SignalR подключён'))
+            .catch(err => console.error('SignalR ошибка:', err));
         location.reload();
     } catch (err) {
-        console.error(err.message);
+        const desc = document.getElementById('description');
+        desc.textContent = 'Вы ввели неверный код!';
+        desc.style.color = '#E36B3F';
+        if (!desc.classList.contains('visible')) {
+            desc.classList.add('visible');
+            gsap.fromTo(desc, {
+                maxHeight: 0,
+                autoAlpha: 0,
+                x: -10
+            }, {
+                maxHeight: 500,
+                autoAlpha: 1,
+                duration: 0.2,
+                x: 0
+            });
+        } else {
+            gsap.fromTo(desc, {
+                x: 0
+            }, {
+                x: 5,
+                duration: 0.1,
+                repeat: 3,
+                yoyo: true
+            });
+        }
     }
 }
 
@@ -203,6 +295,10 @@ async function registerCodeStageCheck(email) {
             body: JSON.stringify({ email, password, nickname, code })
         });
         await handleResponse(response);
+        await userConnection.stop();
+        await userConnection.start()
+            .then(() => console.log('SignalR подключён'))
+            .catch(err => console.error('SignalR ошибка:', err));
         location.reload();
     } catch (err) {
         console.error(err.message);
@@ -210,6 +306,35 @@ async function registerCodeStageCheck(email) {
 }
 
 // === Вспомогательные функции ===
+
+// Контроллер видимости модалки
+function modalVisibilityController(modal) {
+    let isMouseDownOnOverlay = false;
+
+    modal.addEventListener('mousedown', (e) => {
+        if (e.target === modal) {
+            isMouseDownOnOverlay = true;
+        }
+    });
+
+    modal.addEventListener('mouseup', (e) => {
+        if (isMouseDownOnOverlay && e.target === modal) {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 200);
+        }
+        isMouseDownOnOverlay = false;
+    });
+    document.addEventListener('keydown', (e) => {
+        if (modal.style.display === 'flex' && e.key === 'Escape') {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none'
+            }, 200);
+        }
+    })
+}
 
 // Контроллер управления видимостью модалки
 function loginModalVisibilityController(modal, e) {
@@ -261,6 +386,43 @@ function registerSectionVisibility(noAccBtn, subBtn, regScn) {
         setTimeout(() => {
             regScn.classList.add('active');
         }, 10);
+        const desc = document.getElementById('description');
+        if (!desc.classList.contains('visible')) {
+            desc.textContent = 'Заполните все поля, а мы вас зарегистрируем.';
+            desc.style.color = '#E0E0E0';
+            desc.classList.add('visible');
+            gsap.fromTo(desc, {
+                maxHeight: 0,
+                autoAlpha: 0,
+                x: -10
+            }, {
+                maxHeight: 500,
+                autoAlpha: 1,
+                duration: 0.2,
+                x: 0
+            });
+        } else {
+            gsap.fromTo(desc, {
+                autoAlpha: 1,
+                y: 0
+            }, {
+                y: -20,
+                autoAlpha: 0,
+                duration: 0.2,
+                onComplete: () => {
+                    desc.textContent = 'Заполните все поля, а мы вас зарегистрируем.';
+                    desc.style.color = '#E0E0E0';
+                    gsap.fromTo(desc, {
+                        autoAlpha: 0,
+                        y: -20
+                    }, {
+                        autoAlpha: 1,
+                        y: 0,
+                        duration: 0.2
+                    })
+                }
+            });
+        }
     } else {
         currentStage = 'login';
         noAccBtn.textContent = 'Нет аккаунта';
@@ -268,6 +430,20 @@ function registerSectionVisibility(noAccBtn, subBtn, regScn) {
         setTimeout(() => {
             regScn.style.display = 'none';
         }, 200);
+        const desc = document.getElementById('description');
+        if (desc.classList.contains('visible')) {
+            desc.classList.remove('visible');
+            gsap.fromTo(desc, {
+                maxHeight: 500,
+                autoAlpha: 1,
+                x: 0
+            }, {
+                maxHeight: 0,
+                autoAlpha: 0,
+                duration: 0.2,
+                x: -10
+            });
+        } 
     }
 }
 

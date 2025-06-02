@@ -39,56 +39,76 @@
                 </div>
             </div>
             <button id="apply-filters" class="show-button" hidden>Применить</button>
-                @foreach (var group in Model.Filter.Properties)
+            @foreach (var group in Model.Filter.Properties)
+            {
+                @foreach (var f in group.Value)
                 {
-                    @foreach (var f in group.Value)
-                    {
-                        <div class="line">
-                            <div class="filters__template">
-                                <div class="template__title">
-                                    <h3>@f.Key.Remove(f.Key.Length - 1, 1)</h3>
-                                    <button type="button" class="toggle-button">
-                                        <svg id="arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M10 17L14 21L18 17" stroke="#66A7C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path d="M6 5H12.5C13.3285 5 14 5.67155 14 6.5V21" stroke="#66A7C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="template__searchbox">
-                                    <input placeholder="Поиск" type="search" /> 
-                                    <button type="submit">
-                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M29.5788 27.4709L24.0171 21.95C26.1759 19.2561 27.2214 15.8369 26.9386 12.3953C26.6557 8.95378 25.066 5.75147 22.4963 3.44689C19.9266 1.1423 16.5722 -0.0893989 13.1229 0.00505728C9.67366 0.0995135 6.39163 1.51294 3.95171 3.95472C1.51179 6.39649 0.0994379 9.68101 0.00505344 13.1329C-0.0893311 16.5848 1.14143 19.9417 3.44427 22.5133C5.74711 25.085 8.94698 26.6759 12.3859 26.959C15.8249 27.2421 19.2415 26.1958 21.9333 24.0353L27.45 29.5562C27.5894 29.6968 27.7552 29.8085 27.9379 29.8846C28.1206 29.9608 28.3165 30 28.5144 30C28.7123 30 28.9082 29.9608 29.0909 29.8846C29.2736 29.8085 29.4394 29.6968 29.5788 29.5562C29.849 29.2765 30 28.9026 30 28.5136C30 28.1245 29.849 27.7506 29.5788 27.4709ZM13.5233 24.0353C11.4478 24.0353 9.41898 23.4194 7.69329 22.2655C5.9676 21.1115 4.62259 19.4714 3.82834 17.5524C3.03409 15.6335 2.82628 13.5219 3.23118 11.4848C3.63609 9.44766 4.63552 7.57643 6.1031 6.10774C7.57068 4.63904 9.44049 3.63885 11.4761 3.23364C13.5117 2.82843 15.6216 3.0364 17.5391 3.83125C19.4566 4.6261 21.0955 5.97213 22.2486 7.69913C23.4016 9.42614 24.0171 11.4565 24.0171 13.5336C24.0171 16.3188 22.9115 18.99 20.9435 20.9594C18.9756 22.9289 16.3064 24.0353 13.5233 24.0353Z" fill="#E0E0E0" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                @{
-                                    int currentLimit = Math.Min(limitList, f.Value.Count);
-                                }
-                                @for (int i = 0; i < currentLimit; i++)
-                                {
-                                    <div class="template__checkboxes">
-                                        <input type="checkbox" class="hidden-checkbox" id="checkbox@(f.Value[i])" value="@f.Value[i]" data-name="@group.Key.@f.Key"/>
-                                        <label for="checkbox@(f.Value[i])" class="checkbox-label">
-                                            @(f.Value[i] == "True" ? "есть" : f.Value[i] == "False" ? "нету" : f.Value[i])
-                                        </label>
-                                    </div>
-                                }
-                                <div class="template__buttons">
-                                    @if (f.Value.Count > 6)
-                                    {
-                                        <button type="button" class="button_show_all">Показать всё</button>
-                                    }
-                                    <button type="button" class="button_drop">Сбросить</button>
-                                </div>
-
+                    <div class="line">
+                        <div class="filters__template">
+                            <div class="template__title">
+                                <h3>@f.Key.Remove(f.Key.Length - 1, 1)</h3>
+                                <button type="button" class="toggle-button">
+                                    <svg id="arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 17L14 21L18 17" stroke="#66A7C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M6 5H12.5C13.3285 5 14 5.67155 14 6.5V21" stroke="#66A7C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
                             </div>
+                            <div class="template__searchbox">
+                                <input placeholder="Поиск" type="search" />
+                                <button type="submit">
+                                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M29.5788 27.4709L24.0171 21.95C26.1759 19.2561 27.2214 15.8369 26.9386 12.3953C26.6557 8.95378 25.066 5.75147 22.4963 3.44689C19.9266 1.1423 16.5722 -0.0893989 13.1229 0.00505728C9.67366 0.0995135 6.39163 1.51294 3.95171 3.95472C1.51179 6.39649 0.0994379 9.68101 0.00505344 13.1329C-0.0893311 16.5848 1.14143 19.9417 3.44427 22.5133C5.74711 25.085 8.94698 26.6759 12.3859 26.959C15.8249 27.2421 19.2415 26.1958 21.9333 24.0353L27.45 29.5562C27.5894 29.6968 27.7552 29.8085 27.9379 29.8846C28.1206 29.9608 28.3165 30 28.5144 30C28.7123 30 28.9082 29.9608 29.0909 29.8846C29.2736 29.8085 29.4394 29.6968 29.5788 29.5562C29.849 29.2765 30 28.9026 30 28.5136C30 28.1245 29.849 27.7506 29.5788 27.4709ZM13.5233 24.0353C11.4478 24.0353 9.41898 23.4194 7.69329 22.2655C5.9676 21.1115 4.62259 19.4714 3.82834 17.5524C3.03409 15.6335 2.82628 13.5219 3.23118 11.4848C3.63609 9.44766 4.63552 7.57643 6.1031 6.10774C7.57068 4.63904 9.44049 3.63885 11.4761 3.23364C13.5117 2.82843 15.6216 3.0364 17.5391 3.83125C19.4566 4.6261 21.0955 5.97213 22.2486 7.69913C23.4016 9.42614 24.0171 11.4565 24.0171 13.5336C24.0171 16.3188 22.9115 18.99 20.9435 20.9594C18.9756 22.9289 16.3064 24.0353 13.5233 24.0353Z" fill="#E0E0E0" />
+                                    </svg>
+                                </button>
+                            </div>
+                            @{
+                                int currentLimit = Math.Min(limitList, f.Value.Count);
+                            }
+                            @for (int i = 0; i < currentLimit; i++)
+                            {
+                                <div class="template__checkboxes">
+                                    <input type="checkbox" class="hidden-checkbox" id="checkbox@(f.Value[i])" value="@f.Value[i]" data-name="@group.Key.@f.Key" />
+                                    <label for="checkbox@(f.Value[i])" class="checkbox-label">
+                                        @(f.Value[i] == "True" ? "есть" : f.Value[i] == "False" ? "нету" : f.Value[i])
+                                    </label>
+                                </div>
+                            }
+                            <div class="template__buttons">
+                                @if (f.Value.Count > 6)
+                                {
+                                    <button type="button" class="button_show_all">Показать всё</button>
+                                }
+                                <button type="button" class="button_drop">Сбросить</button>
+                            </div>
+
                         </div>
-                    }
+                    </div>
                 }
+            }
         </div>
-        <div class="products__list" id="products">
-            @Html.Partial("_ProductsPartial", Model.Products)
+        <div class="products__list">
+            <div class="sort">
+                <span>Отсортировать</span>
+                <div class="dropdown">
+                    <button id="dropdown-button">
+                        <span id="dd-text">по популярности</span>
+                        <svg id="dropdown-arrow" style="transform:rotate(180deg);" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.5755 4.98489L2.45048 19.6099C2.33369 19.7787 2.26531 19.9762 2.25272 20.181C2.24014 20.3859 2.28384 20.5903 2.37908 20.7721C2.47433 20.9539 2.6175 21.1062 2.79309 21.2125C2.96867 21.3187 3.16999 21.3749 3.37523 21.375L23.6252 21.375C23.8306 21.3751 24.032 21.3191 24.2078 21.2129C24.3835 21.1067 24.5269 20.9544 24.6222 20.7726C24.7176 20.5907 24.7614 20.3863 24.7489 20.1813C24.7363 19.9764 24.6679 19.7787 24.5511 19.6099L14.4261 4.98489C14.3221 4.83589 14.1837 4.71421 14.0226 4.63019C13.8615 4.54617 13.6825 4.50229 13.5008 4.50229C13.3191 4.50229 13.1401 4.54617 12.979 4.63019C12.8179 4.71421 12.6795 4.83589 12.5755 4.98489Z" />
+                        </svg>
+                    </button>
+                    <ul class="dropdown-list">
+                        <li class="s" data-sort="popular" data-selected="true">по популярности</li>
+                        <li class="s" data-sort="expensive">сначала дорогие</li>
+                        <li class="s" data-sort="cheap">сначала дешёвые</li>
+                        <li class="s" data-sort="new">по новизне</li>
+                        <li class="s" data-sort="rating">с высоким рейтингом</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="products">
+                @Html.Partial("_ProductsPartial", Model.ProductsDto)
+            </div>
         </div>
     </section>
 </section>

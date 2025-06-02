@@ -50,12 +50,18 @@ function initModal() {
 // === API функции ===
 
 // Получение юзера из API и сохранение в localStorage
-async function fetchUserAndSave() {
+async function fetchUserAndSave(force = false) {
+    const cachedUser = localStorage.getItem('user');
+    if (cachedUser && !force) {
+        return JSON.parse(cachedUser);
+    }
+
     try {
         const response = await fetch('/api/auth/me');
         const data = await response.json();
         if (data.isAuthenticated) {
             localStorage.setItem('user', JSON.stringify(data));
+            window.dispatchEvent(new Event("userLoaded"));
         } else {
             localStorage.removeItem('user');
         }
@@ -150,3 +156,5 @@ export async function initHeaderUI() {
     }
     initModal();
 }
+
+export { fetchUserAndSave };

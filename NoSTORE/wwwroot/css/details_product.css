@@ -2,10 +2,382 @@
   font-family: "Strong";
   src: url(../Fonts/Strong-Regular.ttf) format("truetype");
 }
+.reviews {
+  font-family: "Strong", sans-serif;
+  font-size: 16px;
+  font-weight: 0;
+  background-color: #3F3F46;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.reviews .ratings {
+  color: #3ABBD1;
+  position: -webkit-sticky;
+  position: sticky;
+  align-self: flex-start;
+  top: 8rem;
+  z-index: 100;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.reviews .ratings .total-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #26262B;
+  padding: 0.4rem;
+  border-radius: 6px;
+  font-size: 2rem;
+}
+.reviews .ratings .total-rating img {
+  width: 3rem;
+  height: 3rem;
+}
+.reviews .ratings .ratings-quantity {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.4rem;
+  background: #26262B;
+  border-radius: 6px;
+}
+.reviews .ratings .ratings-quantity .rating-info {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+}
+.reviews .ratings .ratings-quantity .rating-info img {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: 5px;
+}
+.reviews .ratings .ratings-quantity .rating-info .rating-cif {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+}
+.reviews .ratings .ratings-quantity .rating-info .ratingb {
+  color: #26262B;
+  background-color: #66A7C8;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  border-radius: 6px;
+  margin-left: 1rem;
+}
+.reviews .ratings .post-your-review {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  color: #E0E0E0;
+}
+.reviews .ratings .post-your-review span:first-child {
+  font-size: 1.6rem;
+  color: #66A7C8;
+  margin-bottom: 0.1rem;
+}
+.reviews .ratings .post-your-review span {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+.reviews .ratings .post-your-review button {
+  padding: 0.4rem;
+  background: #66A7C8;
+  color: #26262B;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.5rem;
+  transition: color 0.1s ease, background 0.1s ease;
+}
+.reviews .ratings .post-your-review button:hover {
+  background: #26262B;
+  color: #3ABBD1;
+}
+.reviews .review_block {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 1rem;
+}
+.reviews .review_block .rb-topinfo::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #26262B;
+  border-radius: 5px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.reviews .review_block .rb-topinfo div {
+  display: flex;
+  justify-content: space-between;
+}
+.reviews .review_block .rb-topinfo .sorts {
+  display: flex;
+  position: relative;
+  gap: 5rem;
+  align-items: end;
+  color: #66A7C8;
+  font-size: 1.4rem;
+}
+.reviews .review_block .rb-topinfo .sorts .template__checkboxes .hidden-checkbox {
+  display: none;
+}
+.reviews .review_block .rb-topinfo .sorts .template__checkboxes .hidden-checkbox:checked + .checkbox-label::before {
+  background-color: #3ABBD1;
+}
+.reviews .review_block .rb-topinfo .sorts .template__checkboxes .checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+}
+.reviews .review_block .rb-topinfo .sorts .template__checkboxes .checkbox-label::before {
+  content: " ";
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  margin-right: 10px;
+  background-color: #26262B;
+  transition: 0.1s ease;
+}
+.reviews .review_block .rb-topinfo .sorts .sort_byrate {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.4rem;
+  color: #66A7C8;
+}
+.reviews .review_block .rb-topinfo .sorts .sort_byrate button {
+  background: #26262B;
+  color: #3ABBD1;
+  padding: 0.2rem 1rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.4rem;
+  width: 7rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.reviews .review_block .rb-topinfo .sorts .sort_byrate button svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+.reviews .review_block .rb-topinfo .sorts .sort_byrate button svg path {
+  fill: #3ABBD1;
+}
+.reviews .review_block .rb-topinfo .sorts .sort_byrate .dropdown-list {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  list-style: none;
+  background-color: #26262B;
+  border-radius: 5px;
+  padding: 0;
+  width: 100%;
+  -webkit-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+  -moz-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+  box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+}
+.reviews .review_block .rb-topinfo .sorts .sort_byrate .dropdown-list li {
+  display: flex;
+  padding: 0.4rem 1rem;
+  transition: color 0.1s ease, background-color 0.2s ease;
+}
+.reviews .review_block .rb-topinfo .sorts .sort_byrate .dropdown-list li:hover {
+  background-color: #3F3F46;
+  color: #66A7C8;
+}
+.reviews .review_block .rb-topinfo .sorts .sort_byrate .dropdown-list li.selected {
+  background-color: #3F3F46;
+  color: #3ABBD1;
+}
+.reviews .review_block .popular-review {
+  background: #26262B;
+  border-radius: 1rem;
+}
+.reviews .review_block .popular-review h2 {
+  color: #3ABBD1;
+}
+.reviews .review_block .popular-review .r .placed-rating {
+  background: #3F3F46;
+}
+.reviews .review_block .popular-review .r .middle-info .like-block .like-count {
+  background-color: #3F3F46;
+}
+.reviews .review_block .popular-review .r .middle-info .like-block button.active {
+  background: #3F3F46;
+}
+.reviews .review_block .r {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #E0E0E0;
+}
+.reviews .review_block .r .middle-info {
+  display: flex;
+  justify-content: space-between;
+}
+.reviews .review_block .r .middle-info .like-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.reviews .review_block .r .middle-info .like-block .like-count {
+  height: 100%;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  color: #3ABBD1;
+  font-size: 1.5rem;
+  background-color: #26262B;
+}
+.reviews .review_block .r .middle-info .like-block button {
+  background: none;
+  border: none;
+}
+.reviews .review_block .r .middle-info .like-block button svg {
+  width: 40px;
+  height: 40px;
+}
+.reviews .review_block .r .middle-info .like-block button svg path {
+  stroke: #3ABBD1;
+  stroke-width: 1px;
+  fill: transparent;
+  transition: fill 0.2s ease;
+}
+.reviews .review_block .r .middle-info .like-block button:hover svg path {
+  fill: #3ABBD1;
+}
+.reviews .review_block .r .middle-info .like-block button.active {
+  background: #26262B;
+}
+.reviews .review_block .r .placed-rating {
+  background: #26262B;
+  display: flex;
+  width: max-content;
+  gap: 0.5rem;
+  padding: 0.4rem;
+  border-radius: 6px;
+}
+.reviews .review_block .r .placed-rating svg {
+  overflow: visible;
+  width: 40px;
+  height: 40px;
+}
+.reviews .review_block .r .placed-rating svg path {
+  stroke: #3ABBD1;
+  stroke-width: 1px;
+}
+.reviews .review_block .r .placed-rating .active path {
+  fill: #3ABBD1;
+}
+.reviews .review_block .r .profile_and_report {
+  display: flex;
+  justify-content: space-between;
+}
+.reviews .review_block .r .profile_and_report button {
+  background: none;
+  border: none;
+}
+.reviews .review_block .r .profile_and_report button svg {
+  width: 40px;
+  height: 40px;
+}
+.reviews .review_block .r .profile_and_report button svg path {
+  stroke: #3ABBD1;
+  stroke-width: 2px;
+  fill: none;
+  transition: stroke 0.4s ease;
+}
+.reviews .review_block .r .profile_and_report button:hover svg path {
+  stroke: #E36B3F;
+}
+.reviews .review_block .r .profile_and_report .profile {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+.reviews .review_block .r .profile_and_report .profile .avatar {
+  width: 65px;
+  height: 65px;
+  border-radius: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.reviews .review_block .r .profile_and_report .profile .profile-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+}
+.reviews .review_block .r .profile_and_report .profile .profile-info .date {
+  font-size: 1.2rem;
+  color: #adadad;
+}
+.reviews .review_block .r h3 {
+  font-size: 1.3rem;
+  color: #66A7C8;
+}
+.reviews .review_block .r span {
+  font-size: 1.3rem;
+}
+.reviews .review_block .r .usagetime span {
+  color: #E0E0E0;
+}
+.reviews .review_block .r .minuses h3 {
+  color: #E36B3F;
+}
+
+#charts {
+  font-family: "Strong", sans-serif;
+  font-size: 1rem;
+  font-weight: 0;
+  color: #E0E0E0;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+#charts #chartsContent {
+  color: #E0E0E0;
+  background-color: #3F3F46;
+  padding: 1rem;
+  border-radius: 8px;
+  position: relative;
+  transition: height 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+  height: 400px;
+}
+
 .additonal__info {
   background-color: #3F3F46;
   border-radius: 10px;
   padding: 1rem;
+  margin-bottom: 2rem;
 }
 .additonal__info .top__info {
   display: flex;
@@ -346,6 +718,28 @@
   color: #3ABBD1;
 }
 .main .product__activity .product__buttons button:hover svg path {
+  stroke: #3ABBD1;
+}
+.main .product__activity .product__buttons #cartBtn {
+  width: 230px;
+}
+.main .product__activity .product__buttons #favBtn.active, .main .product__activity .product__buttons #cartBtn.active {
+  background-color: #26262B;
+}
+.main .product__activity .product__buttons #favBtn.active span, .main .product__activity .product__buttons #cartBtn.active span {
+  color: #3ABBD1;
+}
+.main .product__activity .product__buttons #favBtn.active svg path, .main .product__activity .product__buttons #cartBtn.active svg path {
+  fill: #3ABBD1;
+  stroke: #3ABBD1;
+}
+.main .product__activity .product__buttons #compBtn.active {
+  background-color: #26262B;
+}
+.main .product__activity .product__buttons #compBtn.active span {
+  color: #3ABBD1;
+}
+.main .product__activity .product__buttons #compBtn.active svg path {
   stroke: #3ABBD1;
 }
 .main .additional_info {

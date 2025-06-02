@@ -1,5 +1,4 @@
 ﻿// === Каталог ===
-
 document.addEventListener('DOMContentLoaded', () => {
     initCatalogDOM();
     initFilter();
@@ -14,12 +13,76 @@ document.addEventListener('DOMContentLoaded', () => {
 // Инициализация ДОМ
 function initCatalogDOM() {
     const products = document.querySelectorAll('.product');
-    products.forEach(initProduct)
-
+    products.forEach(initProduct);
 }
 
 function initCheckbox(cb) {
     cb.addEventListener('change', showButton);
+}
+
+// Иницализация сортировки
+function initSort() {
+    const dropbutton = document.getElementById('dropdown-button');
+    const droptext = document.getElementById('dd-text');
+
+    const dropdown = document.querySelector('.dropdown-list');
+    const arrow = document.getElementById('dropdown-arrow');
+
+    const items = document.querySelectorAll('.s');
+    items[0].classList.add('selected');
+
+    for (i = 0; i < items.length; i++) {
+        items[i].addEventListener('click', (e) => {
+            items.forEach(item => item.classList.remove('selected'));
+
+            const sort = e.target.dataset.sort;
+            droptext.textContent = e.target.textContent;
+            e.target.classList.add('selected');
+            dropbutton.dataset.sort = sort;
+            applyFilters();
+        })
+    }
+
+    dropbutton.addEventListener('click', () => {
+        if (!dropdown.classList.contains('active')) {
+            gsap.fromTo(dropdown, {
+                autoAlpha: 0,
+                top: 0,
+                display: 'block'
+            }, {
+                autoAlpha: 1,
+                top: 50,
+                duration: 0.2,
+                onComplete: () => {
+                    dropdown.classList.add('active');
+                }
+            });
+            gsap.to(arrow, {
+                rotation: 0,
+                transformOrigin: "50% 50%",
+                duration: 0.2
+            });
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (dropdown.classList.contains('active')) {
+            gsap.to(dropdown, {
+                autoAlpha: 0,
+                top: 0,
+                duration: 0.2,
+                onComplete: () => {
+                    dropdown.classList.remove('active');
+                    dropdown.style.display = 'none';
+                }
+            });
+            gsap.to(arrow, {
+                rotation: 180,
+                transformOrigin: "50% 50%",
+                duration: 0.2
+            });
+        }
+    })
 }
 
 // Инициализация продукта
@@ -37,9 +100,10 @@ function initProduct(card) {
 
 // Инициализация фильтров
 function initFilter() {
+    initSort();
     const minPriceEl = document.getElementById('minPriceInput');
     const maxPriceEl = document.getElementById('maxPriceInput');
-    const button = document.getElementById('apply-filters');
+
     if (maxPriceEl && minPriceEl) {
         minPriceEl.addEventListener('focusout', (e) => {
             if (!minPriceEl.value)
@@ -169,6 +233,8 @@ async function applyFilters() {
     const minPriceV = parseInt(document.getElementById('minPriceInput').value);
     const maxPriceV = parseInt(document.getElementById('maxPriceInput').value);
 
+    const sort = document.getElementById('dropdown-button').dataset.sort;
+
     checkboxes.forEach(cb => {
         if (cb.checked) {
             const name = cb.dataset.name;
@@ -189,50 +255,44 @@ async function applyFilters() {
             body: JSON.stringify({
                 dictionary: filters,
                 minprice: minPriceV,
-                maxprice: maxPriceV
+                maxprice: maxPriceV,
+                sort: sort
             })
         });
         const html = await response.text();
-        const container = document.getElementById('products');
-        gsap.to(container, {
-            autoAlpha: 0,
-            duration: 0.1,
-            onComplete: () => {
-                const button = document.getElementById('apply-filters');
-                container.innerHTML = html;
-                initCatalogDOM();
-                gsap.to(container, {
-                    autoAlpha: 1,
-                    duration: 0.1
-                });
-                gsap.to(button, {
-                    autoAlpha: 0,
-                    duration: 0.1,
-                    onComplete: () => {
-                        showButton.hidden = true;
-                        showButton.style.pointerEvents = 'none';
-                    }
-                })
-            }
-        });
+        renderProducts(html);
+       
     } catch (err) {
         console.error('Ошибка фильтрации:', err);
     }
-    //fetch('/catalog/getfilteredproducts', {
-    //    method: 'POST',
-    //    headers: { 'Content-Type': 'application/json' },
-    //    body: JSON.stringify({ dictionary: filters })
-    //})
-    //    .then(res => res.text())
-    //    .then(html => {
-    //        document.getElementById('products').innerHTML = html;
-    //        initCatalogDOM();
-    //    })
-    //    .catch(err => console.error('Ошибка фильтрации:', err));
-
 }
 
 // === Вспомогательные функции ===
+
+// Рендер
+function renderProducts(html) {
+    const container = document.getElementById('products');
+    gsap.to(container, {
+        autoAlpha: 0,
+        duration: 0.1,
+        onComplete: () => {
+            const button = document.getElementById('apply-filters');
+            container.innerHTML = html;
+            initCatalogDOM();
+            gsap.to(container, {
+                autoAlpha: 1,
+                duration: 0.1
+            });
+            gsap.to(button, {
+                autoAlpha: 0,
+                duration: 0.1,
+                onComplete: () => {
+                    showButton.hidden = true;
+                }
+            })
+        }
+    });
+}
 
 // Показ кнопки
 function showButton(e) {

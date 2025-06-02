@@ -35,7 +35,11 @@
             font-size: 2.5rem;
         }
 
-        #auth-form {
+        #description {
+            font-size: 1.3rem;
+        }
+
+        form {
             margin-top: 1rem;
             display: flex;
             flex-direction: column;
@@ -49,23 +53,22 @@
                 border-radius: 6px;
             }
 
+            input {
+                margin-bottom: 1rem;
+                color: variables.$text-color;
+                padding-left: 0.5rem;
+                padding-top: 0.2rem;
+                padding-bottom: 0.2rem;
+                background-color: variables.$bg-color;
+                outline: none;
+                border: 2px solid variables.$additional-color;
+                border-radius: 6px;
+                font-size: 1.5rem;
+            }
+
             div {
                 display: flex;
                 flex-direction: column;
-
-
-                input {
-                    margin-bottom: 1rem;
-                    color: variables.$text-color;
-                    padding-left: 0.5rem;
-                    padding-top: 0.2rem;
-                    padding-bottom: 0.2rem;
-                    background-color: variables.$bg-color;
-                    outline: none;
-                    border: 2px solid variables.$additional-color;
-                    border-radius: 6px;
-                    font-size: 1.5rem;
-                }
             }
 
             #register-section, #code-section {

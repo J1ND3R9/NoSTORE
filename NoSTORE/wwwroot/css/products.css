@@ -2,6 +2,69 @@
   font-family: "Strong";
   src: url(../Fonts/Strong-Regular.ttf) format("truetype");
 }
+.sort {
+  background: #3F3F46;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  font-family: "Strong", sans-serif;
+  font-size: 16px;
+  font-weight: 0;
+  font-size: 1.6rem;
+  color: #E0E0E0;
+  display: flex;
+  gap: 1rem;
+  margin-left: 20px;
+  align-items: center;
+}
+.sort .dropdown {
+  position: relative;
+}
+.sort .dropdown button {
+  background: #26262B;
+  color: #3ABBD1;
+  padding: 0.2rem 1rem;
+  border: none;
+  border-radius: 5px;
+  width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sort .dropdown button svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+.sort .dropdown button svg path {
+  fill: #3ABBD1;
+}
+.sort .dropdown .dropdown-list {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  list-style: none;
+  background-color: #26262B;
+  border-radius: 5px;
+  padding: 0;
+  width: 100%;
+  -webkit-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+  -moz-box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+  box-shadow: 0px 14px 20px 3px rgba(38, 38, 43, 0.78);
+}
+.sort .dropdown .dropdown-list li {
+  display: flex;
+  padding: 0.4rem 1rem;
+  transition: color 0.1s ease, background-color 0.2s ease;
+}
+.sort .dropdown .dropdown-list li:hover {
+  background-color: #3F3F46;
+  color: #66A7C8;
+}
+.sort .dropdown .dropdown-list li.selected {
+  background-color: #3F3F46;
+  color: #3ABBD1;
+}
+
 .show-button {
   position: absolute;
   margin-left: 20px;

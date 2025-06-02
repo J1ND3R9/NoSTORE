@@ -9,6 +9,9 @@ namespace NoSTORE.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
+        [BsonElement("is_guest")]
+        public bool IsGuest { get; set; } = false;
+
         [BsonElement("nickname")]
         public string Nickname { get; set; }
 
