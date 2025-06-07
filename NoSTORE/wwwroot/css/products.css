@@ -168,6 +168,14 @@
   font-weight: 0;
   color: rgb(147.5, 147.5, 147.5);
   margin-bottom: 1.5rem;
+  height: 90px;
+}
+.products .products__main .list .product a .product__tags span {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .products .products__main .list .product a .product__info {
   display: flex;

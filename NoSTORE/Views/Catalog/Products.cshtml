@@ -6,7 +6,7 @@
 
 @model ProductCategory
 
-<section class="products">
+<section data-category="@Model.CategoryName" class="products">
     <div class="products__title">
         <h2>@Model.CategoryName</h2>
         <h3>@Model.PluralForm()</h3>

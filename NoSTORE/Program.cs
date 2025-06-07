@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -26,6 +27,7 @@ namespace NoSTORE
             services.AddScoped<UserService>();
             services.AddScoped<RoleService>();
             services.AddScoped<ReviewService>();
+            services.AddScoped<OrderService>();
             return services;
         }
         public static IServiceCollection AddAuthServices(this IServiceCollection services)
@@ -46,6 +48,8 @@ namespace NoSTORE
     {
         public static async Task Main(string[] args)
         {
+            QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -59,27 +63,42 @@ namespace NoSTORE
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    var jwt = builder.Configuration.GetSection("JwtOptions").Get<AuthSettings>();
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwt.Issuer,
+
+                        ValidateAudience = true,
+                        ValidAudience = jwt.Audience,
+
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey)),
+
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
+                    };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
+                        {
+                            Console.WriteLine("JWT Auth failed: " + context.Exception.Message);
+                            return Task.CompletedTask;
+                        }
+                    };
+                })
                 .AddCookie(options =>
                 {
                     options.Cookie.Name = "auth_token";
                     options.LoginPath = "/";
                     options.AccessDeniedPath = "/";
-
-                    options.Cookie.Domain = null;
-
-                    options.Cookie.HttpOnly = true;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-                    options.Cookie.SameSite = SameSiteMode.Lax;
-
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
-                    options.SlidingExpiration = true;
                 });
-
-
-
             builder.Services.AddAuthorization();
 
             builder.Services
@@ -110,8 +129,6 @@ namespace NoSTORE
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseMiddleware<GuestMiddleware>();
-
             app.MapHub<UserHub>("/userHub");
 
             app.MapControllerRoute(
@@ -127,6 +144,8 @@ namespace NoSTORE
                 name: "product",
                 pattern: "product/{id}/{seo}",
                 defaults: new { controller = "Product", action = "Details" });
+
+            app.UseMiddleware<GuestMiddleware>();
 
             app.Run();
         }

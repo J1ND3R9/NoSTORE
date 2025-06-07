@@ -1,0 +1,63 @@
+@font-face {
+  font-family: "Strong";
+  src: url(../Fonts/Strong-Regular.ttf) format("truetype");
+}
+.order {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "Strong", sans-serif;
+  font-size: 16px;
+  font-weight: 0;
+}
+.order .content {
+  width: 40rem;
+  background-color: #3F3F46;
+  padding: 2rem;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.order .content h1 {
+  color: #3ABBD1;
+}
+.order .content p {
+  color: #66A7C8;
+}
+.order .content a {
+  display: flex;
+  padding: 1rem;
+  background: #26262B;
+  border-radius: 1rem;
+  gap: 0.4rem;
+  font-size: 1.3rem;
+  margin-top: 1rem;
+  color: #66A7C8;
+  transition: color 0.1s ease;
+}
+.order .content a:hover {
+  color: #3ABBD1;
+}
+.order .content a:hover svg path {
+  fill: #3ABBD1;
+}
+.order .content svg {
+  width: 30px;
+  height: 30px;
+}
+.order .content svg path {
+  fill: #66A7C8;
+  transition: fill 0.1s ease;
+}
+.order .content .return {
+  display: flex;
+  padding: 1rem;
+  background: #26262B;
+  border-radius: 1rem;
+  font-size: 1.3rem;
+  color: #66A7C8;
+}
+
+/*# sourceMappingURL=orderReady.css.map */

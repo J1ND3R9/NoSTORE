@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using NoSTORE.Models;
 using NoSTORE.Settings;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,31 +7,29 @@ using System.Text;
 
 namespace NoSTORE.Services
 {
-    public class JwtService(IOptions<AuthSettings> options)
+    public class JwtService
     {
-        DateTime expires = DateTime.UtcNow.Add(options.Value.Expires);
+        private readonly AuthSettings _settings;
 
-        public string GenerateToken(User user)
+        public JwtService(IOptions<AuthSettings> options)
         {
-            var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Nickname),
-                new Claim(ClaimTypes.Role, user.RoleId.ToString())
-            };
-            var jwtToken = new JwtSecurityToken(
-                issuer: options.Value.Issuer,
-                audience: options.Value.Audience,
-                expires: expires,
-                claims: claims,
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(
-                            options.Value.SecretKey)),
-                    SecurityAlgorithms.HmacSha256)
-                );
+            _settings = options.Value;
+        }
 
-            return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+        public string GenerateToken(IEnumerable<Claim> claims)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.SecretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _settings.Issuer,
+                audience: _settings.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(7),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

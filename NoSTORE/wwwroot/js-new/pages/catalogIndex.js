@@ -248,11 +248,13 @@ async function applyFilters() {
             filters[category][param].push(cb.value);
         }
     });
+    const categoryProducts = document.querySelector(".products").dataset.category;
     try {
         const response = await fetch('/catalog/getfilteredproducts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                category: categoryProducts,
                 dictionary: filters,
                 minprice: minPriceV,
                 maxprice: maxPriceV,

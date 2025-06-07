@@ -34,10 +34,10 @@ namespace NoSTORE.Services
             return ids.Where(id => productDict.ContainsKey(id)).Select(id => productDict[id]).ToList();
         }
 
-        public async Task<List<Product>> FilterProducts(Dictionary<string, Dictionary<string, List<string>>> filters, int? min, int? max)
+        public async Task<List<Product>> FilterProducts(string category, Dictionary<string, Dictionary<string, List<string>>> filters, int? min, int? max)
         {
             var builder = Builders<Product>.Filter;
-            var mongoFilter = builder.Empty;
+            var mongoFilter = builder.Eq(f => f.Category, category);
             foreach (var dict in filters)
             {
                 foreach (var list in dict.Value)

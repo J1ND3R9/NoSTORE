@@ -14,7 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Checkouts\" />
     <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\receipts\" />
+    <Folder Include="wwwroot\receipts\68389b2f0f19c707d57402fe\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +29,9 @@
     <PackageReference Include="MongoDB.Bson" Version="3.3.0" />
     <PackageReference Include="MongoDB.Driver" Version="3.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="QuestPDF" Version="2025.5.0" />
     <PackageReference Include="Unidecode.NET" Version="2.1.0" />
+    <PackageReference Include="ZXing.Net" Version="0.16.10" />
   </ItemGroup>
 
 </Project>

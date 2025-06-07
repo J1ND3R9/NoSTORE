@@ -30,33 +30,6 @@ namespace NoSTORE.Controllers
 
         public async Task UpdateFilters(Product product, string category)
         {
-            //Filter? filters = await _filterService.GetFiltersByCategory(category);
-            //var propertiesFilters = filters.Properties;
-            //var propertiesProduct = filters.PropertiesInDictionary(product.Properties);
-
-            //bool containsAll = propertiesProduct.All(pair =>
-            //propertiesFilters.ContainsKey(pair.Key) && pair.Value.All(value => propertiesFilters[pair.Key].Contains(value)));
-
-            //if (containsAll)
-            //    return;
-
-            //var filterUpdate1 = Builders<Filter>.Filter.Eq("category", category);
-            //var filterUpdate2 = Builders<Filter>.Update.Push("", "");
-
-            //foreach (var kvp in propertiesProduct)
-            //{
-            //    if (propertiesFilters.ContainsKey(kvp.Key))
-            //    {
-            //        propertiesFilters[kvp.Key] = propertiesFilters[kvp.Key].Union(kvp.Value).ToList();
-            //    }
-            //    else
-            //    {
-            //        propertiesFilters[kvp.Key] = kvp.Value;
-            //    }
-            //    filterUpdate2 = Builders<Filter>.Update.AddToSetEach($"properties.{kvp.Key}", kvp.Value);
-            //    await _filterService.UpdateDocument(filterUpdate1, filterUpdate2);
-            //}
-
             Filter? filter = await _filterService.GetFiltersByCategory(category);
 
             var propertiesFilters = filter.Properties;
@@ -179,7 +152,7 @@ namespace NoSTORE.Controllers
         [HttpPost]
         public async Task<IActionResult> GetFilteredProducts([FromBody] FilterRequest FR)
         {
-            var products = await _productService.FilterProducts(FR.Dictionary, FR.MinPrice, FR.MaxPrice);
+            var products = await _productService.FilterProducts(FR.Category, FR.Dictionary, FR.MinPrice, FR.MaxPrice);
             var dto = products.Select(p => new ProductDto(p)).ToList();
             if (FR.Sort != null)
                 dto = Sorting(dto, FR.Sort);
@@ -211,6 +184,7 @@ namespace NoSTORE.Controllers
 
     public class FilterRequest
     {
+        public string Category { get; set; }
         public Dictionary<string, Dictionary<string, List<string>>> Dictionary { get; set; }
         public int? MinPrice { get; set; }
         public int? MaxPrice { get; set; }

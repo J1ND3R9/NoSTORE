@@ -1,6 +1,8 @@
 ﻿import { initSettings } from './settings.js';
+import { initOrders } from './orders.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    adminPanelButton();
     const menuBtns = document.querySelectorAll('.profile-menu a');
     menuBtns.forEach(initMenu);
     setActiveLink();
@@ -14,6 +16,26 @@ function initMenu(menu) {
 }
 
 // === API функции ===
+
+// Добавление новой вкладки (если пользователь админ)
+async function adminPanelButton() {
+    try {
+        const response = await fetch('/api/admin/check');
+        const data = await response.json();
+
+        const links = document.querySelectorAll('.profile-menu a');
+        const lastLink = links[links.length - 1];
+
+        if (!data.isAdmin) {
+            lastLink.remove();
+        } else {
+            lastLink.style.display = 'flex';
+        }
+    } catch (_) {
+        const links = document.querySelectorAll('.profile-menu a');
+        const lastLink = links[links.length - 1].remove();
+    }
+}
 
 // Partial
 async function getPartial(e, menu) {
@@ -60,6 +82,9 @@ function setScript(script) {
     switch (script) {
         case 'settings':
             initSettings();
+            break;
+        case 'orders':
+            initOrders();
             break;
     }
 }

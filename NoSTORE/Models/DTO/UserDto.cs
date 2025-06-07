@@ -12,8 +12,8 @@ namespace NoSTORE.Models.DTO
         List<string> Favorites,
         List<User.BasketItem> Basket,
         List<string> PCs,
-        List<string> Orders,
-        List<string> Reviews,
+        List<Order> Orders,
+        List<Review> Reviews,
         DateTime RegistrationDate
         );
 }

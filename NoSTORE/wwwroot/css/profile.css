@@ -2,6 +2,61 @@
   font-family: "Strong";
   src: url(../Fonts/Strong-Regular.ttf) format("truetype");
 }
+.orders {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.orders .order {
+  padding: 1rem;
+  background: #26262B;
+  color: #E0E0E0;
+  border-radius: 1rem;
+}
+.orders .order .top {
+  display: flex;
+  justify-content: space-between;
+}
+.orders .order .top .left p:first-child {
+  color: #3ABBD1;
+  font-size: 1.5rem;
+}
+.orders .order .top .left p {
+  color: #66A7C8;
+}
+.orders .order .top .right {
+  margin-bottom: 1rem;
+}
+.orders .order .top .right .price {
+  font-size: 1.5rem;
+  color: #66A7C8;
+}
+.orders .order .top .right .quantity {
+  font-size: 1.3rem;
+  color: #66A7C8;
+  text-align: right;
+}
+.orders .order .bottom {
+  display: flex;
+  justify-content: space-between;
+}
+.orders .order .bottom a {
+  padding: 0 1rem;
+  background: #66A7C8;
+  color: #26262B;
+  border: none;
+  font-size: 1.2rem;
+  border-radius: 0.6rem;
+  transition: background 0.1s ease, color 0.1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.orders .order .bottom a:hover {
+  background: #26262B;
+  color: #3ABBD1;
+}
+
 .profile {
   display: flex;
   gap: 2rem;

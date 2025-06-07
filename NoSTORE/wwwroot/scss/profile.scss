@@ -1,5 +1,70 @@
 ﻿@use 'variables';
 
+.orders {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    .order {
+        padding: 1rem;
+        background: variables.$bg-color;
+        color: variables.$text-color;
+        border-radius: 1rem;
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+
+            .left {
+                p:first-child {
+                    color: variables.$accent-color;
+                    font-size: 1.5rem;
+                }
+
+                p {
+                    color: variables.$additional-color;
+                }
+            }
+
+            .right {
+                margin-bottom: 1rem;
+                .price {
+                    font-size: 1.5rem;
+                    color: variables.$additional-color;
+                }
+
+                .quantity {
+                    font-size: 1.3rem;
+                    color: variables.$additional-color;
+                    text-align: right;
+                }
+            }
+        }
+
+        .bottom {
+            display: flex;
+            justify-content: space-between;
+
+            a {
+                padding: 0 1rem;
+                background: variables.$additional-color;
+                color: variables.$bg-color;
+                border: none;
+                font-size: 1.2rem;
+                border-radius: 0.6rem;
+                transition: background 0.1s ease, color 0.1s ease;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                &:hover {
+                    background: variables.$bg-color;
+                    color: variables.$accent-color;
+                }
+            }
+        }
+    }
+}
+
 .profile {
     display: flex;
     gap: 2rem;

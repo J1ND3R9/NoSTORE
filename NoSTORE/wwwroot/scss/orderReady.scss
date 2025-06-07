@@ -1,0 +1,69 @@
+﻿@use 'variables';
+
+.order {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    @include variables.font();
+
+    .content {
+        width: 40rem;
+        background-color: variables.$block-color;
+        padding: 2rem;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+
+        h1 {
+            color: variables.$accent-color;
+        }
+
+        p {
+            color: variables.$additional-color;
+        }
+
+        a {
+            display: flex;
+            padding: 1rem;
+            background: variables.$bg-color;
+            border-radius: 1rem;
+            gap: 0.4rem;
+            font-size: 1.3rem;
+            margin-top: 1rem;
+            color: variables.$additional-color;
+            transition: color 0.1s ease;
+
+            &:hover {
+                color: variables.$accent-color;
+
+                svg {
+                    path {
+                        fill: variables.$accent-color;
+                    }
+                }
+            }
+        }
+
+        svg {
+            width: 30px;
+            height: 30px;
+
+            path {
+                fill: variables.$additional-color;
+                transition: fill 0.1s ease;
+            }
+        }
+
+        .return {
+            display: flex;
+            padding: 1rem;
+            background: variables.$bg-color;
+            border-radius: 1rem;
+            font-size: 1.3rem;
+            color: variables.$additional-color;
+        }
+    }
+}

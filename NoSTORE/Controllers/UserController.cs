@@ -13,10 +13,16 @@ namespace NoSTORE.Controllers
     public class UserController : Controller
     {
         private readonly UserService _userService;
+        private readonly OrderService _orderService;
+        private readonly ProductService _productService;
+        private readonly ReviewService _reviewService;
 
-        public UserController(UserService userService)
+        public UserController(UserService userService, OrderService orderService, ReviewService reviewService, ProductService productService)
         {
             _userService = userService;
+            _orderService = orderService;
+            _reviewService = reviewService;
+            _productService = productService;
         }
 
         [Route("~/profile/{section?}")]
@@ -36,16 +42,29 @@ namespace NoSTORE.Controllers
                 user.Favorites,
                 user.Basket,
                 user.PCs,
-                user.Orders,
-                user.Reviews,
+                await _orderService.GetOrdersByUserId(user.Id),
+                await _reviewService.GetUserReviews(user.Id),
                 user.RegistrationDate
             );
+
+            var productIds = model.Reviews.Select(r => r.ProductId).Distinct().ToList();
+            var products = await _productService.GetByIdsAsync(productIds);
+            var productDictionary = products.ToDictionary(p => p.Id, p => p);
+
+            foreach (var review in model.Reviews)
+            {
+                if (productDictionary.TryGetValue(review.ProductId, out var product))
+                {
+                    review.Product = new ProductDto(product);
+                }
+            }
 
             if (Request.Headers.XRequestedWith == "XMLHttpRequest")
             {
                 return PartialView(GetPartialViewName(section), model);
             }
-
+            model.Orders.Reverse();
+            model.Reviews.Reverse();
             return View(model);
         }
 
@@ -55,13 +74,28 @@ namespace NoSTORE.Controllers
             {
                 "basket" => "Partials/_Basket",
                 "favorites" => "Partials/_Favorites",
-                "pcs" => "Partials/_Pcs",
+                "reviews" => "Partials/_Reviews",
                 "orders" => "Partials/_Orders",
+                "panel" => "Partials/_Panel",
                 _ => "Partials/_Settings"
             };
         }
 
-        private string FirstLetterUpper(string word) =>
-            char.ToUpper(word[0]) + word.Substring(1);
+        [HttpGet("/api/admin/check")]
+        public async Task<IActionResult> IsAdmin()
+        {
+            if (!User.Identity.IsAuthenticated) return Unauthorized();
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (await _userService.UserIsAdmin(userId))
+                return Ok(new
+                {
+                    isAdmin = true
+                });
+            return Ok(new
+            {
+                isAdmin = false
+            });
+        }
     }
 }

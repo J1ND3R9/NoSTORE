@@ -1,0 +1,80 @@
+﻿@using NoSTORE.Models.DTO
+@model CheckoutDto
+
+@{
+    ViewData["Title"] = "Оформление";
+    ViewData["CSS"] = "checkout.css";
+}
+<script>
+    const checkoutDto = @Html.Raw(Json.Serialize(Model))
+</script>
+<script src="~/js-new/pages/checkoutIndex.js"></script>
+<section class="checkout">
+    <div class="main">
+        <div class="sec">
+            <h3>Данные покупателя</h3>
+            @if (Model.User?.IsGuest ?? true)
+            {
+                <input type="text" id="email" placeholder="Ваша электронная почта" />
+            }
+            else
+            {
+                <span>Ваш чек будет доступен в заказах и на почте @Model.User.Email</span>
+            }
+        </div>
+        <div class="sec">
+            <h3>Выберите способ оплаты</h3>
+            <div class="payment-options">
+                <input checked type="radio" name="payment" id="pay-sbp" class="payment-option" />
+                <label for="pay-sbp" class="payment-label">
+                    <img src="/svg/payments/sbp.svg" /><br />СБП
+                </label>
+
+                <input type="radio" name="payment" id="pay-card" class="payment-option" />
+                <label for="pay-card" class="payment-label">
+                    <img src="/svg/payments/card.svg" /><br />Карта
+                </label>
+            </div>
+        </div>
+        <button id="confirm-order">
+            Подтвердить заказ
+        </button>
+    </div>
+    <div class="products">
+        <h1>Вы приобретаете <span id="quantity-total" data-quantity="@Model.Items.Sum(s => s.Quantity)"></span> на сумму <span id="sum" data-sum="@Model.Items.Sum(s => s.TotalPrice)"></span></h1>
+        @foreach (var item in Model.Items)
+        {
+            <div class="product" data-productid="@item.Product.Id" data-price="@item.TotalPrice" data-quantity="@item.Quantity" data-quantityproduct="@item.Product.Quantity" data-oneprice="@item.Product.FinalPrice">
+                <a href="/product/@item.Product.Id/@item.Product.SEOName">
+                    <div class="main-image">
+                        <img src="~/photos/products/@item.Product.Name/@item.Product.Image" />
+                    </div>
+                </a>
+                <div class="info">
+                    <div class="left-info">
+                        <div class="top">
+                            <a href="/product/@item.Product.Id/@item.Product.SEOName" class="title">@item.Product.Name</a>
+                        </div>
+                        <div class="bottom">
+                            <div class="quantity-controller">
+                                <span class="quantity-p"><span class="quantity">@item.Quantity</span> шт.</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="right-info">
+                        <div class="price">
+                            <span class="total-price-product">@item.CorrectPrice(item.TotalPrice)</span>
+                            <span class="price-for-one@(item.Quantity > 1 ? " visible" : "")">@(item.Quantity > 1 ? item.CorrectPrice(item.Product.FinalPrice) + "/шт." : "")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="footer-products">
+        <button id="expand-all-products">
+            Развернуть всё
+        </button>
+        </div>
+    </div>
+</section>

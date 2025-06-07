@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using NoSTORE.Data;
 using NoSTORE.Models;
 using NoSTORE.Models.DTO;
+using NoSTORE.Models.ViewModels;
 using System.Numerics;
 using System.Threading.Tasks;
 using static NoSTORE.Models.User;
@@ -26,6 +27,17 @@ namespace NoSTORE.Services
         }
         public async Task<User> GetUserByEmailAsync(string email) => await _user.Find(u => u.Email == email).FirstOrDefaultAsync();
         public async Task<User> GetUserByPhoneAsync(string phone) => await _user.Find(u => u.Phone == phone).FirstOrDefaultAsync();
+        public async Task<bool> UserIsAdmin(string id)
+        {
+            List<string> roles = new List<string>
+            {
+                "67e27e725cce8193928f9f29",
+                "67e27e725cce8193928f9f2b"
+            };
+            var user = await GetUserById(id);
+            return roles.Contains(user.RoleId);
+
+        }
         public async Task DeleteUserAsync(string id) => await _user.DeleteOneAsync(u => u.Id == id);
 
         public async Task ChangeEmail(string id, string newEmail)
@@ -78,6 +90,19 @@ namespace NoSTORE.Services
             await _user.UpdateOneAsync(filter, update);
         }
 
+        public async Task InsertOrder(string userId, string id)
+        {
+            var user = await GetUserById(userId);
+            if (user == null)
+                return;
+
+            var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
+            var update = Builders<User>.Update.Push("orders", id);
+            var updatePull = Builders<User>.Update.PullFilter(x => x.Basket, b => b.IsSelected == true);
+            await _user.UpdateOneAsync(filter, update);
+            await _user.UpdateOneAsync(filter, updatePull);
+        }
+
         public async Task<string> GetAvatarExtension(string id)
         {
             var user = await _user.Find(u => u.Id == id).FirstOrDefaultAsync();
@@ -100,6 +125,29 @@ namespace NoSTORE.Services
             if (user == null)
                 return "";
             return user.RoleId;
+        }
+
+        public async Task<CheckoutDto?> GenerateCheckout(string userId)
+        {
+            var user = await GetUserById(userId);
+            if (user == null)
+                return null;
+            CheckoutDto? checkout = new();
+            var items = user.Basket.Where(b => b.IsSelected ?? false).ToList();
+            checkout.User = user;
+            checkout.Items = new();
+            foreach (var item in items)
+            {
+                var product = new ProductDto(await _productService.GetByIdAsync(item.ProductId));
+                var cart = new CartViewModel
+                {
+                    Product = product,
+                    IsSelected = item.IsSelected ?? false,
+                    Quantity = item.Quantity,
+                };
+                checkout.Items.Add(cart);
+            }
+            return checkout;
         }
 
         public async Task InsertCompare(string userId, string productId)

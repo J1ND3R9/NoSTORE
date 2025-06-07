@@ -35,6 +35,8 @@ namespace NoSTORE.Controllers
                     userId = null;
                 }
             }
+            if (userId == null)
+                return Unauthorized();
             var user = await _userService.GetUserById(userId);
             var compares = user.Compares;
             CompareDto dto = new();
@@ -49,6 +51,46 @@ namespace NoSTORE.Controllers
                 dto.Compares[compare.Category] = products;
             }
             return View(dto);
+        }
+
+        [HttpGet("/compare/{category}")]
+        public async Task<IActionResult> GetCompareSection(string category)
+        {
+            string userId = "";
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            else
+            {
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    userId = guestId;
+                }
+                else
+                {
+                    // Гость без куки — крайне редкая ситуация
+                    userId = null;
+                }
+            }
+            if (userId == null)
+                return Unauthorized();
+            var user = await _userService.GetUserById(userId);
+            var compares = user.Compares;
+            CompareDto dto = new();
+            foreach (var compare in compares)
+            {
+                if (compare.Category != category)
+                    continue;
+                List<Product> products = new();
+                foreach (var productId in compare.ProductIds)
+                {
+                    var product = await _productService.GetByIdAsync(productId);
+                    products.Add(product);
+                }
+                dto.Compares[compare.Category] = products;
+            }
+            return PartialView("_ComparePartial", dto.Compares.Values.FirstOrDefault());
         }
     }
 }

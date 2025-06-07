@@ -4,20 +4,52 @@ let isTabActive = true;
 
 document.addEventListener('DOMContentLoaded', () => {
     compareSubscribeEvent();
-    initSticky();
-    const products = document.querySelectorAll('.product');
-    const productsSticky = document.querySelectorAll('.s-product');
-    products.forEach(initProduct)
-    productsSticky.forEach(initProduct)
+    initDom();
+    initCategoryButtons();
     document.addEventListener("visibilitychange", (e) => {
         isTabActive = document.visibilityState === "visible";
     });
-
     const removeButton = document.getElementById('deleteAll');
     removeButton.addEventListener('click', () => removeAll());
 });
 
 // === Иницализации ===
+function initCategoryButtons() {
+    document.querySelectorAll('.category-btn').forEach(button => {
+        button.addEventListener('click', async function () {
+            const category = this.getAttribute('data-category');
+            // Загрузка данных
+            const response = await fetch(`/Compare/${encodeURIComponent(category)}`);
+
+            if (response.ok) {
+                const html = await response.text();
+                gsap.to(document.getElementById('products'), {
+                    autoAlpha: 0,
+                    duration: 0.1,
+                    onComplete: () => {
+                        document.getElementById('products').innerHTML = html;
+                        initDom();
+                        gsap.to(document.getElementById('products'), {
+                            autoAlpha: 1,
+                            duration: 0.1
+                        })
+                    }
+                })
+            } else {
+                document.getElementById('products').innerHTML = '<p>Ошибка загрузки данных.</p>';
+            }
+        });
+    });
+}
+
+function initDom() {
+    initSticky();
+    const products = document.querySelectorAll('.product');
+    const productsSticky = document.querySelectorAll('.s-product');
+    products.forEach(initProduct)
+    productsSticky.forEach(initProduct)
+}
+
 
 // Инициализация продукта
 function initProduct(card) {

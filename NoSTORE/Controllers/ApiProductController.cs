@@ -11,6 +11,12 @@ using System.Security.Claims;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using NoSTORE.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using NoSTORE.Settings;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace NoSTORE.Controllers
 {
@@ -20,12 +26,64 @@ namespace NoSTORE.Controllers
     {
         private readonly UserService _userService;
         private readonly ProductService _productService;
+        private readonly ReviewService _reviewService;
         private readonly IHubContext<UserHub> _userHub;
-        public ApiProductController(UserService userService, ProductService productService, IHubContext<UserHub> hubContext)
+        private readonly IConfiguration _configuration;
+        public ApiProductController(UserService userService, ProductService productService, IHubContext<UserHub> hubContext, IConfiguration configuration, ReviewService reviewService)
         {
             _userService = userService;
             _productService = productService;
             _userHub = hubContext;
+            _configuration = configuration;
+            _reviewService = reviewService;
+        }
+
+        private string GetUserIdFromJwtOrCookie(HttpContext context)
+        {
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+            if (!string.IsNullOrEmpty(token))
+            {
+                var jwtSettings = _configuration.GetSection("JwtOptions").Get<AuthSettings>();
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
+
+                try
+                {
+                    var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtSettings.Issuer,
+                        ValidateAudience = true,
+                        ValidAudience = jwtSettings.Audience,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
+                    }, out SecurityToken validatedToken);
+
+                    var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+                    return userId;
+                }
+                catch
+                {
+                    // JWT невалиден — fallback на cookie
+                }
+            }
+
+            if (User.Identity.IsAuthenticated)
+            {
+                return User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            else
+            {
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    return guestId;
+                }
+            }
+
+            return null;
         }
 
         [HttpGet("all")]
@@ -39,23 +97,11 @@ namespace NoSTORE.Controllers
         [HttpGet("getQuantities")]
         public async Task<IActionResult> GetQuantity()
         {
-            string userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                }
-            }
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
+
+            if (userId == null)
+                return Unauthorized();
+
             var user = await _userService.GetUserById(userId);
             if (user == null)
             {
@@ -76,26 +122,24 @@ namespace NoSTORE.Controllers
         }
 
         [HttpGet("{productId}")]
-        public async Task<IActionResult> GetProducts(string productId)
+        public async Task<IActionResult> FetchStatusesProducts(string productId)
         {
-            string userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                }
-            }
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
+
+            if (userId == null)
+                return Unauthorized();
+
             var user = await _userService.GetUserById(userId);
+
+            if (user == null)
+            {
+                return Ok(new
+                {
+                    inFavorite = false,
+                    inCart = false,
+                    inCompare = false
+                });
+            }
 
             bool inFavorite = user.Favorites?.Contains(productId) ?? false;
             bool inCart = user.Basket?.Any(b => b.ProductId == productId) ?? false;
@@ -109,26 +153,35 @@ namespace NoSTORE.Controllers
             });
         }
 
+        [HttpGet("get/{productId}")]
+        public async Task<IActionResult> GetProductById(string productId)
+        {
+            var product = new ProductDto(await _productService.GetByIdAsync(productId));
+            var reviews = await _reviewService.GetReviewsByProduct(product.Id);
+            var userIds = reviews.Select(r => r.UserId).Distinct().ToList();
+            var users = await _userService.GetUsersByIdsAsync(userIds);
+            var userDictionary = users.ToDictionary(u => u.Id, u => u);
+
+            product.Reviews = reviews.Select(r => new ReviewDto(r)).ToList();
+            foreach (var review in product.Reviews)
+            {
+                if (userDictionary.TryGetValue(review.UserId, out var user))
+                {
+                    review.User = new UserReview
+                    {
+                        Id = user.Id,
+                        AvatarExt = user.AvatarExtension,
+                        Nickname = user.Nickname
+                    };
+                }
+            }
+            return Ok(product.ToJson());
+        }
+
         [HttpPost("select_product_cart")]
         public async Task<IActionResult> SelectProductAsync([FromBody] ProductRequest request)
         {
-            string userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                }
-            }
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
 
             if (userId == null)
                 return Unauthorized();
@@ -142,23 +195,8 @@ namespace NoSTORE.Controllers
         [HttpPost("unselect_product_cart")]
         public async Task<IActionResult> UnSelectProductAsync([FromBody] ProductRequest request)
         {
-            string userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                }
-            }
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
+
             if (userId == null)
                 return Unauthorized();
 
@@ -171,23 +209,8 @@ namespace NoSTORE.Controllers
         [HttpPost("quantity_product_cart")]
         public async Task<IActionResult> ChangeQuantity([FromBody] ProductRequest request)
         {
-            string userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                }
-            }
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
+
             if (userId == null)
                 return Unauthorized();
             if (request.Quantity == null)
@@ -208,23 +231,8 @@ namespace NoSTORE.Controllers
         [HttpPost("add_product_cart")]
         public async Task<IActionResult> ToUserCartAsync([FromBody] ProductRequest request)
         {
-            string userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                }
-            }
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
+
             if (userId == null)
                 return Unauthorized();
             var cartDto = new CartDto();
@@ -246,23 +254,8 @@ namespace NoSTORE.Controllers
         [HttpPost("remove_product_cart")]
         public async Task<IActionResult> FromUserCart([FromBody] ProductRequest request)
         {
-            string userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                }
-            }
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
+
             if (userId == null)
                 return Unauthorized();
 
@@ -274,23 +267,8 @@ namespace NoSTORE.Controllers
         [HttpPost("add_product_favorite")]
         public async Task<IActionResult> ToUserFavoriteAsync([FromBody] ProductRequest request)
         {
-            string userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                }
-            }
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
+
             if (userId == null)
                 return Unauthorized();
 
@@ -299,26 +277,56 @@ namespace NoSTORE.Controllers
             return Ok();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("getCart")]
+        public async Task<IActionResult> GetCart()
+        {
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
+
+            if (userId == null)
+                return Unauthorized();
+            var user = await _userService.GetUserById(userId);
+
+            var basket = user?.Basket;
+            if (basket == null || !basket.Any())
+            {
+                return Ok(new CartApiDto());
+            }
+
+            var productIds = basket.Select(b => b.ProductId).ToList();
+            var products = await _productService.GetByIdsAsync(productIds);
+
+            var cartItems = basket.Select(b =>
+            {
+                var product = products.FirstOrDefault(p => p.Id == b.ProductId);
+                return new CartItemApiDto
+                {
+                    Product = product != null ? new ProductDto(product) : null,
+                    Quantity = b.Quantity,
+                    IsSelected = b.IsSelected ?? true
+                };
+            })
+            .Where(item => item.Product != null)
+            .ToList();
+
+            int totalCost = cartItems.Where(i => i.IsSelected).Sum(i => i.TotalPrice);
+            int selectedCount = cartItems.Count(i => i.IsSelected);
+
+            var result = new CartApiDto
+            {
+                Items = cartItems,
+                TotalCost = totalCost,
+                SelectedCount = selectedCount
+            };
+            result.Items.Reverse();
+            return Ok(result.ToJson());
+        }
+
         [HttpPost("remove_product_favorite")]
         public async Task<IActionResult> FromUserFavorite([FromBody] ProductRequest request)
         {
-            string userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                }
-            }
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
+
             if (userId == null)
                 return Unauthorized();
 
@@ -330,23 +338,7 @@ namespace NoSTORE.Controllers
         [HttpPost("add_compare")]
         public async Task<IActionResult> AddToCompare([FromBody] ProductRequest request)
         {
-            string userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                }
-            }
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
 
             if (userId == null)
                 return Unauthorized();
@@ -359,23 +351,8 @@ namespace NoSTORE.Controllers
         [HttpPost("remove_compare")]
         public async Task<IActionResult> RemoveFromCompare([FromBody] ProductRequest request)
         {
-            string userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                }
-            }
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
+
 
             if (userId == null)
                 return Unauthorized();
@@ -391,5 +368,20 @@ namespace NoSTORE.Controllers
         public string ProductId { get; set; }
         public int? Quantity { get; set; }
         public string[]? ProductIds { get; set; }
+    }
+
+    public class CartApiDto
+    {
+        public List<CartItemApiDto> Items { get; set; } = new();
+        public int TotalCost { get; set; }
+        public int SelectedCount { get; set; }
+    }
+
+    public class CartItemApiDto
+    {
+        public ProductDto Product { get; set; }
+        public int Quantity { get; set; }
+        public bool IsSelected { get; set; }
+        public int TotalPrice => Product?.Price * Quantity ?? 0;
     }
 }

@@ -1,6 +1,40 @@
 ﻿@using NoSTORE.Models.DTO
 @model UserDto
-
-<div>
-    <h1>Заказы</h1>
+@{
+    Dictionary<byte, string> dict = new()
+    {
+        {0, "В обработке"},
+        {1, "Принят"},
+        {2, "Сборка заказа"},
+        {3, "В пути"},
+        {4, "Ожидает получения"},
+        {5, "Получен"},
+        {10, "Отменён"}
+    };
+}
+<div class="orders">
+    @foreach (var order in Model.Orders)
+    {
+        <div class="order">
+            <div class="top">
+                <div class="left">
+                    <p>Заказ от <span class="createdate" data-date="@order.CreateDate"></span></p>
+                    <p>@order.Id</p>
+                </div>
+                <div class="right">
+                    <p class="payed">оплачено <span class="price" data-price="@order.TotalPrice"></span></p>
+                    <p class="quantity" data-quantity="@order.Products.Sum(s => s.Quantity)"></p>
+                </div>
+            </div>
+            <div class="bottom">
+                <div class="left">
+                    <p>Статус: <span class="status">@dict[order.Status]</span></p>
+                    <p>Примерная дата доставки: <span class="deliverydate" data-date="@order.DevlieryDate"></span></p>
+                </div>
+                <a id="download_receipt" href="/receipts/download/@order.Id">
+                    Скачать чек
+                </a>
+            </div>
+        </div>
+    }
 </div>

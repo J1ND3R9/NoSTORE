@@ -1,0 +1,22 @@
+﻿@using NoSTORE.Models.DTO
+@model UserDto
+
+<div class="orders">
+    @foreach (var review in Model.Reviews)
+    {
+        <div class="order">
+            <div class="top">
+                <div class="left">
+                    <p>Отзыв от <span class="createdate" data-date="@review.CreateDate"></span></p>
+                    <p>на @(review.Product?.Name ?? "продукт")</p>
+                </div>
+            </div>
+            <div class="bottom">
+                <div class="left">
+                    <p>Ваша оценка: <span class="status">@review.Rating звёзд</span></p>
+                    <p>Количество лайков: <span class="deliverydate">@review.Likes</span></p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

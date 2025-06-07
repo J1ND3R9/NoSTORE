@@ -18,12 +18,15 @@ namespace NoSTORE.Models.DTO
         public int FinalPrice { get; set; }
         public int Discount { get; set; }
         public string Image { get; set; }
+        public List<string>? Images { get; set; }
         public int Quantity { get; set; }
         public double Rating { get; set; }
         public string FinalPriceString { get; set; }
+        public List<ReviewDto> Reviews { get; set; }
         public string Description { get; set; }
-
         public Dictionary<string, List<Dictionary<string, string>>> Properties { get; set; }
+
+        public ProductDto() { }
 
         public ProductDto(Product p)
         {
@@ -39,6 +42,7 @@ namespace NoSTORE.Models.DTO
             FinalPriceString = p.CorrectPrice(p.FinalPrice);
             Description = p.Description;
             Properties = p.PropertiesDict();
+            Images = p.Images;
         }
     }
 }

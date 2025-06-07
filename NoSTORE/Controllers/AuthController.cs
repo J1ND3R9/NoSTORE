@@ -57,8 +57,16 @@ namespace NoSTORE.Controllers
         {
             if (await CheckLogin(model))
                 return BadRequest(new { error = "Неверная почта или пароль" });
-            //if (!await _verificationService.IsValidCodeAsync(model.Email, model.Code))
-            //    return BadRequest(new { error = "Неверный код" });
+            var userAgent = Request.Headers["User-Agent"].ToString();
+            var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            var isMobile = remoteIp == "10.0.2.2" || userAgent.Contains("okhttp", StringComparison.OrdinalIgnoreCase);
+
+            if (!isMobile)
+            {
+                //if (!await _verificationService.IsValidCodeAsync(model.Email, model.Code))
+                //    return BadRequest(new { error = "Неверный код" });
+            }
             var user = await _userService.GetUserByEmailAsync(model.Email);
 
             if (Request.Cookies.TryGetValue("GuestId", out var guestId))
@@ -71,6 +79,19 @@ namespace NoSTORE.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
+
+            if (isMobile)
+            {
+                var jwtService = HttpContext.RequestServices.GetRequiredService<JwtService>();
+                var token = jwtService.GenerateToken(claims);
+
+                return Ok(new
+                {
+                    token,
+                    userId = user.Id
+                });
+            }
+
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
 
@@ -87,7 +108,6 @@ namespace NoSTORE.Controllers
 
             return Ok();
         }
-
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Register model, CancellationToken ct)
         {
@@ -121,10 +141,29 @@ namespace NoSTORE.Controllers
             }
 
             await _userService.InsertUser(user);
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
+
+            var userAgent = Request.Headers["User-Agent"].ToString();
+            var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            var isMobile = remoteIp == "10.0.2.2" || userAgent.Contains("okhttp", StringComparison.OrdinalIgnoreCase);
+
+            if (isMobile)   
+            {
+                var jwtService = HttpContext.RequestServices.GetRequiredService<JwtService>();
+                var token = jwtService.GenerateToken(claims);
+
+                return Ok(new
+                {
+                    token,
+                    userId = user.Id
+                });
+            }
+
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
 
