@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_color">#FF26262B</color>
+    <color name="block_color">#FF3F3F46</color>
+    <color name="text_color">#FFE0E0E0</color>
+    <color name="accent_color">#FF3ABBD1</color>
+    <color name="additional_color">#FF66A7C8</color>
+    <color name="bad_color">#FFE36B3F</color>
+</resources>

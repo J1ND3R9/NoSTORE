@@ -103,7 +103,7 @@ function displayResults(results) {
             </div>
             <div class='sr-info'>
                 <h2>${product.Name}</h2>
-                <h3>${product.Price}</h3>
+                <h3>${product.FinalPriceString}</h3>
             </div>
         </div>
         `;

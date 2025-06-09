@@ -5,6 +5,17 @@ using System.Collections.Generic;
 
 namespace NoSTORE.Models
 {
+    public class FilterDto
+    {
+        public string Category { get; set; }
+        public Dictionary<string, Dictionary<string, List<string>>> Properties { get; set; }
+
+        public FilterDto(Filter f)
+        {
+            Category = f.Category;
+            Properties = f.Properties;
+        }
+    }
     public class Filter
     {
         [BsonId]

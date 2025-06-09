@@ -26,7 +26,7 @@ namespace NoSTORE.Services
             return await _user.Find(u => ids.Contains(u.Id)).ToListAsync();
         }
         public async Task<User> GetUserByEmailAsync(string email) => await _user.Find(u => u.Email == email).FirstOrDefaultAsync();
-        public async Task<User> GetUserByPhoneAsync(string phone) => await _user.Find(u => u.Phone == phone).FirstOrDefaultAsync();
+        public async Task<List<User>> GetAllAsync() => await _user.Find(_ => true).ToListAsync();
         public async Task<bool> UserIsAdmin(string id)
         {
             List<string> roles = new List<string>

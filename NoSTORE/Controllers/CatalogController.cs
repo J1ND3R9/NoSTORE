@@ -156,6 +156,17 @@ namespace NoSTORE.Controllers
             var dto = products.Select(p => new ProductDto(p)).ToList();
             if (FR.Sort != null)
                 dto = Sorting(dto, FR.Sort);
+
+            var userAgent = Request.Headers["User-Agent"].ToString();
+            var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            var isMobile = remoteIp == "10.0.2.2" || userAgent.Contains("okhttp", StringComparison.OrdinalIgnoreCase);
+
+            if (isMobile)
+            {
+                return Ok(dto.ToJson());
+            }
+
             return PartialView("_ProductsPartial", dto);
         }
 

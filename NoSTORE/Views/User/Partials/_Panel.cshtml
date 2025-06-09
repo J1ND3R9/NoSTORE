@@ -1,6 +1,26 @@
-﻿@using NoSTORE.Models.DTO
-@model UserDto
+﻿@using NoSTORE.Controllers
 
-<div class="changes">
+@model AdminPage
+<div class="admin-panel">
+    <div class="admin-topbar">
+        @Html.Partial("Partials/_AdminMenu", Model.Admin)
+    </div>  
 
+    <div class="admin-content">
+        @switch (ViewBag.Tab)
+        {
+            case "users":
+                <partial name="Partials/_AdminUsers" model="@Model.Users" />
+                break;
+            case "products":
+                <partial name="Partials/_AdminProducts" model="@Model.Products" />
+                break;
+            case "orders":
+                <partial name="Partials/_AdminOrders" model="@Model.Orders" />
+                break;
+            default:
+                <partial name="Partials/_AdminUsers" model="@Model.Users" />
+                break;
+        }
+    </div>
 </div>

@@ -1,5 +1,74 @@
 ﻿@use 'variables';
 
+.admin-table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table thead,
+.admin-table tbody {
+    display: table-header-group;
+}
+
+.admin-table tr {
+    display: table-row;
+}
+
+.admin-table th,
+.admin-table td {
+    display: table-cell;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid variables.$bg-color;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: variables.$additional-color;
+    button {
+        padding: 0.2rem;
+        width: 6rem;
+        background: variables.$bg-color;
+        color: variables.$accent-color;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 6px;
+    }
+}
+
+.admin-table th {
+    background-color: variables.$bg-color;
+    color: variables.$accent-color;
+    font-size: 1.4rem;
+}
+
+.admin-topbar {
+    &:after {
+        content: '';
+        display: block;
+        height: 3px;
+        background-color: variables.$bg-color;
+        border-radius: 5px;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+}
+
+.admin-nav {
+    display: flex;
+    gap: 4rem;
+
+    a {
+        background-color: variables.$bg-color;
+        padding: 0.4rem;
+        border-radius: 6px;
+        color: variables.$accent-color;
+        font-size: 1.5rem;
+        width: 180px;
+        text-align: center;
+    }
+}
+
 .orders {
     display: flex;
     flex-direction: column;

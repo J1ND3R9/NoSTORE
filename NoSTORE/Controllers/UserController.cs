@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MailKit.Search;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using MongoDB.Driver;
 using NoSTORE.Models;
 using NoSTORE.Models.DTO;
 using NoSTORE.Services;
@@ -26,7 +29,7 @@ namespace NoSTORE.Controllers
         }
 
         [Route("~/profile/{section?}")]
-        public async Task<IActionResult> Index(string section = "settings")
+        public async Task<IActionResult> Index(string section = "settings", string tab = null)
         {
             ViewBag.Section = section;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -59,12 +62,38 @@ namespace NoSTORE.Controllers
                 }
             }
 
-            if (Request.Headers.XRequestedWith == "XMLHttpRequest")
-            {
-                return PartialView(GetPartialViewName(section), model);
-            }
             model.Orders.Reverse();
             model.Reviews.Reverse();
+            if (Request.Headers.XRequestedWith == "XMLHttpRequest")
+            {
+                string view = GetPartialViewName(section);
+                if (view == "Partials/_Panel")
+                {
+                    var users = await _userService.GetAllAsync();
+                    var productsP = await _productService.GetAllAsync();
+                    var orders = await _orderService.GetAllAsync();
+
+                    var page = new AdminPage()
+                    {
+                        Admin = model,
+                        Users = users,
+                        Products = productsP,
+                        Orders = orders
+                    };
+
+                    string partialView = tab switch
+                    {
+                        "users" => "Partials/_AdminUsers",
+                        "products" => "Partials/_AdminProducts",
+                        "orders" => "Partials/_AdminOrders",
+                        _ => "Partials/_AdminDashboard"
+                    };
+
+                    ViewBag.Tab = tab ?? "dashboard";
+                    return PartialView("Partials/_Panel", page);
+                }
+                return PartialView(GetPartialViewName(section), model);
+            }
             return View(model);
         }
 
@@ -97,5 +126,13 @@ namespace NoSTORE.Controllers
                 isAdmin = false
             });
         }
+    }
+
+    public class AdminPage()
+    {
+        public UserDto Admin { get; set; }
+        public List<User> Users { get; set; }
+        public List<Product> Products { get; set; }
+        public List<Order> Orders { get; set; }
     }
 }

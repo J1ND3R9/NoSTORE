@@ -1,0 +1,21 @@
+﻿@model IEnumerable<User>
+
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Nickname</td>
+                <td>@user.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>

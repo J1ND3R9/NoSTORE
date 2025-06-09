@@ -3,10 +3,21 @@ import { initOrders } from './orders.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     adminPanelButton();
-    const menuBtns = document.querySelectorAll('.profile-menu a');
-    menuBtns.forEach(initMenu);
     setActiveLink();
+    document.addEventListener('click', handleAjaxLinkClick);
 })
+
+// === Основной обработчик кликов по AJAX-ссылкам ===
+function handleAjaxLinkClick(e) {
+    const target = e.target.closest('a');
+    if (!target) return;
+
+    const isAjaxLink = target.matches('.profile-menu a') || target.matches('.admin-nav a');
+    if (isAjaxLink) {
+        e.preventDefault();
+        getPartial(e, target);
+    }
+}
 
 // === Иницализации ===
 
@@ -39,10 +50,10 @@ async function adminPanelButton() {
 
 // Partial
 async function getPartial(e, menu) {
-    e.preventDefault();
     const url = menu.getAttribute('href');
     const content = document.getElementById('profile-content');
     content.classList.add('content-fadeout');
+
     try {
         const response = await fetch(url, {
             headers: {
@@ -53,15 +64,13 @@ async function getPartial(e, menu) {
         content.innerHTML = html;
         requestAnimationFrame(() => {
             content.classList.remove('content-fadeout');
-
-            // setScript должен быть после вставки DOM
             const currentPath = window.location.pathname.split('/').pop();
             setScript(currentPath);
         });
         history.pushState(null, '', url);
         setActiveLink();
     } catch (error) {
-        console.error('Ошибка загрузки содержимого: ', error);
+        console.error('Ошибка загрузки содержимого:', error);
     }
 }
 

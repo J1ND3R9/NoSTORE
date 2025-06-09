@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Order>
+@{
+    Dictionary<byte, string> dict = new()
+    {
+        {0, "В обработке"},
+        {1, "Принят"},
+        {2, "Сборка заказа"},
+        {3, "В пути"},
+        {4, "Ожидает получения"},
+        {5, "Получен"},
+        {10, "Отменён"}
+    };
+}
+
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID пользователя</th>
+            <th>ID продукта</th>
+            <th>Статус заказа</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@(order.UserID)</td>
+                <td>@(order.Products)</td>
+                <td>@(dict[order.Status])</td>
+            </tr>
+        }
+    </tbody>
+</table>

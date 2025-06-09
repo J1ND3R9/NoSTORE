@@ -12,33 +12,18 @@ namespace NoSTORE.Controllers
     {
         private readonly CategoryService _categoryService;
         private readonly ProductService _productService;
-        public CatalogApiController(CategoryService categoryService, ProductService productService)
+        private readonly FilterService _filterService;
+        public CatalogApiController(CategoryService categoryService, ProductService productService, FilterService filterService)
         {
             _categoryService = categoryService;
             _productService = productService;
+            _filterService = filterService;
         }
         [HttpGet]
         public async Task<IActionResult> GetRootCategories()
         {
             var categories = await _categoryService.GetAllAsync();
-            var response = categories.Select(c => new CategoryDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Slug = c.Slug,
-                Image = c.Image,
-                HasSubcategories = c.HasSubcategories,
-                Subcategories = c.Subcategories.Select(sc => new CategoryDto
-                {
-                    Id = sc.Id,
-                    Name = sc.Name,
-                    Slug = sc.Slug,
-                    Image = sc.Image,
-                    HasSubcategories = false,
-                    Subcategories = null
-                }).ToList()
-            });
-
+            var response = categories.Select(c => MapToDto(c, depth: 1)).ToList();
             return Ok(response.ToJson());
         }
 
@@ -46,9 +31,8 @@ namespace NoSTORE.Controllers
         [HttpGet("{slug}")]
         public async Task<IActionResult> GetCategoryBySlug(string slug)
         {
-            var categories = await _categoryService.GetAllAsync();
-            var category = FindCategory(categories, slug);
-
+            List<Category> categories = await _categoryService.GetAllAsync();
+            Category category = FindCategory(categories, slug);
             if (category == null) return NotFound();
 
             if (category.HasSubcategories)
@@ -56,15 +40,9 @@ namespace NoSTORE.Controllers
                 return Ok(new CategoryResponse
                 {
                     Name = category.Name,
-                    Subcategories = category.Subcategories.Select(sc => new CategoryDto
-                    {
-                        Id = sc.Id,
-                        Name = sc.Name,
-                        Slug = sc.Slug,
-                        Image = sc.Image,
-                        HasSubcategories = sc.HasSubcategories,
-                        Subcategories = null
-                    }).ToList()
+                    Subcategories = category.Subcategories.Select(sc => MapToDto(sc, depth: 1)).ToList(),
+                    IsSubcategory = category.Subcategories != null && category.Subcategories.Count > 0,
+                    HasSubcategories = category.Subcategories != null && category.Subcategories.Count > 0,
                 }.ToJson());
             }
             else
@@ -73,7 +51,8 @@ namespace NoSTORE.Controllers
                 return Ok(new ProductsResponse
                 {
                     CategoryName = category.Name,
-                    Products = productCategory.ProductsDto
+                    Products = productCategory.ProductsDto,
+                    Filter = productCategory.Filter
                 }.ToJson());
             }
         }
@@ -107,7 +86,23 @@ namespace NoSTORE.Controllers
             {
                 CategoryName = category,
                 Products = filtered,
-                ProductsDto = filtered.Select(p => new ProductDto(p)).ToList()
+                ProductsDto = filtered.Select(p => new ProductDto(p)).ToList(),
+                Filter = await _filterService.GetFiltersByCategory(category)
+            };
+        }
+
+        private CategoryDto MapToDto(Category category, int depth = 1)
+        {
+            return new CategoryDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Slug = category.Slug,
+                Image = category.Image,
+                HasSubcategories = category.HasSubcategories,
+                Subcategories = (depth > 0 && category.HasSubcategories)
+                    ? category.Subcategories.Select(sc => MapToDto(sc, depth - 1)).ToList()
+                    : null
             };
         }
     }
@@ -119,17 +114,23 @@ namespace NoSTORE.Controllers
         public string Image { get; set; }
         public bool HasSubcategories { get; set; }
         public List<CategoryDto>? Subcategories { get; set; }
+
+        
     }
     public class CategoryResponse
     {
-        public bool IsSubcategory => Subcategories != null && Subcategories.Count > 0;
+        public bool IsSubcategory { get; set; }
         public string Name { get; set; }
         public List<CategoryDto> Subcategories { get; set; }
+        public bool HasSubcategories { get; set; }
     }
     public class ProductsResponse
     {
         public bool IsSubcategory => true;
         public string CategoryName { get; set; }
         public List<ProductDto> Products { get; set; }
+        public Filter Filter { get; set; }
     }
+
+
 }

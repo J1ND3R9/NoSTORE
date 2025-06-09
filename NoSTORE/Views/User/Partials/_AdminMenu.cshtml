@@ -1,0 +1,7 @@
+﻿@using NoSTORE.Models.DTO
+@model UserDto
+<nav class="admin-nav">
+    <a asp-controller="User" asp-action="Index" asp-route-section="panel" asp-route-tab="users">Пользователи</a>
+    <a asp-controller="User" asp-action="Index" asp-route-section="panel" asp-route-tab="products">Продукты</a>
+    <a asp-controller="User" asp-action="Index" asp-route-section="panel" asp-route-tab="orders">Заказы</a>
+</nav>
