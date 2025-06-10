@@ -36,7 +36,7 @@ namespace NoSTORE.Controllers
         private readonly IWebHostEnvironment _env;
 
         public AuthController(UserService userService,
-            //JwtService jwtService,
+            JwtService jwtService,
             EmailService emailService,
             VerificationService verificationService,
             RoleService roleService,
@@ -44,7 +44,7 @@ namespace NoSTORE.Controllers
             IWebHostEnvironment env)
         {
             _userService = userService;
-            //_jwtService = jwtService;
+            _jwtService = jwtService;
             _emailService = emailService;
             _verificationService = verificationService;
             _roleService = roleService;
@@ -64,8 +64,8 @@ namespace NoSTORE.Controllers
 
             if (!isMobile)
             {
-                //if (!await _verificationService.IsValidCodeAsync(model.Email, model.Code))
-                //    return BadRequest(new { error = "Неверный код" });
+                if (!await _verificationService.IsValidCodeAsync(model.Email, model.Code))
+                    return BadRequest(new { error = "Неверный код" });
             }
             var user = await _userService.GetUserByEmailAsync(model.Email);
 
@@ -115,8 +115,8 @@ namespace NoSTORE.Controllers
                 return BadRequest("Не ввели никнейм");
             if (await RegisterEmailIsExist(model))
                 return Unauthorized("Пользователь уже существует");
-            //if (!await _verificationService.IsValidCodeAsync(model.Email, model.Code))
-            //    return Unauthorized("Неверный код");
+            if (!await _verificationService.IsValidCodeAsync(model.Email, model.Code))
+                return Unauthorized("Неверный код");
             var user = new User()
             {
                 Id = ObjectId.GenerateNewId().ToString(),
@@ -152,7 +152,7 @@ namespace NoSTORE.Controllers
 
             var isMobile = remoteIp == "10.0.2.2" || userAgent.Contains("okhttp", StringComparison.OrdinalIgnoreCase);
 
-            if (isMobile)   
+            if (isMobile)
             {
                 var jwtService = HttpContext.RequestServices.GetRequiredService<JwtService>();
                 var token = jwtService.GenerateToken(claims);
@@ -224,8 +224,8 @@ namespace NoSTORE.Controllers
         {
             if (await CheckLogin(model))
                 return BadRequest(new { error = "Неверная почта или пароль" });
-            //if (!await _verificationService.SendVerificationCodeAsync(model.Email, ct))
-            //    return Unauthorized("Ошибка на стороне сервера, обратитесь к администратору");
+            if (!await _verificationService.SendVerificationCodeAsync(model.Email, ct))
+                return Unauthorized("Ошибка на стороне сервера, обратитесь к администратору");
             return Ok();
         }
 
@@ -234,8 +234,8 @@ namespace NoSTORE.Controllers
         {
             if (await RegisterEmailIsExist(model))
                 return BadRequest(new { error = "Пользователь уже существует" });
-            //if (!await _verificationService.SendVerificationCodeAsync(model.Email, ct))
-            //    return BadRequest("Ошибка на стороне сервера, обратитесь к администратору");
+            if (!await _verificationService.SendVerificationCodeAsync(model.Email, ct))
+                return BadRequest("Ошибка на стороне сервера, обратитесь к администратору");
             return Ok();
         }
 
@@ -247,8 +247,8 @@ namespace NoSTORE.Controllers
             var user = await _userService.GetUserById(userId);
             if (user == null)
                 return BadRequest("Пользователь не найден");
-            //if (!await _verificationService.SendVerificationCodeAsync(user.Email, ct))
-            //    return BadRequest("Ошибка на стороне сервера, обратитесь к администратору");
+            if (!await _verificationService.SendVerificationCodeAsync(user.Email, ct))
+                return BadRequest("Ошибка на стороне сервера, обратитесь к администратору");
             return Ok();
         }
 
@@ -300,8 +300,8 @@ namespace NoSTORE.Controllers
             var user = await _userService.GetUserById(userId);
             if (user == null)
                 return BadRequest("Пользователь не найден");
-            //if (!await _verificationService.IsValidCodeAsync(user.Email, dto.Code ?? "-"))
-            //    return BadRequest("Неверный код");
+            if (!await _verificationService.IsValidCodeAsync(user.Email, dto.Code ?? "-"))
+                return BadRequest("Неверный код");
             var passwordhash = BCrypt.Net.BCrypt.EnhancedHashPassword(dto.NewPassword);
             await _userService.ChangePassword(userId, passwordhash);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -322,7 +322,7 @@ namespace NoSTORE.Controllers
 
             if (dto.OldPassword == dto.NewPassword)
                 return BadRequest("Пароли совпадают");
-            
+
             if (!IsValidPassword(dto.NewPassword))
                 return BadRequest("Новый пароль не проходит валидацию.");
 

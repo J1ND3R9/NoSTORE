@@ -277,7 +277,6 @@ namespace NoSTORE.Controllers
             return Ok();
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("getCart")]
         public async Task<IActionResult> GetCart()
         {
@@ -320,6 +319,28 @@ namespace NoSTORE.Controllers
             };
             result.Items.Reverse();
             return Ok(result.ToJson());
+        }
+
+        [HttpGet("getFavorite")]
+        public async Task<IActionResult> GetFavorite()
+        {
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
+
+            if (userId == null)
+                return Unauthorized();
+            var user = await _userService.GetUserById(userId);
+
+            var favorite = user?.Favorites;
+            if (favorite == null || !favorite.Any())
+            {
+                return Ok(new List<ProductDto>());
+            }
+
+            var products = await _productService.GetByIdsAsync(favorite);
+            var productsDto = products.Select(s => new ProductDto(s)).ToList();
+            productsDto.Reverse();
+
+            return Ok(productsDto.ToJson());
         }
 
         [HttpPost("remove_product_favorite")]

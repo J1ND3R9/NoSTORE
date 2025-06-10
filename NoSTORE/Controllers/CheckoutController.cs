@@ -1,13 +1,18 @@
 ﻿using MailKit.Search;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson.Serialization.Serializers;
 using NoSTORE.Models;
 using NoSTORE.Models.DTO;
 using NoSTORE.Services;
+using NoSTORE.Settings;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using ZXing.QrCode;
 using ZXing.Rendering;
 
@@ -69,11 +74,13 @@ namespace NoSTORE.Controllers
         private readonly UserService _userService;
         private readonly OrderService _orderService;
         private readonly IWebHostEnvironment _env;
-        public CheckoutController(UserService userService, OrderService orderService, IWebHostEnvironment env)
+        private readonly IConfiguration _configuration;
+        public CheckoutController(UserService userService, OrderService orderService, IWebHostEnvironment env, IConfiguration configuration)
         {
             _userService = userService;
             _orderService = orderService;
             _env = env;
+            _configuration = configuration;
         }
 
         public async Task<IActionResult> Index()
@@ -102,28 +109,18 @@ namespace NoSTORE.Controllers
         }
 
         [HttpPost("/api/order/place")]
-        public async Task<IActionResult> PlaceOrder([FromBody] CheckoutDto checkoutDto)
+        public async Task<IActionResult> PlaceOrder()
         {
-            string userId = "";
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
             bool isGuest = false;
-            if (User.Identity.IsAuthenticated)
+
+            if (Request.Cookies.TryGetValue("GuestId", out var guestId))
             {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                isGuest = true;
             }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                    isGuest = true;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                    return Unauthorized();
-                }
-            }
+
+            var checkoutDto = await _userService.GenerateCheckout(userId);
+
             string orderid = await _orderService.PlaceOrder(userId, checkoutDto);
             var receipt = new ReceiptDocument
             {
@@ -139,29 +136,18 @@ namespace NoSTORE.Controllers
 
             return Ok(new { orderid });
         }
+
         [HttpGet("/receipts/download/{orderId}")]
         public IActionResult Download(string orderId)
         {
-            string userId = "";
+            string userId = GetUserIdFromJwtOrCookie(HttpContext);
             bool isGuest = false;
-            if (User.Identity.IsAuthenticated)
+
+            if (Request.Cookies.TryGetValue("GuestId", out var guestId))
             {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                isGuest = true;
             }
-            else
-            {
-                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
-                {
-                    userId = guestId;
-                    isGuest = true;
-                }
-                else
-                {
-                    // Гость без куки — крайне редкая ситуация
-                    userId = null;
-                    return Unauthorized();
-                }
-            }
+
             var filePath = Path.Combine(_env.WebRootPath, "receipts", userId, $"{orderId}.pdf");
             if (isGuest)
                 filePath = Path.Combine(_env.WebRootPath, "receipts", "guests", $"{orderId}.pdf");
@@ -170,6 +156,54 @@ namespace NoSTORE.Controllers
                 return NotFound();
 
             return PhysicalFile(filePath, "application/pdf", $"{orderId}.pdf");
+        }
+
+        private string GetUserIdFromJwtOrCookie(HttpContext context)
+        {
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+            if (!string.IsNullOrEmpty(token))
+            {
+                var jwtSettings = _configuration.GetSection("JwtOptions").Get<AuthSettings>();
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
+
+                try
+                {
+                    var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtSettings.Issuer,
+                        ValidateAudience = true,
+                        ValidAudience = jwtSettings.Audience,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
+                    }, out SecurityToken validatedToken);
+
+                    var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+                    return userId;
+                }
+                catch
+                {
+                    // JWT невалиден — fallback на cookie
+                }
+            }
+
+            if (User.Identity.IsAuthenticated)
+            {
+                return User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            else
+            {
+                if (Request.Cookies.TryGetValue("GuestId", out var guestId))
+                {
+                    return guestId;
+                }
+            }
+
+            return null;
         }
     }
 }

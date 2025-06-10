@@ -54,8 +54,7 @@ function initPlaceOrder() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(checkoutDto)
+                }
             });
             const data = await response.json();
             if (!response.ok) throw new Error("Произошла ошибка при оформлении заказа")
