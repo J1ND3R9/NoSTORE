@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nostore.CartItem
 import com.example.nostore.CartItemApiDto
 import com.example.nostore.ProductRequest
 import com.example.nostore.ProductStatus
@@ -39,20 +38,6 @@ class CartViewModel : ViewModel() {
         isInCompare = product.inCompare
     }
 
-    fun toggleFavorite(context: Context) {
-        val product = currentProduct ?: return
-        viewModelScope.launch {
-            if (isFavorite) {
-                repository.removeFavorite(product._id)
-            } else {
-                repository.addFavorite(product._id)
-            }
-            isFavorite = !isFavorite
-            // Обновляем локальный объект
-            currentProduct = product.copy(isFavorite = isFavorite)
-        }
-    }
-
     fun loadCart() {
         viewModelScope.launch {
             _uiState.value = CartUiState.Loading
@@ -63,6 +48,32 @@ class CartViewModel : ViewModel() {
             }.onFailure {
                 _uiState.value = CartUiState.Error(it.message ?: "Ошибка загрузки")
             }
+        }
+    }
+
+    fun loadFavs() {
+        viewModelScope.launch {
+            _uiState.value = CartUiState.Loading
+
+            val result = repository.getFavoriteWithStatus()
+            result.onSuccess { items ->
+                _uiState.value = CartUiState.SuccessListProducts(items)
+            }.onFailure {
+                _uiState.value = CartUiState.Error(it.message ?: "Ошибка загрузки")
+            }
+        }
+    }
+    fun addToFavorite(productId: String) {
+        viewModelScope.launch {
+            repository.addFavorite(productId = productId)
+            loadFavs()
+        }
+    }
+
+    fun removeFromFavorite(productId: String) {
+        viewModelScope.launch {
+            repository.removeFavorite(productId = productId)
+            loadFavs()
         }
     }
 
@@ -106,4 +117,5 @@ sealed class CartUiState {
     object Loading : CartUiState()
     data class Success(val items: List<CartItemApiDto>) : CartUiState()
     data class Error(val message: String) : CartUiState()
+    data class SuccessListProducts(val items: List<ProductDto>) : CartUiState()
 }

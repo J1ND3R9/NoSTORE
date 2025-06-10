@@ -1,5 +1,7 @@
 package com.example.nostore
 
+import ProductDto
+import com.example.nostore.NetworkClient.authApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

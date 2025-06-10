@@ -16,7 +16,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.nostore.NetworkClient.authApi
 
 @Composable
 fun CartItem(
@@ -162,13 +164,19 @@ fun CartItem(
     }
 }
 @Composable
-fun CartPage() {
+fun CartPage(
+    navController: NavController
+) {
     var selectedItems by remember { mutableStateOf<Set<String>>(emptySet()) }
-    val viewModel = viewModel<CartViewModel>()
-    val uiState by viewModel.uiState.collectAsState()
+    val viewModelCart = viewModel<CartViewModel>()
+    val uiState by viewModelCart.uiState.collectAsState()
+
+    val viewModelOrder = viewModel<OrderViewModel>()
+    val placeOrderState by viewModelOrder.placeOrderState.collectAsState()
+
 
     fun refreshCart() {
-        viewModel.loadCart()
+        viewModelCart.loadCart()
     }
 
     LaunchedEffect(Unit) {
@@ -207,10 +215,10 @@ fun CartPage() {
                     productDto = cart.productDto,
                     quantity = cart.quantity,
                     onQuantityChange = { newQuantity ->
-                        viewModel.changeQuantity(cart.productDto._id, newQuantity)
+                        viewModelCart.changeQuantity(cart.productDto._id, newQuantity)
                     },
                     onDelete = {
-                        viewModel.removeFromCart(cart.productDto._id)
+                        viewModelCart.removeFromCart(cart.productDto._id)
 
                                },
                     onFavorite = {
@@ -218,7 +226,7 @@ fun CartPage() {
                     },
                     isSelected = selectedItems.contains(cart.productDto._id),
                     onSelectionChange = { isSelected ->
-                        viewModel.updateSelection(cart.productDto._id, isSelected)
+                        viewModelCart.updateSelection(cart.productDto._id, isSelected)
                         if (isSelected) {
                             selectedItems = selectedItems + cart.productDto._id
                         } else {
@@ -244,13 +252,29 @@ fun CartPage() {
                 )
                 
                 Button(
-                    onClick = { /* TODO: Implement checkout */ },
+                    onClick = {
+                        viewModelOrder.placeOrder(authApi)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp),
                     enabled = selectedItems.isNotEmpty()
                 ) {
                     Text("Оформить заказ")
+                }
+
+                placeOrderState?.let { result ->
+                    if (result.isSuccess) {
+                        val orderId = result.getOrNull()
+                        // Навигация после получения orderId
+                        LaunchedEffect(orderId) {
+                            navController.navigate("checkout/$orderId")
+                        }
+                    } else if (result.isFailure) {
+                        Text(
+                            "Ошибка: ${result.exceptionOrNull()?.message}",
+                        )
+                    }
                 }
             }
         }

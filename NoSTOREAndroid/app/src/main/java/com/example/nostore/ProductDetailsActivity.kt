@@ -54,6 +54,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -203,6 +204,9 @@ fun LocalizedDate(dateString: String?): String {
 fun ProductDetailsContent(product: ProductDto) {
     val scrollState = rememberScrollState()
     val viewModel = viewModel<CartViewModel>()
+    val context = LocalContext.current
+
+    var isFavorite by remember { mutableStateOf(product.isFavorite) }
 
     Column(
         modifier = Modifier
@@ -229,16 +233,30 @@ fun ProductDetailsContent(product: ProductDto) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            IconButton(onClick = {}) {
-                Icon(Icons.Default.Favorite, contentDescription = "В избранное")
+            IconButton(onClick = {
+                if (isFavorite) {
+                    viewModel.removeFromFavorite(product._id)
+                    isFavorite = false
+                }
+                else {
+                    viewModel.addToFavorite(product._id)
+                    isFavorite = true
+                }
+
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "Add to favorites",
+                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
+                )
             }
             IconButton(onClick = {}) {
                 Icon(Icons.Default.Share, contentDescription = "Сравнить")
             }
             Button(onClick = { viewModel.addToCart(product._id) }, modifier = Modifier.weight(1f)) {
-                Text("В корзину",
+                Text(if (product.inCart) "В корзине!" else "В корзину",
                     fontFamily = Strong,
-                )
+                    )
             }
         }
 

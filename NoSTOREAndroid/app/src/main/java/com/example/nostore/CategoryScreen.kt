@@ -419,17 +419,18 @@ fun ProductListScreen(
 
         // 🔥 Выводим товары из ViewModel
         val uiState by viewModel.state.collectAsState()
-        ProductsListContent(uiState.products)
+        ProductsListContent(uiState.products, navController)
     }
 }
 
 @Composable
-fun ProductsListContent(products: List<ProductDto>) {
+fun ProductsListContent(products: List<ProductDto>,
+                        navController: NavController) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(products) { product ->
             ProductItemColumn(
                 productDto = product,
-                navController = rememberNavController(),
+                navController = navController,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -531,6 +532,7 @@ fun ProductItemColumn(productDto: ProductDto,
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.ShoppingCart,
+                                    tint = if (productDto.inCart) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
                                     contentDescription = "Add to cart"
                                 )
                             }
@@ -539,15 +541,9 @@ fun ProductItemColumn(productDto: ProductDto,
                                 onClick = { /* TODO: Add to favorites */ }
                             ) {
                                 Icon(
-                                    imageVector = if (productDto.isFavorite) 
-                                        Icons.Default.Favorite 
-                                    else
-                                        Icons.Default.FavoriteBorder,
+                                    imageVector = Icons.Default.Favorite,
                                     contentDescription = "Add to favorites",
-                                    tint = if (productDto.isFavorite) 
-                                        MaterialTheme.colorScheme.primary 
-                                    else 
-                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                    tint = if (productDto.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
                                 )
                             }
                         }

@@ -1,12 +1,28 @@
 package com.example.nostore
 
 import ProductDto
+import android.R
+import android.content.Context
+import android.os.Environment
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.nostore.NetworkClient.authApi
 import com.google.gson.annotations.SerializedName
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Streaming
+import java.io.File
+import java.io.FileOutputStream
 
 interface ApiService {
     @GET("/api/apiproduct/all")
@@ -39,6 +55,9 @@ interface ApiService {
     @GET("/api/apiproduct/getCart")
     suspend fun getCart(): Response<CartApiDto>
 
+    @GET("/api/apiproduct/getFavorite")
+    suspend fun getFavorites(): Response<List<ProductDto>>
+
     @GET("/api/apiproduct/get/{productId}")
     suspend fun getProductById(@Path("productId") productId: String): Response<ProductDto>
 
@@ -62,7 +81,76 @@ interface ApiService {
 
     @POST("/catalog/getfilteredproducts")
     suspend fun getFilteredProducts(@Body request: FilterRequest): Response<List<ProductDto>>
+
+    @GET("/search/{query}")
+    suspend fun search(@Path("query") query: String): List<ProductDto>
+
+    @POST("/api/order/place")
+    suspend fun placeOrder(): Response<OrderResponse>
+
+    @Streaming
+    @GET("/receipts/download/{orderId}")
+    suspend fun downloadReceipt(@Path("orderId") orderId: String): Response<ResponseBody>
 }
+
+data class OrderResponse(val orderid: String)
+
+class OrderViewModel : ViewModel() {
+
+    private val _placeOrderState = MutableStateFlow<Result<String>?>(null)
+    val placeOrderState: StateFlow<Result<String>?> = _placeOrderState
+
+    fun placeOrder(api: ApiService) {
+        viewModelScope.launch {
+            try {
+                val response = api.placeOrder()
+                if (response.isSuccessful && response.body() != null) {
+                    _placeOrderState.value = Result.success(response.body()!!.orderid)
+                } else {
+                    _placeOrderState.value = Result.failure(Exception("Ошибка оформления заказа"))
+                }
+            } catch (e: Exception) {
+                _placeOrderState.value = Result.failure(e)
+            }
+        }
+    }
+}
+
+class ReceiptDownloader(private val context: Context) {
+
+    suspend fun downloadReceipt(orderId: String, api: ApiService): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = api.downloadReceipt(orderId)
+                if (!response.isSuccessful || response.body() == null) {
+                    return@withContext Result.failure(Exception("Ошибка загрузки чека"))
+                }
+
+                // Открываем поток
+                val inputStream = response.body()!!.byteStream()
+
+                // Путь: например, папка "Downloads"
+                val downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                val outputFile = File(downloadsDir, "$orderId.pdf")
+
+                // Сохраняем
+                FileOutputStream(outputFile).use { output ->
+                    val buffer = ByteArray(4 * 1024)
+                    var bytesRead: Int
+                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                        output.write(buffer, 0, bytesRead)
+                    }
+                }
+
+                Result.success(outputFile.absolutePath)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+}
+
+
 data class FilterRequest(
     val category: String,
     val dictionary: Map<String, Map<String, List<String>>>,
@@ -89,6 +177,13 @@ data class ProductRequest(
     val ProductId: String? = null,
     val ProductIds: List<String>? = null,
     val Quantity: Int? = null
+)
+
+data class OrderDto(
+    val Id: String,
+    val CreateDate: String,
+    val TotalPrice: Int,
+    val Status: String
 )
 
 data class CartApiDto(

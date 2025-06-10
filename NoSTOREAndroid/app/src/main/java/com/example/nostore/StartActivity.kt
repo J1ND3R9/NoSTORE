@@ -1,5 +1,6 @@
 package com.example.nostore
 
+import FavoriteScreen
 import ProductDetailsScreen
 import android.content.Context
 import android.os.Bundle
@@ -57,9 +58,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.nostore.ui.theme.NoSTORETheme
 
 class StartActivity : ComponentActivity() {
@@ -106,6 +109,21 @@ class StartActivity : ComponentActivity() {
                                 navController = navController
                             )
                         }
+                        composable("favorite") {
+                            MainLayout (
+                                content = { padding ->
+                                    Column (
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(padding)
+                                            .padding(16.dp)
+                                    ) {
+                                        FavoriteScreen(navController = navController)
+                                    }
+                                },
+                                navController = navController
+                            )
+                        }
                         composable("cart") {
                             MainLayout (
                                 content = { padding ->
@@ -115,7 +133,24 @@ class StartActivity : ComponentActivity() {
                                             .padding(padding)
                                             .padding(16.dp)
                                     ) {
-                                        CartPage()
+                                        CartPage(navController = navController)
+                                    }
+                                },
+                                navController = navController
+                            )
+                        }
+                        composable("checkout/{orderId}",
+                            arguments = listOf(navArgument("orderId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val orderId = backStackEntry.arguments?.getString("orderId")
+                            MainLayout(
+                                content = { padding ->
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(padding)
+                                    ) {
+                                        CheckoutScreen(OrderId = orderId ?: "00000")
                                     }
                                 },
                                 navController = navController
@@ -154,6 +189,19 @@ class StartActivity : ComponentActivity() {
                                 content = { padding ->
                                     Column(modifier = Modifier.padding(padding)) {
                                         CategorySubScreen(slug = slug, navController = navController)
+                                    }
+                                },
+                                navController = navController
+                            )
+                        }
+
+                        composable("search/{query}") { backStackEntry ->
+                            val query = backStackEntry.arguments?.getString("query") ?: ""
+
+                            MainLayout(
+                                content = { padding ->
+                                    Column(modifier = Modifier.padding(padding)) {
+                                        SearchProducts(navController = navController, query = query)
                                     }
                                 },
                                 navController = navController

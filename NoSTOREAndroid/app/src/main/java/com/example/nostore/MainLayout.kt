@@ -47,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,13 +78,15 @@ fun Logo(
 
 @Composable
 fun SearchField(
-
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
     var text by remember {
         mutableStateOf("")
     }
+
     Box (
-        modifier = Modifier
+        modifier = modifier
             .height(40.dp)
             .background(
                 color = MaterialTheme.colorScheme.background,
@@ -123,12 +126,17 @@ fun SearchField(
                         }
                         innerTextField()
                     }
-                    Icon (
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Поиск",
-                        tint = MaterialTheme.colorScheme.onSurface,
+                    IconButton(
+                        onClick = { navController.navigate("search/$text") },
                         modifier = Modifier.size(20.dp)
-                    )
+                    ) {
+                        Icon (
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Поиск",
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
         )
@@ -207,7 +215,7 @@ fun MainLayout(
                                         0 -> navController.navigate("home")
                                         1 -> navController.navigate("catalog")
                                         2 -> navController.navigate("cart")
-                                        3 -> navController.navigate("favorites")
+                                        3 -> navController.navigate("favorite")
                                         4 -> navController.navigate("settings")
                                     }
                                     onItemSelected(index)
@@ -263,7 +271,7 @@ fun MainLayout(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Logo()
-                            SearchField()
+                            SearchField(navController = navController)
                         }
                     },
                     navigationIcon = {

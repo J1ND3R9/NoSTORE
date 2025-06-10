@@ -65,7 +65,6 @@
                 }
             }
 
-
         suspend fun getCartWithStatus(): Result<List<CartItemApiDto>> = withContext(Dispatchers.IO) {
             try {
                 val cartResult = api.getCart()
@@ -87,6 +86,36 @@
                                 inCompare = status.inCompare
                             )
                         )
+                    } else {
+                        item
+                    }
+                }
+
+                Result.success(updatedItems)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+        suspend fun getFavoriteWithStatus(): Result<List<ProductDto>> = withContext(Dispatchers.IO) {
+            try {
+                val cartResult = api.getFavorites()
+                if (!cartResult.isSuccessful || cartResult.body() == null) {
+                    return@withContext Result.failure<List<ProductDto>>(Exception("Ошибка загрузки корзины"))
+                }
+
+                val cart = cartResult.body()!!
+                val updatedItems = cart.map { item ->
+                    // Запрашиваем статус продукта
+                    val statusResult = api.getProductStatus(item._id)
+
+                    if (statusResult.isSuccessful && statusResult.body() != null) {
+                        val status = statusResult.body()!!
+                        item.copy(
+                                isFavorite = status.inFavorite,
+                                inCart = status.inCart,
+                                inCompare = status.inCompare
+                            )
                     } else {
                         item
                     }
